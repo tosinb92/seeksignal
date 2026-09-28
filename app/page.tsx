@@ -136,11 +136,16 @@ export default function Home() {
                 <div className="metrics">
                   <div className="metric"><span>AI Visibility</span><strong>68</strong><small>↑ 12 this month</small></div>
                   <div className="metric"><span>Recommendation share</span><strong>24%</strong><small>↑ 6.4%</small></div>
-                  <div className="metric"><span>Citations found</span><strong>37</strong><small>Across answer engines</small></div>
+                  <div className="metric"><span>AI mentions</span><strong>37</strong><small>Across tracked answers</small></div>
+                  <div className="metric accentMetric"><span>Competitors ahead</span><strong>3</strong><small>7 tracked competitors</small></div>
                 </div>
                 <div className="lowerGrid">
                   <div className="chartCard"><span>Visibility trend</span><div className="chart"><svg viewBox="0 0 500 150" preserveAspectRatio="none"><path d="M0,125 C55,105 60,120 105,96 S170,110 210,70 S285,82 330,52 S410,70 500,20" fill="none" stroke="currentColor" strokeWidth="3"/></svg></div><div className="axis"><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span></div></div>
-                  <div className="oppCard"><div className="oppHead"><span>Top opportunities</span><b>7 open</b></div><div className="opp"><i className="high"/>Add product schema <em>High impact</em></div><div className="opp"><i/>Strengthen entity signals <em>Medium</em></div><div className="opp"><i/>Answer 6 buyer questions <em>Medium</em></div></div>
+                  <div className="engineCard"><div className="oppHead"><span>AI engine coverage</span><b>5 engines</b></div><div className="engine"><span>ChatGPT</span><div><i style={{width:"78%"}}/></div><strong>78</strong></div><div className="engine"><span>Google AI</span><div><i style={{width:"64%"}}/></div><strong>64</strong></div><div className="engine"><span>Perplexity</span><div><i style={{width:"58%"}}/></div><strong>58</strong></div><div className="engine"><span>Copilot</span><div><i style={{width:"42%"}}/></div><strong>42</strong></div></div>
+                </div>
+                <div className="workspaceStrip">
+                  <div className="tabs"><b>Opportunities</b><span>Issues</span><span>Competitors</span><span>Monitoring</span></div>
+                  <div className="workRows"><div><i className="high"/><strong>Add product & service schema</strong><span>Structured data</span><em>High impact</em></div><div><i/><strong>Build answer coverage for buyer questions</strong><span>Content</span><em>Medium</em></div><div><i/><strong>Strengthen organization identity signals</strong><span>Entity clarity</span><em>Medium</em></div></div>
                 </div>
               </div>
             </div>
