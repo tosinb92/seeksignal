@@ -5,7 +5,11 @@ import { FormEvent, useState } from "react";
 type Result = {
   score: number;
   url: string;
+  summary: string;
+  methodology: string;
   checks: { label: string; status: "good" | "warn"; detail: string }[];
+  categories: { name: string; score: number }[];
+  opportunities: { title: string; action: string; impact: string }[];
 };
 
 export default function Home() {
@@ -76,14 +80,38 @@ export default function Home() {
               </div>
               <div className="score">{result.score}<span>/100</span></div>
             </div>
-            <div className="checks">
-              {result.checks.map((c) => (
-                <div className="check" key={c.label}>
-                  <div className={c.status === "good" ? "dot good" : "dot warn"} />
-                  <div><strong>{c.label}</strong><p>{c.detail}</p></div>
+            <p className="resultSummary">{result.summary}</p>
+            <div className="categoryGrid">
+              {result.categories.map((category) => (
+                <div className="category" key={category.name}>
+                  <div><span>{category.name}</span><strong>{category.score}</strong></div>
+                  <div className="bar"><i style={{ width: `${category.score}%` }} /></div>
                 </div>
               ))}
             </div>
+            <div className="resultColumns">
+              <div>
+                <div className="resultSectionTitle">Signals checked</div>
+                <div className="checks">
+                  {result.checks.map((c) => (
+                    <div className="check" key={c.label}>
+                      <div className={c.status === "good" ? "dot good" : "dot warn"} />
+                      <div><strong>{c.label}</strong><p>{c.detail}</p></div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="opportunities">
+                <div className="resultSectionTitle">Priority opportunities</div>
+                {result.opportunities.length ? result.opportunities.map((o) => (
+                  <div className="opportunity" key={o.title}>
+                    <div><strong>{o.title}</strong><em>{o.impact} impact</em></div>
+                    <p>{o.action}</p>
+                  </div>
+                )) : <p className="allGood">No fundamental issues found. Move on to live AI visibility monitoring and competitor benchmarking.</p>}
+              </div>
+            </div>
+            <div className="methodology"><strong>What this score means</strong><span>{result.methodology}</span></div>
           </section>
         )}
 
