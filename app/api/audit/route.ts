@@ -24,6 +24,15 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     if (!body?.url || typeof body.url !== "string") return NextResponse.json({ error: "Enter a website first." }, { status: 400 });
+    if (!body?.name || typeof body.name !== "string" || body.name.trim().length < 2) {
+      return NextResponse.json({ error: "Enter your name to unlock the report." }, { status: 400 });
+    }
+    if (!body?.email || typeof body.email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email.trim())) {
+      return NextResponse.json({ error: "Enter a valid work email to unlock the report." }, { status: 400 });
+    }
+    if (!body?.business || typeof body.business !== "string" || body.business.trim().length < 2) {
+      return NextResponse.json({ error: "Enter your business name to unlock the report." }, { status: 400 });
+    }
     const u = await safeUrl(body.url.trim());
 
     const res = await fetch(u, {
