@@ -60,10 +60,35 @@ export async function POST(req: NextRequest) {
     const passed = items.filter((x) => x[1]).length;
     const score = Math.round((passed / items.length) * 100);
 
+    const checks = items.map(([label, ok, detail]) => ({ label, status: ok ? "good" as const : "warn" as const, detail }));
+    const categories = [
+      { name: "Entity clarity", score: Math.round(((Number(hasTitle) + Number(hasDescription) + Number(hasH1)) / 3) * 100) },
+      { name: "Structured data", score: hasSchema && hasOrg ? 100 : hasSchema ? 55 : 20 },
+      { name: "Answer coverage", score: hasFaq ? 82 : 35 },
+      { name: "Trust & authority", score: hasTrust ? 78 : 32 },
+      { name: "Commercial clarity", score: hasCommercial ? 88 : 30 }
+    ];
+    const opportunities = checks
+      .filter((check) => check.status === "warn")
+      .slice(0, 4)
+      .map((check, index) => ({
+        title: check.label,
+        action: check.detail,
+        impact: index < 2 ? "High" : "Medium"
+      }));
+
     return NextResponse.json({
       url: u.hostname,
       score,
-      checks: items.map(([label, ok, detail]) => ({ label, status: ok ? "good" : "warn", detail }))
+      checks,
+      categories,
+      opportunities,
+      summary: score >= 80
+        ? "Strong foundations. The next gains are likely to come from deeper answer coverage, authority and real AI-engine monitoring."
+        : score >= 55
+          ? "Good foundations, but several signals could make the business easier for AI systems to interpret and surface."
+          : "Important website signals are missing or unclear. Fixing the fundamentals should come before ongoing AI visibility monitoring.",
+      methodology: "This score measures observable website readiness signals. It does not claim that an AI platform currently recommends the business."
     });
   } catch (e) {
     const message = e instanceof Error ? e.message : "Unable to scan this website.";
