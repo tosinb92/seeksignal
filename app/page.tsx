@@ -17,21 +17,34 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<Result | null>(null);
   const [error, setError] = useState("");
+  const [showGate, setShowGate] = useState(false);
+  const [lead, setLead] = useState({ name: "", email: "", business: "" });
 
-  async function runAudit(e: FormEvent) {
+  function startAudit(e: FormEvent) {
     e.preventDefault();
     setError("");
     setResult(null);
+    if (!url.trim()) {
+      setError("Enter your website first.");
+      return;
+    }
+    setShowGate(true);
+  }
+
+  async function unlockResults(e: FormEvent) {
+    e.preventDefault();
+    setError("");
     setLoading(true);
     try {
       const res = await fetch("/api/audit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url })
+        body: JSON.stringify({ url, ...lead })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Audit failed");
       setResult(data);
+      setShowGate(false);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Audit failed");
     } finally {
@@ -56,7 +69,7 @@ export default function Home() {
         <h1>Know whether AI can <em>find, understand and recommend</em> your business.</h1>
         <p className="lede">See how prepared your website is for discovery across ChatGPT and other AI answer engines — then get a clear plan to improve it.</p>
 
-        <form id="scan" className="scan" onSubmit={runAudit}>
+        <form id="scan" className="scan" onSubmit={startAudit}>
           <div className="inputWrap">
             <span>↗</span>
             <input
@@ -66,10 +79,41 @@ export default function Home() {
               required
             />
           </div>
-          <button disabled={loading}>{loading ? "Scanning…" : "Run free AI visibility scan"}</button>
+          <button>Run free AI visibility scan</button>
         </form>
         <p className="micro">No card required · Results in seconds · Website-readiness scan</p>
         {error && <div className="error">{error}</div>}
+
+        {showGate && !result && (
+          <section className="leadGate">
+            <div className="gateVisual">
+              <div className="gateEyebrow">Your scan is ready to run</div>
+              <h2>Unlock your free AI visibility report.</h2>
+              <p>Enter your details to reveal your score, priority gaps and the actions most likely to improve how clearly AI systems understand your business.</p>
+              <div className="gatePreview">
+                <div><span>AI readiness</span><strong>••</strong></div>
+                <div><span>Priority opportunities</span><strong>••</strong></div>
+                <div><span>Signals checked</span><strong>7</strong></div>
+              </div>
+            </div>
+            <form className="leadForm" onSubmit={unlockResults}>
+              <label>
+                <span>Your name</span>
+                <input value={lead.name} onChange={(e) => setLead({ ...lead, name: e.target.value })} placeholder="Jane Smith" required />
+              </label>
+              <label>
+                <span>Work email</span>
+                <input type="email" value={lead.email} onChange={(e) => setLead({ ...lead, email: e.target.value })} placeholder="jane@company.com" required />
+              </label>
+              <label>
+                <span>Business name</span>
+                <input value={lead.business} onChange={(e) => setLead({ ...lead, business: e.target.value })} placeholder="Company Ltd" required />
+              </label>
+              <button disabled={loading}>{loading ? "Running your scan…" : "Reveal my results →"}</button>
+              <small>By continuing, you agree that SeekSignal may use these details to provide your report and relevant product follow-up.</small>
+            </form>
+          </section>
+        )}
 
         {result && (
           <section className="resultCard">
