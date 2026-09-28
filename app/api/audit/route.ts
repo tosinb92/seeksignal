@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
     const html = (await res.text()).slice(0, 800000);
     const hasTitle = /<title[^>]*>[^<]{3,}<\/title>/i.test(html);
     const hasDescription = /<meta[^>]+name=["']description["'][^>]+content=["'][^"']{30,}/i.test(html) || /<meta[^>]+content=["'][^"']{30,}["'][^>]+name=["']description["']/i.test(html);
-    const hasH1 = /<h1\b[^>]*>.*?<\/h1>/is.test(html);
+    const hasH1 = /<h1\b[^>]*>[\s\S]*?<\/h1>/i.test(html);
     const hasSchema = /application\/ld\+json/i.test(html);
     const hasOrg = /(Organization|LocalBusiness|Product|Service|Corporation)/i.test(html);
     const hasFaq = /(FAQ|frequently asked|questions|how does|what is|who is)/i.test(html);
