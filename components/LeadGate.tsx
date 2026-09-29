@@ -28,10 +28,10 @@ export default function LeadGate({ website, lead, loading, onChange, onSubmit, o
 
         <div className={styles.previewBody}>
           <div className={styles.kicker}>Your report is ready to generate</div>
-          <h2 id="unlock-title">Unlock your AI visibility report.</h2>
+          <h2 id="unlock-title">Unlock your AI readiness report.</h2>
           <p className={styles.copy}>
             See your readiness score, the signals holding your website back, and the
-            highest-impact actions to improve how clearly AI systems understand your business.
+            highest-impact actions to improve how clearly search and AI retrieval systems can interpret your business.
           </p>
 
           <div className={styles.stats}>
