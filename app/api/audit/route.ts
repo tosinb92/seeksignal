@@ -39,7 +39,12 @@ export async function POST(req: NextRequest) {
     });
 
     if (!leadResponse.ok) {
-      console.error("Lead persistence failed", leadResponse.status, await leadResponse.text());
+      const detail = await leadResponse.text();
+      console.error("Lead persistence failed", leadResponse.status, detail);
+      return NextResponse.json(
+        { error: "We completed the scan but couldn't securely save your report. Please try again." },
+        { status: 500 }
+      );
     }
 
     const resultPayload = { leadId, ...audit };
@@ -60,7 +65,12 @@ export async function POST(req: NextRequest) {
     });
 
     if (!scanResponse.ok) {
-      console.error("Scan persistence failed", scanResponse.status, await scanResponse.text());
+      const detail = await scanResponse.text();
+      console.error("Scan persistence failed", scanResponse.status, detail);
+      return NextResponse.json(
+        { error: "We completed the scan but couldn't securely save your report. Please try again." },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json(resultPayload);
