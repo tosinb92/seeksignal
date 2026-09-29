@@ -5,6 +5,7 @@ export type AuditCheck = {
   label: string;
   status: "good" | "warn";
   detail: string;
+  evidence: string;
   whyItMatters: string;
   benefit: string;
   verify: string;
@@ -151,14 +152,46 @@ export async function fetchPublicWebsite(raw: string) {
   throw new Error("We couldn't complete the website request.");
 }
 
+function cleanText(value: string) {
+  return value
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function firstMatch(html: string, pattern: RegExp) {
+  const match = html.match(pattern);
+  return match?.[1] ? cleanText(match[1]).slice(0, 220) : "";
+}
+
 export function analyseWebsite(html: string, hostname: string) {
-  const hasTitle = /<title[^>]*>[^<]{3,}<\/title>/i.test(html);
+  const titleText = firstMatch(html, /<title[^>]*>([\s\S]*?)<\/title>/i);
+  const h1Text = firstMatch(html, /<h1\b[^>]*>([\s\S]*?)<\/h1>/i);
+  const descriptionMatch =
+    html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)/i) ||
+    html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']description["']/i);
+  const descriptionText = descriptionMatch?.[1] ? cleanText(descriptionMatch[1]).slice(0, 220) : "";
+  const canonicalMatch =
+    html.match(/<link[^>]+rel=["'][^"']*canonical[^"']*["'][^>]+href=["']([^"']+)/i) ||
+    html.match(/<link[^>]+href=["']([^"']+)["'][^>]+rel=["'][^"']*canonical[^"']*["']/i);
+  const canonicalUrl = canonicalMatch?.[1]?.slice(0, 220) || "";
+  const schemaTypes = Array.from(
+    new Set(
+      [...html.matchAll(/"@type"\s*:\s*"([^"]+)"/gi)]
+        .map((match) => match[1])
+        .filter(Boolean)
+    )
+  ).slice(0, 8);
+
+  const hasTitle = titleText.length >= 3;
   const hasDescription =
     /<meta[^>]+name=["']description["'][^>]+content=["'][^"']{30,}/i.test(html) ||
     /<meta[^>]+content=["'][^"']{30,}["'][^>]+name=["']description["']/i.test(html);
-  const hasH1 = /<h1\b[^>]*>[\s\S]*?<\/h1>/i.test(html);
-  const hasCanonical = /<link[^>]+rel=["'][^"']*canonical[^"']*["'][^>]+href=/i.test(html) ||
-    /<link[^>]+href=[^>]+rel=["'][^"']*canonical[^"']*["']/i.test(html);
+  const hasH1 = h1Text.length > 0;
+  const hasCanonical = canonicalUrl.length > 0;
   const hasSchema = /application\/ld\+json/i.test(html);
   const hasBusinessSchema = hasSchema && /(Organization|LocalBusiness|Product|Service|Corporation|WebSite)/i.test(html);
   const hasFaq = /(FAQ|frequently asked|questions|how does|what is|who is|why choose)/i.test(html);
@@ -174,6 +207,7 @@ export function analyseWebsite(html: string, hostname: string) {
       action: hasTitle
         ? "Keep the title specific to this page and avoid diluting it with unrelated services."
         : "Add a unique title that combines the primary service or product, target market where relevant, and brand name.",
+      evidence: hasTitle ? `Detected title: “${titleText}”` : "No usable <title> was detected in the fetched HTML.",
       whyItMatters: "The page title is a strong page-level context signal used by search and AI retrieval systems to understand what the page represents.",
       benefit: "Clearer service and entity classification, stronger search snippets and less ambiguity when AI systems decide whether the page is relevant.",
       verify: "Re-run the audit and confirm the title check passes. Also inspect the rendered <title> tag in the page source.",
@@ -186,6 +220,7 @@ export function analyseWebsite(html: string, hostname: string) {
       action: hasDescription
         ? "Keep the description factual, specific and aligned with the page's real offer."
         : "Write a 140–170 character description that states what the business does, who it serves and the main commercial outcome.",
+      evidence: hasDescription ? `Detected description: “${descriptionText}”` : "No substantial meta description was detected.",
       whyItMatters: "A good description reinforces topical context and gives retrieval systems a concise summary of the page.",
       benefit: "Improves clarity around the offer and can improve click-through when the page is surfaced in search-like experiences.",
       verify: "Re-run the audit and confirm the description check passes, then inspect the meta description in page source.",
@@ -198,6 +233,7 @@ export function analyseWebsite(html: string, hostname: string) {
       action: hasH1
         ? "Keep one clear primary heading that matches the page's real purpose."
         : "Add one visible H1 that plainly states the core product, service or solution on the page.",
+      evidence: hasH1 ? `Detected H1: “${h1Text}”` : "No H1 heading was detected.",
       whyItMatters: "The H1 helps establish the primary subject of the page and should agree with the title, copy and structured data.",
       benefit: "Reduces semantic ambiguity and makes the page easier for both buyers and retrieval systems to understand quickly.",
       verify: "Re-run the audit and confirm the H1 check passes; inspect the rendered page for one clear primary heading.",
@@ -210,6 +246,7 @@ export function analyseWebsite(html: string, hostname: string) {
       action: hasCanonical
         ? "Keep canonicals self-consistent and point duplicate variants to the preferred URL."
         : "Add a canonical link tag that points to the preferred public URL for this page.",
+      evidence: hasCanonical ? `Detected canonical: ${canonicalUrl}` : "No rel=canonical URL was detected.",
       whyItMatters: "Canonical signals help crawlers consolidate duplicate URL variants and understand which page should represent the content.",
       benefit: "Reduces duplicated signals and gives search/retrieval systems a cleaner, more stable source URL.",
       verify: "Re-run the audit and confirm the canonical check passes; inspect rel=canonical in the page source.",
@@ -222,6 +259,7 @@ export function analyseWebsite(html: string, hostname: string) {
       action: indexable
         ? "Keep important commercial pages indexable unless there is a deliberate reason to hide them."
         : "Remove the noindex directive from this page if it is intended to be discoverable publicly.",
+      evidence: indexable ? "No homepage meta noindex directive was detected." : "A meta noindex directive was detected.",
       whyItMatters: "A noindex directive explicitly tells conventional search systems not to index the page and can severely restrict discoverability.",
       benefit: "Restores the page's eligibility to appear in search indexing workflows and removes a major visibility blocker.",
       verify: "Re-run the audit and confirm indexability passes, then inspect the robots meta tag and Search Console indexing status.",
@@ -234,6 +272,7 @@ export function analyseWebsite(html: string, hostname: string) {
       action: hasBusinessSchema
         ? "Keep schema accurate and aligned with visible page content; add service or product detail where appropriate."
         : "Add valid JSON-LD for the organisation plus relevant Service, Product or LocalBusiness data using only facts shown on the site.",
+      evidence: schemaTypes.length ? `Detected schema types: ${schemaTypes.join(", ")}` : "No JSON-LD @type values were detected.",
       whyItMatters: "Structured data gives machines explicit entity, offer and relationship information instead of forcing them to infer everything from prose.",
       benefit: "Makes the business, services and important attributes easier to parse consistently and can improve eligibility for structured search features.",
       verify: "Re-run the audit, then validate the JSON-LD with Google's Rich Results Test or Schema.org validator.",
@@ -246,6 +285,7 @@ export function analyseWebsite(html: string, hostname: string) {
       action: hasFaq
         ? "Expand question-led content around high-intent buyer decisions, objections, comparisons and eligibility."
         : "Add concise answers to 5–10 real buyer questions about choosing, comparing, pricing, suitability and next steps.",
+      evidence: hasFaq ? "Question-oriented language was detected on the audited page." : "No strong FAQ/question-oriented language was detected on the audited page.",
       whyItMatters: "AI assistants often respond to natural-language questions. Direct, factual answers create retrieval-ready passages for those intents.",
       benefit: "Increases the number of buyer questions the site can answer directly and creates content that is easier to quote, cite or retrieve.",
       verify: "Re-run the audit, then test whether the new questions are answered clearly on-page without needing hidden UI or vague marketing copy.",
@@ -258,6 +298,7 @@ export function analyseWebsite(html: string, hostname: string) {
       action: hasTrust
         ? "Keep proof current and specific: named clients where permitted, credentials, reviews, case studies and clear company details."
         : "Add visible company identity, contact details, policies and credible proof such as certifications, case studies, reviews or accreditations.",
+      evidence: hasTrust ? "Trust-related language or proof indicators were detected." : "No strong trust/proof indicators were detected on the audited page.",
       whyItMatters: "Recommendation systems and buyers need evidence that the business is legitimate, established and suitable—not just a page that claims expertise.",
       benefit: "Improves buyer confidence and gives search/AI systems more corroborating evidence when evaluating the business.",
       verify: "Re-run the audit and manually confirm that proof is visible, specific and attributable rather than generic claims.",
@@ -270,6 +311,7 @@ export function analyseWebsite(html: string, hostname: string) {
       action: hasCommercial
         ? "Keep the next step obvious and align it with the intent of each page."
         : "Add a clear commercial pathway such as pricing, book, buy, request a quote or contact sales, with a visible primary CTA.",
+      evidence: hasCommercial ? "Commercial-intent language was detected on the audited page." : "No strong pricing, buying, booking, quote or sales language was detected.",
       whyItMatters: "A page can be understood without being commercially useful. Clear conversion intent tells buyers what to do next and clarifies the role of the page.",
       benefit: "Reduces friction after discovery, improves conversion potential and makes the site's commercial purpose easier to interpret.",
       verify: "Re-run the audit and test the page as a buyer: the primary next step should be obvious and complete successfully.",
@@ -285,6 +327,7 @@ export function analyseWebsite(html: string, hostname: string) {
     label: item.label,
     status: item.ok ? "good" : "warn",
     detail: item.action,
+    evidence: item.evidence,
     whyItMatters: item.whyItMatters,
     benefit: item.benefit,
     verify: item.verify
@@ -325,6 +368,7 @@ export function analyseWebsite(html: string, hostname: string) {
       rank: index + 1,
       title: item.label,
       problem: item.whyItMatters,
+      evidence: item.evidence,
       action: item.action,
       benefit: item.benefit,
       verify: item.verify,
