@@ -108,3 +108,9 @@
 .legalPage section:first-of-type{margin-top:34px}
 .legalPage h2{margin:0 0 10px;font-size:18px;letter-spacing:-.4px}
 .legalPage section p{margin:0;color:#8f9992;font-size:12px;line-height:1.75}
+
+.actionBlock.implementation{border-color:rgba(98,214,172,.14);background:rgba(98,214,172,.035)}
+.actionBlock.implementation span{color:#62d6ac}
+.actionBlock.implementation ol{margin:7px 0 0 18px;padding:0;color:#aab2ac;font-size:10px;line-height:1.65}
+.actionBlock.impact{border-color:rgba(255,194,102,.16);background:rgba(255,194,102,.035)}
+.actionBlock.impact span{color:#efc57b}
