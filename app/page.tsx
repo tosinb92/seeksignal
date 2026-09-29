@@ -288,7 +288,7 @@ export default function Home() {
                     <span>Opportunities</span>
                     <span>Reports</span>
                   </nav>
-                  <div className="sideFooter"><span>Monitoring active</span><b>●</b></div>
+                  <div className="sideFooter"><span>Example monitoring</span><b>●</b></div>
                 </aside>
 
                 <div className="productMain">
@@ -361,7 +361,7 @@ export default function Home() {
                         <div><span>OpenAI</span><b><i style={{width:"78%"}}/></b><strong>78</strong></div>
                         <div><span>Gemini</span><b><i style={{width:"64%"}}/></b><strong>64</strong></div>
                         <div><span>Perplexity</span><b><i style={{width:"58%"}}/></b><strong>58</strong></div>
-                        <div><span>Copilot</span><b><i style={{width:"42%"}}/></b><strong>42</strong></div>
+                        <div><span>Claude</span><b><i style={{width:"42%"}}/></b><strong>42</strong></div>
                       </div>
                     </section>
 
