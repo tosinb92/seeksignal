@@ -56,21 +56,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Could not create your workspace." }, { status: 500 });
   }
 
-  const memberResponse = await supabaseRest("/rest/v1/organization_members", {
-    method: "POST",
-    headers: { Prefer: "return=minimal" },
-    body: JSON.stringify({
-      organization_id: organizationId,
-      user_id: user.id,
-      role: "owner"
-    })
-  }, accessToken);
-
-  if (!memberResponse.ok) {
-    console.error("Membership creation failed", memberResponse.status, await memberResponse.text());
-    return NextResponse.json({ error: "Could not finish workspace access." }, { status: 500 });
-  }
-
   const projectResponse = await supabaseRest("/rest/v1/projects", {
     method: "POST",
     headers: { Prefer: "return=minimal" },
