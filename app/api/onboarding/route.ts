@@ -47,8 +47,8 @@ export async function POST(request: Request) {
   const audience = typeof body?.audience === "string" ? body.audience.trim() : "";
   const leadId = typeof body?.leadId === "string" && /^[0-9a-f-]{36}$/i.test(body.leadId) ? body.leadId : null;
 
-  if (business.length < 2 || website.length < 3) {
-    return NextResponse.json({ error: "Enter your business name and website." }, { status: 400 });
+  if (business.length < 2 || website.length < 3 || category.length < 2) {
+    return NextResponse.json({ error: "Enter your business name, website and business category." }, { status: 400 });
   }
 
   const rpcResponse = await supabaseRest("/rest/v1/rpc/complete_onboarding", {
@@ -58,7 +58,7 @@ export async function POST(request: Request) {
       p_business: business,
       p_website: website,
       p_market: market || null,
-      p_category: category || audience || null,
+      p_category: category,
       p_lead_id: leadId
     })
   }, accessToken);
