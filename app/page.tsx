@@ -212,13 +212,13 @@ export default function Home() {
                 <aside className="productSidebar">
                   <div className="sideBrand"><span className="brandMark small">S</span>SeekSignal</div>
                   <div className="projectPicker"><small>Project</small><strong>Acme</strong><span>⌄</span></div>
-                  <nav>
-                    <a className="active">Overview</a>
-                    <a>AI visibility</a>
-                    <a>Website readiness</a>
-                    <a>Competitors</a>
-                    <a>Opportunities</a>
-                    <a>Reports</a>
+                  <nav aria-label="Example workspace navigation">
+                    <span className="active">Overview</span>
+                    <span>AI visibility</span>
+                    <span>Website readiness</span>
+                    <span>Competitors</span>
+                    <span>Opportunities</span>
+                    <span>Reports</span>
                   </nav>
                   <div className="sideFooter"><span>Monitoring active</span><b>●</b></div>
                 </aside>
@@ -229,7 +229,7 @@ export default function Home() {
                       <span>Overview</span>
                       <h3>Your visibility across AI discovery.</h3>
                     </div>
-                    <button>Last 30 days⌄</button>
+                    <span className="demoFilter">Last 30 days⌄</span>
                   </div>
 
                   <div className="heroMetrics">
