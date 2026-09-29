@@ -246,7 +246,7 @@ export default function Home() {
                     <article>
                       <span>Tracked answers</span>
                       <strong>184</strong>
-                      <small>Across 5 engines</small>
+                      <small>Across 4 providers</small>
                     </article>
                   </div>
 
@@ -288,10 +288,10 @@ export default function Home() {
 
                   <div className="bottomGrid">
                     <section className="enginePanel">
-                      <div className="panelTitle"><div><span>Engine coverage</span><strong>5 tracked</strong></div><small>Visibility score</small></div>
+                      <div className="panelTitle"><div><span>Engine coverage</span><strong>4 tracked</strong></div><small>Visibility score</small></div>
                       <div className="engineRows">
-                        <div><span>ChatGPT</span><b><i style={{width:"78%"}}/></b><strong>78</strong></div>
-                        <div><span>Google AI</span><b><i style={{width:"64%"}}/></b><strong>64</strong></div>
+                        <div><span>OpenAI</span><b><i style={{width:"78%"}}/></b><strong>78</strong></div>
+                        <div><span>Gemini</span><b><i style={{width:"64%"}}/></b><strong>64</strong></div>
                         <div><span>Perplexity</span><b><i style={{width:"58%"}}/></b><strong>58</strong></div>
                         <div><span>Copilot</span><b><i style={{width:"42%"}}/></b><strong>42</strong></div>
                       </div>
