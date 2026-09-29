@@ -73,3 +73,22 @@
 .categoryGrid{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
 
 .engineBrands .plannedEngine{opacity:.55}.engineBrands .plannedEngine small{font-size:7px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#69716b;margin-left:2px}
+
+.opportunityDetailed{padding:16px 0!important}
+.opportunityHead{display:flex;gap:12px;align-items:flex-start}
+.opportunityRank{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:28px;border-radius:8px;background:rgba(196,248,115,.08);color:#c4f873;font-size:9px;font-weight:800}
+.opportunityMeta{display:flex;gap:8px;align-items:center;margin-top:5px}
+.opportunityMeta em,.opportunityMeta span{font-size:8px;font-style:normal;color:#77817a}
+.actionBlock{margin-top:11px;padding:11px 12px;border-radius:10px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.055)}
+.actionBlock span{display:block;font-size:8px;letter-spacing:.7px;text-transform:uppercase;color:#77817a;margin-bottom:5px}
+.actionBlock p{margin:0!important;font-size:10px!important;line-height:1.6!important;color:#aab2ac!important}
+.actionBlock.fix{border-color:rgba(196,248,115,.12)}
+.actionBlock.fix span{color:#c4f873}
+.actionBlock.benefit{border-color:rgba(120,170,255,.12)}
+.actionBlock.benefit span{color:#8db2ff}
+.actionBlock.verify{border-color:rgba(181,132,255,.12)}
+.actionBlock.verify span{color:#b99cff}
+.expectedOutcome{margin-top:20px;padding:18px;border-radius:13px;background:linear-gradient(180deg,rgba(196,248,115,.07),rgba(196,248,115,.025));border:1px solid rgba(196,248,115,.12)}
+.expectedOutcome span{display:block;font-size:8px;letter-spacing:.8px;text-transform:uppercase;color:#c4f873;margin-bottom:7px}
+.expectedOutcome strong{display:block;font-size:13px;line-height:1.55;max-width:900px}
+.productWindow:before{content:"EXAMPLE DATA";position:absolute;right:16px;top:46px;z-index:5;padding:6px 8px;border:1px solid rgba(255,255,255,.08);border-radius:7px;background:rgba(9,12,11,.86);color:#7f8982;font-size:7px;letter-spacing:.8px}
