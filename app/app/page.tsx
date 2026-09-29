@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { getSessionUser } from "../../lib/auth/session";
 import { supabaseRest } from "../../lib/supabase/rest";
 import styles from "./workspace.module.css";
+import RunProjectScanButton from "../../components/RunProjectScanButton";
 
 export default async function WorkspacePage() {
   const user = await getSessionUser();
@@ -32,6 +33,16 @@ export default async function WorkspacePage() {
   const projects = projectResponse.ok ? await projectResponse.json() : [];
   const organization = organizations?.[0];
   const project = projects?.[0];
+
+  const scanResponse = project?.id
+    ? await supabaseRest(
+        "/rest/v1/scans?select=id,score,summary,created_at&project_id=eq." + encodeURIComponent(project.id) + "&order=created_at.desc&limit=1",
+        { method: "GET" },
+        accessToken
+      )
+    : null;
+  const scans = scanResponse?.ok ? await scanResponse.json() : [];
+  const latestScan = scans?.[0] || null;
 
   return (
     <main className={styles.app}>
@@ -64,8 +75,8 @@ export default async function WorkspacePage() {
             <p>{project?.domain || "Add your first project"}</p>
           </div>
           <div className={styles.headerActions}>
-            <button className={styles.secondary}>Run scan</button>
-            <button className={styles.primary}>Add competitor</button>
+            <RunProjectScanButton projectId={project?.id || ""} className={styles.secondary} label="Run scan" />
+            <button className={styles.primary} disabled>Add competitor</button>
           </div>
         </header>
 
@@ -79,7 +90,7 @@ export default async function WorkspacePage() {
 
         <div className={styles.metrics}>
           <article><span>AI Visibility</span><strong>—</strong><small>Start monitoring</small></article>
-          <article><span>Website readiness</span><strong>—</strong><small>Run first scan</small></article>
+          <article><span>Website readiness</span><strong>{latestScan?.score ?? "—"}</strong><small>{latestScan ? "Latest saved scan" : "Run first scan"}</small></article>
           <article><span>Open opportunities</span><strong>0</strong><small>Nothing detected yet</small></article>
           <article className={styles.accent}><span>Competitors tracked</span><strong>0</strong><small>Add your first competitor</small></article>
         </div>
@@ -87,8 +98,8 @@ export default async function WorkspacePage() {
         <div className={styles.grid}>
           <section className={styles.panel}>
             <div className={styles.panelHead}><div><span>Next best action</span><h2>Run your baseline scan.</h2></div><b>High impact</b></div>
-            <p>SeekSignal needs a baseline before it can show progress, historical movement and the highest-priority fixes for this project.</p>
-            <button className={styles.primary}>Run baseline scan →</button>
+            <p>{latestScan?.summary || "SeekSignal needs a baseline before it can show progress, historical movement and the highest-priority fixes for this project."}</p>
+            <RunProjectScanButton projectId={project?.id || ""} className={styles.primary} label={latestScan ? "Run another scan →" : "Run baseline scan →"} />
           </section>
 
           <section className={styles.panel}>
