@@ -100,7 +100,7 @@ export default function Home() {
               required
             />
           </div>
-          <button>Run free AI visibility audit</button>
+          <button>Run free AI readiness audit</button>
         </form>
 
         <div className="heroMeta">
@@ -109,7 +109,7 @@ export default function Home() {
           <span>Website-readiness audit</span>
         </div>
         <div className="heroProof">
-          <div><strong>5</strong><span>AI discovery surfaces</span></div>
+          <div><strong>4</strong><span>AI model providers in visibility tests</span></div>
           <div><strong>01</strong><span>Clear commercial score</span></div>
           <div><strong>→</strong><span>Prioritised fixes, not vanity data</span></div>
         </div>
@@ -205,7 +205,7 @@ export default function Home() {
               <div className="windowBar">
                 <div className="traffic"><i/><i/><i/></div>
                 <span>acme.com / intelligence overview</span>
-                <div className="windowLive"><b/> Live workspace</div>
+                <div className="windowLive"><b/> Example workspace</div>
               </div>
 
               <div className="productApp">
@@ -316,10 +316,10 @@ export default function Home() {
       <section className="engineStrip shell">
         <span>Designed for the new buying journey</span>
         <div className="engineBrands">
-          <b><i className="brandIcon openai" aria-hidden="true" />ChatGPT</b>
-          <b><i className="brandIcon google" aria-hidden="true" />Google AI</b>
+          <b><i className="brandIcon openai" aria-hidden="true" />OpenAI</b>
+          <b><i className="brandIcon google" aria-hidden="true" />Google Gemini</b>
           <b><i className="brandIcon perplexity" aria-hidden="true" />Perplexity</b>
-          <b><i className="brandIcon copilot" aria-hidden="true" />Copilot</b>
+          <b className="plannedEngine"><i className="brandIcon copilot" aria-hidden="true" />Copilot <small>planned</small></b>
           <b><i className="brandIcon anthropic" aria-hidden="true" />Claude</b>
         </div>
       </section>
