@@ -208,7 +208,14 @@ export default async function WorkspacePage() {
                       <strong style={{fontSize:10}}>{item.title}</strong>
                       <span style={{fontSize:8,color:item.impact==="High"?"#c4f873":"#d8bd87"}}>{item.impact} impact</span>
                     </div>
-                    <p style={{margin:"5px 0 0",fontSize:9}}>{item.action}</p>
+                    {item.evidence ? <p style={{margin:"5px 0 0",fontSize:9,color:"#7f8a83"}}><strong>Observed:</strong> {item.evidence}</p> : null}
+                    <p style={{margin:"5px 0 0",fontSize:9}}><strong>Do this:</strong> {item.action}</p>
+                    {item.expectedImpact ? <p style={{margin:"5px 0 0",fontSize:9,color:"#a9b3ac"}}><strong>Expected impact:</strong> {item.expectedImpact}</p> : null}
+                    {item.implementation?.length ? (
+                      <ol style={{margin:"7px 0 0 18px",padding:0,color:"#89938c",fontSize:9,lineHeight:1.55}}>
+                        {item.implementation.slice(0,3).map((step: string, stepIndex: number) => <li key={stepIndex}>{step}</li>)}
+                      </ol>
+                    ) : null}
                   </div>
                 ))}
               </div>
