@@ -317,9 +317,19 @@ export async function POST(request: Request) {
     0
   );
 
-  const visibilityScore = successful.length
-    ? Math.round((mentionCount / successful.length) * 100)
-    : 0;
+  if (successful.length < 2) {
+    return NextResponse.json(
+      {
+        error: "Too few AI providers completed the test to produce a trustworthy visibility score. No snapshot was saved.",
+        successfulTests: successful.length,
+        totalTests: results.length,
+        results
+      },
+      { status: 502 }
+    );
+  }
+
+  const visibilityScore = Math.round((mentionCount / successful.length) * 100);
 
   const denominator = mentionCount + competitorMentionCount;
   const recommendationShare = denominator
