@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { randomUUID } from "node:crypto";
-import { getSessionUser } from "../../../../lib/auth/session";
-import { supabaseRest } from "../../../../lib/supabase/rest";
+import { getSessionUser } from "../../../lib/auth/session";
+import { supabaseRest } from "../../../lib/supabase/rest";
 
 export async function POST(request: Request) {
   const user = await getSessionUser();
