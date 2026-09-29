@@ -9,12 +9,13 @@ type Result = {
   url: string;
   summary: string;
   methodology: string;
-  checks: { label: string; status: "good" | "warn"; detail: string }[];
+  checks: { label: string; status: "good" | "warn"; detail: string; evidence?: string }[];
   categories: { name: string; score: number }[];
   opportunities: {
     rank?: number;
     title: string;
     problem?: string;
+    evidence?: string;
     action: string;
     benefit?: string;
     verify?: string;
@@ -25,6 +26,7 @@ type Result = {
     rank?: number;
     title: string;
     problem?: string;
+    evidence?: string;
     action: string;
     benefit?: string;
     verify?: string;
@@ -106,8 +108,8 @@ export default function Home() {
           <em> — and why it isn’t you.</em>
         </h1>
         <p className="heroCopy">
-          SeekSignal shows whether AI systems can clearly understand your business,
-          where your visibility is weak, and what to improve before competitors take the recommendation.
+          Start with a real website-readiness audit, then use controlled AI-model tests to measure
+          whether your brand is actually being surfaced, who appears instead, and what to improve next.
         </p>
 
         <form id="scan" className="scanBox" onSubmit={startAudit}>
@@ -130,7 +132,7 @@ export default function Home() {
         </div>
         <div className="heroProof">
           <div><strong>4</strong><span>AI model providers in visibility tests</span></div>
-          <div><strong>01</strong><span>Clear commercial score</span></div>
+          <div><strong>9</strong><span>Observable website signals checked</span></div>
           <div><strong>→</strong><span>Prioritised fixes, not vanity data</span></div>
         </div>
 
@@ -183,6 +185,7 @@ export default function Home() {
                       <div className={check.status === "good" ? "dot good" : "dot warn"} />
                       <div>
                         <strong>{check.label}</strong>
+                        {check.evidence ? <p className="evidenceLine"><b>Evidence:</b> {check.evidence}</p> : null}
                         <p>{check.detail}</p>
                       </div>
                     </div>
@@ -204,6 +207,13 @@ export default function Home() {
                         </div>
                       </div>
                     </div>
+
+                    {item.evidence ? (
+                      <div className="actionBlock evidence">
+                        <span>What we observed</span>
+                        <p>{item.evidence}</p>
+                      </div>
+                    ) : null}
 
                     {item.problem ? (
                       <div className="actionBlock">
@@ -251,7 +261,7 @@ export default function Home() {
                 <strong>What this score means</strong>
                 <span>{result.methodology}</span>
               </div>
-              <a href={`/signup?lead=${encodeURIComponent(result.leadId)}`}>Save report & start monitoring →</a>
+              <a href={`/signup?lead=${encodeURIComponent(result.leadId)}`}>Create free workspace, save this report & re-test →</a>
             </div>
           </section>
         )}
