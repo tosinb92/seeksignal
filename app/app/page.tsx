@@ -90,23 +90,23 @@ export default async function WorkspacePage() {
           </div>
           <div className={styles.headerActions}>
             <RunProjectScanButton projectId={project?.id || ""} className={styles.secondary} label="Run scan" />
-            <button className={styles.primary} disabled>Add competitor</button>
+            <a className={styles.primary} href="#competitors" style={{display:"inline-flex",alignItems:"center"}}>Add competitor</a>
           </div>
         </header>
 
         <div className={styles.notice}>
           <div>
-            <span>Workspace ready</span>
-            <strong>Your monitoring foundation is live.</strong>
+            <span>Workspace active</span>
+            <strong>Your readiness scanning workspace is ready.</strong>
           </div>
-          <p>Run your first saved scan to begin building visibility history and unlock prioritised opportunities.</p>
+          <p>Run a saved website-readiness scan, track competitors and build a real history before AI-engine monitoring is connected.</p>
         </div>
 
         <div className={styles.metrics}>
-          <article><span>AI Visibility</span><strong>—</strong><small>Start monitoring</small></article>
+          <article><span>AI Visibility</span><strong>—</strong><small>AI providers not connected yet</small></article>
           <article><span>Website readiness</span><strong>{latestScan?.score ?? "—"}</strong><small>{latestScan ? "Latest saved scan" : "Run first scan"}</small></article>
-          <article><span>Open opportunities</span><strong>0</strong><small>Nothing detected yet</small></article>
-          <article className={styles.accent}><span>Competitors tracked</span><strong>0</strong><small>Add your first competitor</small></article>
+          <article><span>Open opportunities</span><strong>{latestScan?.raw_result?.checks?.filter((item: any) => item.status === "warn").length ?? 0}</strong><small>{latestScan ? "From latest readiness scan" : "Run first scan"}</small></article>
+          <article className={styles.accent}><span>Competitors tracked</span><strong>{competitors.length}</strong><small>{competitors.length ? "Saved to this project" : "Add your first competitor"}</small></article>
         </div>
 
         <div className={styles.grid} id="readiness">
@@ -152,7 +152,7 @@ export default async function WorkspacePage() {
               <div className={styles.details}>
                 {reports.map((report: any) => (
                   <div key={report.id}>
-                    <span>{report.title}</span>
+                    <Link href={"/app/reports/" + report.id}>{report.title}</Link>
                     <strong>{new Date(report.created_at).toLocaleString()}</strong>
                   </div>
                 ))}
