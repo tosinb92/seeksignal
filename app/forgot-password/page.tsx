@@ -16,18 +16,22 @@ export default function ForgotPasswordPage() {
     setError("");
     setMessage("");
 
-    const response = await fetch("/api/auth/forgot-password", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email })
-    });
+    try {
+      const response = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email })
+      });
 
-    const data = await response.json();
+      const data = await response.json().catch(() => ({}));
 
-    if (!response.ok) setError(data.error || "Could not send recovery email.");
-    else setMessage(data.message || "Check your email for a recovery link.");
-
-    setLoading(false);
+      if (!response.ok) throw new Error(data.error || "Could not send recovery email.");
+      setMessage(data.message || "Check your email for a recovery link.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not send recovery email.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
