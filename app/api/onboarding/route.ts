@@ -21,6 +21,7 @@ export async function POST(request: Request) {
   const market = typeof body?.market === "string" ? body.market.trim() : "";
   const category = typeof body?.category === "string" ? body.category.trim() : "";
   const audience = typeof body?.audience === "string" ? body.audience.trim() : "";
+  const leadId = typeof body?.leadId === "string" && /^[0-9a-f-]{36}$/i.test(body.leadId) ? body.leadId : null;
 
   if (business.length < 2 || website.length < 3) {
     return NextResponse.json({ error: "Enter your business name and website." }, { status: 400 });
@@ -33,7 +34,8 @@ export async function POST(request: Request) {
       p_business: business,
       p_website: website,
       p_market: market || null,
-      p_category: category || audience || null
+      p_category: category || audience || null,
+      p_lead_id: leadId
     })
   }, accessToken);
 
