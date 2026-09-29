@@ -5,6 +5,7 @@ const SUPABASE_KEY = "sb_publishable_-GBVN6VtM9U_tQWgVy3S2g_q0y-zAYL";
 
 function tokenExpiresSoon(token?: string) {
   if (!token) return true;
+
   try {
     const payload = token.split(".")[1];
     const normalized = payload.replace(/-/g, "+").replace(/_/g, "/");
@@ -17,12 +18,11 @@ function tokenExpiresSoon(token?: string) {
 }
 
 export async function proxy(request: NextRequest) {
-  const response = NextResponse.next({ request });
   const accessToken = request.cookies.get("ss_access_token")?.value;
   const refreshToken = request.cookies.get("ss_refresh_token")?.value;
 
   if (!refreshToken || !tokenExpiresSoon(accessToken)) {
-    return response;
+    return NextResponse.next({ request });
   }
 
   try {
@@ -40,10 +40,22 @@ export async function proxy(request: NextRequest) {
     const data = await refresh.json().catch(() => ({}));
 
     if (!refresh.ok || !data?.access_token) {
+      request.cookies.delete("ss_access_token");
+      request.cookies.delete("ss_refresh_token");
+
+      const response = NextResponse.next({ request });
       response.cookies.delete("ss_access_token");
       response.cookies.delete("ss_refresh_token");
       return response;
     }
+
+    request.cookies.set("ss_access_token", data.access_token);
+
+    if (data?.refresh_token) {
+      request.cookies.set("ss_refresh_token", data.refresh_token);
+    }
+
+    const response = NextResponse.next({ request });
 
     response.cookies.set("ss_access_token", data.access_token, {
       httpOnly: true,
@@ -62,13 +74,22 @@ export async function proxy(request: NextRequest) {
         maxAge: 60 * 60 * 24 * 30
       });
     }
-  } catch {
-    return response;
-  }
 
-  return response;
+    return response;
+  } catch {
+    return NextResponse.next({ request });
+  }
 }
 
 export const config = {
-  matcher: ["/app/:path*", "/onboarding/:path*", "/api/onboarding/:path*", "/api/projects/:path*", "/api/competitors/:path*", "/api/reports/:path*", "/api/visibility/:path*", "/api/auth/logout"]
+  matcher: [
+    "/app/:path*",
+    "/onboarding/:path*",
+    "/api/onboarding/:path*",
+    "/api/projects/:path*",
+    "/api/competitors/:path*",
+    "/api/reports/:path*",
+    "/api/visibility/:path*",
+    "/api/auth/logout"
+  ]
 };
