@@ -22,7 +22,7 @@ export default function LeadGate({ website, lead, loading, onChange, onSubmit, o
       <div className={styles.preview}>
         <div className={styles.topline}>
           <span className={styles.statusDot} />
-          <span>Free AI visibility scan</span>
+          <span>Free AI readiness scan</span>
           <span className={styles.website}>{displayWebsite}</span>
         </div>
 
