@@ -30,20 +30,23 @@ export default function ResetPasswordPage() {
 
     setLoading(true);
 
-    const response = await fetch("/api/auth/reset-password", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ accessToken, password })
-    });
-    const data = await response.json();
+    try {
+      const response = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ accessToken, password })
+      });
+      const data = await response.json().catch(() => ({}));
 
-    if (!response.ok) {
-      setError(data.error || "Could not reset password.");
+      if (!response.ok) {
+        throw new Error(data.error || "Could not reset password.");
+      }
+
+      router.push("/login?reset=1");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not reset password.");
       setLoading(false);
-      return;
     }
-
-    router.push("/login?reset=1");
   }
 
   return (
