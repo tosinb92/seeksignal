@@ -5,6 +5,8 @@ import { getSessionUser } from "../../lib/auth/session";
 import { supabaseRest } from "../../lib/supabase/rest";
 import styles from "./workspace.module.css";
 import RunProjectScanButton from "../../components/RunProjectScanButton";
+import WorkspaceControls from "../../components/WorkspaceControls";
+import GenerateReportButton from "../../components/GenerateReportButton";
 
 export default async function WorkspacePage() {
   const user = await getSessionUser();
@@ -34,14 +36,29 @@ export default async function WorkspacePage() {
   const organization = organizations?.[0];
   const project = projects?.[0];
 
-  const scanResponse = project?.id
-    ? await supabaseRest(
-        "/rest/v1/scans?select=id,score,summary,created_at&project_id=eq." + encodeURIComponent(project.id) + "&order=created_at.desc&limit=1",
-        { method: "GET" },
-        accessToken
-      )
-    : null;
+  const [scanResponse, competitorResponse, reportResponse] = project?.id
+    ? await Promise.all([
+        supabaseRest(
+          "/rest/v1/scans?select=id,score,summary,created_at,raw_result&project_id=eq." + encodeURIComponent(project.id) + "&order=created_at.desc&limit=20",
+          { method: "GET" },
+          accessToken
+        ),
+        supabaseRest(
+          "/rest/v1/competitors?select=id,name,domain,created_at&project_id=eq." + encodeURIComponent(project.id) + "&order=created_at.asc",
+          { method: "GET" },
+          accessToken
+        ),
+        supabaseRest(
+          "/rest/v1/reports?select=id,title,report_type,created_at&project_id=eq." + encodeURIComponent(project.id) + "&order=created_at.desc&limit=20",
+          { method: "GET" },
+          accessToken
+        )
+      ])
+    : [null, null, null];
+
   const scans = scanResponse?.ok ? await scanResponse.json() : [];
+  const competitors = competitorResponse?.ok ? await competitorResponse.json() : [];
+  const reports = reportResponse?.ok ? await reportResponse.json() : [];
   const latestScan = scans?.[0] || null;
 
   return (
@@ -53,21 +70,18 @@ export default async function WorkspacePage() {
           <strong>{organization?.name || "SeekSignal"}</strong>
         </div>
         <nav>
-          <a className={styles.active}>Overview</a>
-          <a>AI Visibility</a>
-          <a>Website Readiness</a>
-          <a>Competitors</a>
-          <a>Opportunities</a>
-          <a>Monitoring</a>
-          <a>Reports</a>
+          <a className={styles.active} href="#overview">Overview</a>
+          <a href="#readiness">Website Readiness</a>
+          <a href="#competitors">Competitors</a>
+          <a href="#reports">Reports</a>
+          <a href="#settings">Settings</a>
         </nav>
         <div className={styles.sideFooter}>
-          <a>Settings</a>
-          <a>Billing</a>
+          <span style={{padding:"0 12px",color:"#59625c",fontSize:8}}>AI engine monitoring unlocks after provider setup.</span>
         </div>
       </aside>
 
-      <section className={styles.main}>
+      <section className={styles.main} id="overview">
         <header className={styles.header}>
           <div>
             <span className={styles.kicker}>Overview</span>
@@ -95,7 +109,7 @@ export default async function WorkspacePage() {
           <article className={styles.accent}><span>Competitors tracked</span><strong>0</strong><small>Add your first competitor</small></article>
         </div>
 
-        <div className={styles.grid}>
+        <div className={styles.grid} id="readiness">
           <section className={styles.panel}>
             <div className={styles.panelHead}><div><span>Next best action</span><h2>Run your baseline scan.</h2></div><b>High impact</b></div>
             <p>{latestScan?.summary || "SeekSignal needs a baseline before it can show progress, historical movement and the highest-priority fixes for this project."}</p>
@@ -111,6 +125,54 @@ export default async function WorkspacePage() {
             </div>
           </section>
         </div>
+
+        <section id="reports" className={styles.panel} style={{marginTop:11,minHeight:0}}>
+          <div className={styles.panelHead}>
+            <div>
+              <span>Reports & scan history</span>
+              <h2>Your saved readiness history.</h2>
+            </div>
+            <GenerateReportButton projectId={project?.id || ""} disabled={!latestScan} />
+          </div>
+
+          <div className={styles.details}>
+            {scans.length ? scans.map((scan: any) => (
+              <div key={scan.id}>
+                <span>{new Date(scan.created_at).toLocaleString()}</span>
+                <strong>Readiness {scan.score ?? "—"}/100</strong>
+              </div>
+            )) : (
+              <div><span>No scans saved yet</span><strong>Run your baseline scan</strong></div>
+            )}
+          </div>
+
+          {reports.length ? (
+            <div style={{marginTop:24}}>
+              <span className={styles.kicker}>Generated reports</span>
+              <div className={styles.details}>
+                {reports.map((report: any) => (
+                  <div key={report.id}>
+                    <span>{report.title}</span>
+                    <strong>{new Date(report.created_at).toLocaleString()}</strong>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
+        </section>
+
+        {project ? (
+          <WorkspaceControls
+            projectId={project.id}
+            initialCompetitors={competitors}
+            initialProject={{
+              name: project.name,
+              domain: project.domain,
+              market: project.market,
+              category: project.category
+            }}
+          />
+        ) : null}
       </section>
     </main>
   );
