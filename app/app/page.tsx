@@ -70,6 +70,38 @@ export default async function WorkspacePage() {
   const latestVisibility = visibilitySnapshots?.[0] || null;
   const gatewayEnabled = Boolean(process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN);
 
+  const latestPromptSetResponse = project?.id
+    ? await supabaseRest(
+        "/rest/v1/prompt_sets?select=id,name,created_at&project_id=eq." + encodeURIComponent(project.id) + "&order=created_at.desc&limit=1",
+        { method: "GET" },
+        accessToken
+      )
+    : null;
+  const latestPromptSets = latestPromptSetResponse?.ok ? await latestPromptSetResponse.json() : [];
+  const latestPromptSet = latestPromptSets?.[0] || null;
+
+  const promptTestsResponse = latestPromptSet?.id
+    ? await supabaseRest(
+        "/rest/v1/prompt_tests?select=id,prompt,engine,model,status,tested_at&prompt_set_id=eq." + encodeURIComponent(latestPromptSet.id) + "&order=created_at.asc",
+        { method: "GET" },
+        accessToken
+      )
+    : null;
+  const latestPromptTests = promptTestsResponse?.ok ? await promptTestsResponse.json() : [];
+
+  const promptTestIds = latestPromptTests.map((item: any) => item.id).filter(Boolean);
+  const aiResponsesResponse = promptTestIds.length
+    ? await supabaseRest(
+        "/rest/v1/ai_responses?select=prompt_test_id,brand_mentioned,recommendation_detected,citations,competitors_mentioned,response_excerpt&prompt_test_id=in.(" +
+          promptTestIds.map((id: string) => encodeURIComponent(id)).join(",") +
+          ")",
+        { method: "GET" },
+        accessToken
+      )
+    : null;
+  const latestAiResponses = aiResponsesResponse?.ok ? await aiResponsesResponse.json() : [];
+  const aiResponseByTest = new Map(latestAiResponses.map((item: any) => [item.prompt_test_id, item]));
+
   return (
     <main className={styles.app}>
       <aside className={styles.sidebar}>
@@ -125,13 +157,35 @@ export default async function WorkspacePage() {
           <section className={styles.panel} style={{marginTop:11,minHeight:0}}>
             <div className={styles.panelHead}>
               <div><span>Latest AI visibility snapshot</span><h2>{latestVisibility.visibility_score}% model-level visibility</h2></div>
-              <b>{latestVisibility.recommendation_share}% share</b>
+              <b>{latestVisibility.recommendation_share}% tracked mention share</b>
             </div>
             <div className={styles.details}>
               <div><span>Brand mentions</span><strong>{latestVisibility.mention_count}</strong></div>
               <div><span>Citations observed</span><strong>{latestVisibility.citation_count}</strong></div>
               <div><span>Captured</span><strong>{new Date(latestVisibility.captured_at).toLocaleString()}</strong></div>
             </div>
+
+            {latestPromptTests.length ? (
+              <div style={{marginTop:22}}>
+                <span className={styles.kicker}>Saved model evidence</span>
+                <div style={{display:"grid",marginTop:9}}>
+                  {latestPromptTests.map((test: any) => {
+                    const response: any = aiResponseByTest.get(test.id);
+                    return (
+                      <div key={test.id} style={{padding:"14px 0",borderTop:"1px solid rgba(255,255,255,.055)"}}>
+                        <div style={{display:"flex",justifyContent:"space-between",gap:12}}>
+                          <strong style={{fontSize:10}}>{test.engine}</strong>
+                          <span style={{fontSize:9,color:test.status==="complete"?(response?.brand_mentioned?"#c4f873":"#89928c"):"#ffaaaa"}}>
+                            {test.status==="failed" ? "Failed" : response?.brand_mentioned ? "Brand mentioned" : "Not mentioned"}
+                          </span>
+                        </div>
+                        <p style={{margin:"6px 0 0",color:"#68726b",fontSize:9,lineHeight:1.55}}>{response?.response_excerpt || "No response was saved for this test."}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : null}
           </section>
         ) : null}
 
