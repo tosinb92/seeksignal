@@ -20,27 +20,30 @@ export default function SignupPage() {
     const leadId = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("lead") : null;
     if (leadId) window.localStorage.setItem("seeksignalPendingLeadId", leadId);
 
-    const response = await fetch("/api/auth/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form)
-    });
-    const data = await response.json();
+    try {
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form)
+      });
+      const data = await response.json().catch(() => ({}));
 
-    if (!response.ok) {
-      setError(data.error || "Could not create your account.");
+      if (!response.ok) {
+        throw new Error(data.error || "Could not create your account.");
+      }
+
+      if (data.needsEmailConfirmation) {
+        setSent(true);
+        setLoading(false);
+        return;
+      }
+
+      router.push(leadId ? `/onboarding?lead=${encodeURIComponent(leadId)}` : "/onboarding");
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not create your account.");
       setLoading(false);
-      return;
     }
-
-    if (data.needsEmailConfirmation) {
-      setSent(true);
-      setLoading(false);
-      return;
-    }
-
-    router.push(leadId ? `/onboarding?lead=${encodeURIComponent(leadId)}` : "/onboarding");
-    router.refresh();
   }
 
   return (
