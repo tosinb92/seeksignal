@@ -7,6 +7,7 @@ import styles from "./workspace.module.css";
 import RunProjectScanButton from "../../components/RunProjectScanButton";
 import WorkspaceControls from "../../components/WorkspaceControls";
 import GenerateReportButton from "../../components/GenerateReportButton";
+import RunVisibilityTest from "../../components/RunVisibilityTest";
 
 export default async function WorkspacePage() {
   const user = await getSessionUser();
@@ -36,7 +37,7 @@ export default async function WorkspacePage() {
   const organization = organizations?.[0];
   const project = projects?.[0];
 
-  const [scanResponse, competitorResponse, reportResponse] = project?.id
+  const [scanResponse, competitorResponse, reportResponse, visibilityResponse] = project?.id
     ? await Promise.all([
         supabaseRest(
           "/rest/v1/scans?select=id,score,summary,created_at,raw_result&project_id=eq." + encodeURIComponent(project.id) + "&order=created_at.desc&limit=20",
@@ -52,14 +53,21 @@ export default async function WorkspacePage() {
           "/rest/v1/reports?select=id,title,report_type,created_at&project_id=eq." + encodeURIComponent(project.id) + "&order=created_at.desc&limit=20",
           { method: "GET" },
           accessToken
+        ),
+        supabaseRest(
+          "/rest/v1/visibility_snapshots?select=id,visibility_score,recommendation_share,mention_count,citation_count,engine_breakdown,captured_at&project_id=eq." + encodeURIComponent(project.id) + "&order=captured_at.desc&limit=1",
+          { method: "GET" },
+          accessToken
         )
       ])
-    : [null, null, null];
+    : [null, null, null, null];
 
   const scans = scanResponse?.ok ? await scanResponse.json() : [];
   const competitors = competitorResponse?.ok ? await competitorResponse.json() : [];
   const reports = reportResponse?.ok ? await reportResponse.json() : [];
+  const visibilitySnapshots = visibilityResponse?.ok ? await visibilityResponse.json() : [];
   const latestScan = scans?.[0] || null;
+  const latestVisibility = visibilitySnapshots?.[0] || null;
 
   return (
     <main className={styles.app}>
@@ -71,13 +79,14 @@ export default async function WorkspacePage() {
         </div>
         <nav>
           <a className={styles.active} href="#overview">Overview</a>
+          <a href="#ai-visibility">AI Visibility</a>
           <a href="#readiness">Website Readiness</a>
           <a href="#competitors">Competitors</a>
           <a href="#reports">Reports</a>
           <a href="#settings">Settings</a>
         </nav>
         <div className={styles.sideFooter}>
-          <span style={{padding:"0 12px",color:"#59625c",fontSize:8}}>AI engine monitoring unlocks after provider setup.</span>
+          <span style={{padding:"0 12px",color:"#59625c",fontSize:8}}>Provider-model tests are metered and run only with explicit confirmation.</span>
         </div>
       </aside>
 
@@ -99,15 +108,31 @@ export default async function WorkspacePage() {
             <span>Workspace active</span>
             <strong>Your readiness scanning workspace is ready.</strong>
           </div>
-          <p>Run a saved website-readiness scan, track competitors and build a real history before AI-engine monitoring is connected.</p>
+          <p>Run readiness scans, track competitors and use opt-in provider-model testing to measure whether AI systems actually surface the brand.</p>
         </div>
 
         <div className={styles.metrics}>
-          <article><span>AI Visibility</span><strong>—</strong><small>AI providers not connected yet</small></article>
+          <article><span>AI Visibility</span><strong>{latestVisibility?.visibility_score != null ? latestVisibility.visibility_score + "%" : "—"}</strong><small>{latestVisibility ? "Latest provider-model run" : "Run first AI visibility test"}</small></article>
           <article><span>Website readiness</span><strong>{latestScan?.score ?? "—"}</strong><small>{latestScan ? "Latest saved scan" : "Run first scan"}</small></article>
           <article><span>Open opportunities</span><strong>{latestScan?.raw_result?.checks?.filter((item: any) => item.status === "warn").length ?? 0}</strong><small>{latestScan ? "From latest readiness scan" : "Run first scan"}</small></article>
           <article className={styles.accent}><span>Competitors tracked</span><strong>{competitors.length}</strong><small>{competitors.length ? "Saved to this project" : "Add your first competitor"}</small></article>
         </div>
+
+        {project ? <RunVisibilityTest projectId={project.id} /> : null}
+
+        {latestVisibility ? (
+          <section className={styles.panel} style={{marginTop:11,minHeight:0}}>
+            <div className={styles.panelHead}>
+              <div><span>Latest AI visibility snapshot</span><h2>{latestVisibility.visibility_score}% model-level visibility</h2></div>
+              <b>{latestVisibility.recommendation_share}% share</b>
+            </div>
+            <div className={styles.details}>
+              <div><span>Brand mentions</span><strong>{latestVisibility.mention_count}</strong></div>
+              <div><span>Citations observed</span><strong>{latestVisibility.citation_count}</strong></div>
+              <div><span>Captured</span><strong>{new Date(latestVisibility.captured_at).toLocaleString()}</strong></div>
+            </div>
+          </section>
+        ) : null}
 
         <div className={styles.grid} id="readiness">
           <section className={styles.panel}>
