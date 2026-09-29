@@ -30,59 +30,83 @@ export default function WorkspaceControls({
     e.preventDefault();
     setBusy("competitor");
     setMessage("");
-    const response = await fetch("/api/competitors", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ projectId, ...competitorForm })
-    });
-    const data = await response.json();
-    if (!response.ok) setMessage(data.error || "Could not add competitor.");
-    else {
+    try {
+      if (competitors.some((item) => item.name.trim().toLowerCase() === competitorForm.name.trim().toLowerCase())) {
+        throw new Error("That competitor is already being tracked.");
+      }
+      const response = await fetch("/api/competitors", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ projectId, ...competitorForm })
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || "Could not add competitor.");
+
       setCompetitors((items) => [...items, data.competitor]);
       setCompetitorForm({ name: "", domain: "" });
       setMessage("Competitor added.");
       router.refresh();
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : "Could not add competitor.");
+    } finally {
+      setBusy("");
     }
-    setBusy("");
   }
 
   async function removeCompetitor(id: string) {
     setBusy(id);
     setMessage("");
-    const response = await fetch("/api/competitors", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id })
-    });
-    const data = await response.json();
-    if (!response.ok) setMessage(data.error || "Could not remove competitor.");
-    else {
+    try {
+      const response = await fetch("/api/competitors", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id })
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || "Could not remove competitor.");
+
       setCompetitors((items) => items.filter((item) => item.id !== id));
       setMessage("Competitor removed.");
       router.refresh();
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : "Could not remove competitor.");
+    } finally {
+      setBusy("");
     }
-    setBusy("");
   }
 
   async function saveProject(e: FormEvent) {
     e.preventDefault();
     setBusy("settings");
     setMessage("");
-    const response = await fetch("/api/projects/settings", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ projectId, ...project })
-    });
-    const data = await response.json();
-    setMessage(response.ok ? "Project settings saved." : data.error || "Could not save settings.");
-    if (response.ok) router.refresh();
-    setBusy("");
+    try {
+      const response = await fetch("/api/projects/settings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ projectId, ...project })
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || "Could not save settings.");
+      setMessage("Project settings saved.");
+      router.refresh();
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : "Could not save settings.");
+    } finally {
+      setBusy("");
+    }
   }
 
   async function logout() {
     setBusy("logout");
-    await fetch("/api/auth/logout", { method: "POST" });
-    window.location.href = "/login";
+    setMessage("");
+    try {
+      const response = await fetch("/api/auth/logout", { method: "POST" });
+      if (!response.ok) throw new Error("Could not sign out cleanly.");
+      window.location.href = "/login";
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : "Could not sign out.");
+      setBusy("");
+    }
   }
 
   return (
