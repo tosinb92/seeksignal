@@ -212,7 +212,7 @@ export default async function WorkspacePage() {
               <span>Reports & scan history</span>
               <h2>Your saved readiness history.</h2>
             </div>
-            <GenerateReportButton projectId={project?.id || ""} disabled={!latestScan} />
+            <GenerateReportButton projectId={project?.id || ""} disabled={!latestScan && !latestVisibility} />
           </div>
 
           <div className={styles.details}>
