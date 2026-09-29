@@ -97,7 +97,7 @@ export default function RunVisibilityTest({ projectId, gatewayEnabled }: { proje
         <div style={{marginTop:24}}>
           <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:9}}>
             <article style={{padding:16,border:"1px solid rgba(255,255,255,.07)",borderRadius:12}}><span style={{fontSize:8,color:"#6f7772"}}>VISIBILITY</span><strong style={{display:"block",fontSize:29,marginTop:8}}>{result.visibilityScore}%</strong></article>
-            <article style={{padding:16,border:"1px solid rgba(255,255,255,.07)",borderRadius:12}}><span style={{fontSize:8,color:"#6f7772"}}>RECOMMENDATION SHARE</span><strong style={{display:"block",fontSize:29,marginTop:8}}>{result.recommendationShare}%</strong></article>
+            <article style={{padding:16,border:"1px solid rgba(255,255,255,.07)",borderRadius:12}}><span style={{fontSize:8,color:"#6f7772"}}>TRACKED MENTION SHARE</span><strong style={{display:"block",fontSize:29,marginTop:8}}>{result.recommendationShare}%</strong></article>
             <article style={{padding:16,border:"1px solid rgba(255,255,255,.07)",borderRadius:12}}><span style={{fontSize:8,color:"#6f7772"}}>BRAND MENTIONS</span><strong style={{display:"block",fontSize:29,marginTop:8}}>{result.mentionCount}</strong></article>
             <article style={{padding:16,border:"1px solid rgba(255,255,255,.07)",borderRadius:12}}><span style={{fontSize:8,color:"#6f7772"}}>SUCCESSFUL TESTS</span><strong style={{display:"block",fontSize:29,marginTop:8}}>{result.successfulTests}/{result.totalTests}</strong></article>
           </div>
