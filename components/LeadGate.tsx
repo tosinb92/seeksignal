@@ -64,8 +64,8 @@ export default function LeadGate({ website, lead, loading, onChange, onSubmit, o
         <button className={styles.back} type="button" onClick={onBack}>← Edit website</button>
         <div className={styles.formHeading}>
           <span>Step 2 of 2</span>
-          <h3>Where should we send your report?</h3>
-          <p>No card required. Enter your details to reveal the results.</p>
+          <h3>Unlock your free report.</h3>
+          <p>No card required. Enter your details to reveal and save the results.</p>
         </div>
 
         <form className={styles.form} onSubmit={onSubmit}>
@@ -109,7 +109,7 @@ export default function LeadGate({ website, lead, loading, onChange, onSubmit, o
         </form>
 
         <p className={styles.privacy}>
-          We use these details to provide your report and relevant SeekSignal product follow-up.
+          We use these details to create and securely associate this report with your SeekSignal account if you choose to continue.
           No card required.
         </p>
       </div>
