@@ -97,3 +97,14 @@
 .evidenceLine b{color:#c4f873}
 .actionBlock.evidence{border-color:rgba(91,209,173,.13);background:rgba(91,209,173,.035)}
 .actionBlock.evidence span{color:#62d6ac}
+
+.legalPage{min-height:100vh;background:#0a0d0c;color:#edf3ee;padding:64px 20px 100px}
+.legalShell{width:min(820px,100%);margin:0 auto}
+.legalBack{display:inline-block;margin-bottom:42px;color:#aab4ad;font-size:11px}
+.legalKicker{display:block;color:#c4f873;font-size:9px;letter-spacing:1.2px;text-transform:uppercase}
+.legalPage h1{margin:12px 0 18px;font-size:clamp(42px,6vw,68px);letter-spacing:-2.5px}
+.legalLead{max-width:700px;color:#98a39b;font-size:14px;line-height:1.75}
+.legalPage section{padding:26px 0;border-top:1px solid rgba(255,255,255,.07)}
+.legalPage section:first-of-type{margin-top:34px}
+.legalPage h2{margin:0 0 10px;font-size:18px;letter-spacing:-.4px}
+.legalPage section p{margin:0;color:#8f9992;font-size:12px;line-height:1.75}
