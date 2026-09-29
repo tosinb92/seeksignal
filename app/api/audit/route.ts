@@ -10,13 +10,68 @@ function isPrivate(ip: string) {
   return ip === "::1" || ip.startsWith("fc") || ip.startsWith("fd") || ip.startsWith("fe80");
 }
 
+async function resolvePublicAddresses(hostname: string) {
+  let lastError: unknown;
+
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const [v4, v6] = await Promise.allSettled([
+        dns.resolve4(hostname),
+        dns.resolve6(hostname)
+      ]);
+
+      const addresses = [
+        ...(v4.status === "fulfilled" ? v4.value : []),
+        ...(v6.status === "fulfilled" ? v6.value : [])
+      ];
+
+      if (addresses.length) return addresses;
+
+      const v4Reason = v4.status === "rejected" ? v4.reason : null;
+      const v6Reason = v6.status === "rejected" ? v6.reason : null;
+      lastError = v4Reason ?? v6Reason;
+    } catch (error) {
+      lastError = error;
+    }
+
+    if (attempt === 0) {
+      await new Promise((resolve) => setTimeout(resolve, 120));
+    }
+  }
+
+  const code =
+    typeof lastError === "object" && lastError && "code" in lastError
+      ? String((lastError as { code?: unknown }).code)
+      : "";
+
+  if (["ENOTFOUND", "ENODATA", "EAI_AGAIN", "EBUSY"].includes(code)) {
+    throw new Error("We couldn't reach that domain. Check the website address and try again.");
+  }
+
+  throw new Error("We couldn't verify that website right now. Please try again in a moment.");
+}
+
 async function safeUrl(raw: string) {
   const withProtocol = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
   const u = new URL(withProtocol);
-  if (!["http:", "https:"].includes(u.protocol)) throw new Error("Only HTTP/HTTPS websites can be scanned.");
-  if (["localhost", "0.0.0.0"].includes(u.hostname)) throw new Error("That address cannot be scanned.");
-  const addresses = await dns.lookup(u.hostname, { all: true });
-  if (!addresses.length || addresses.some((x) => isPrivate(x.address))) throw new Error("That address cannot be scanned.");
+
+  if (!["http:", "https:"].includes(u.protocol)) {
+    throw new Error("Enter a normal website address beginning with http:// or https://.");
+  }
+
+  const hostname = u.hostname.toLowerCase();
+  if (
+    ["localhost", "0.0.0.0", "::1"].includes(hostname) ||
+    hostname.endsWith(".local")
+  ) {
+    throw new Error("That address cannot be scanned.");
+  }
+
+  const addresses = await resolvePublicAddresses(hostname);
+  if (addresses.some((address) => isPrivate(address))) {
+    throw new Error("That address cannot be scanned.");
+  }
+
   return u;
 }
 
@@ -100,7 +155,14 @@ export async function POST(req: NextRequest) {
       methodology: "This score measures observable website readiness signals. It does not claim that an AI platform currently recommends the business."
     });
   } catch (e) {
-    const message = e instanceof Error ? e.message : "Unable to scan this website.";
-    return NextResponse.json({ error: message }, { status: 400 });
+    const rawMessage = e instanceof Error ? e.message : "";
+    const safeMessage = rawMessage.startsWith("getaddrinfo") ||
+      rawMessage.includes("EBUSY") ||
+      rawMessage.includes("ENOTFOUND") ||
+      rawMessage.includes("EAI_AGAIN")
+      ? "We couldn't reach that domain. Check the website address and try again."
+      : rawMessage || "We couldn't complete the scan. Please try again.";
+
+    return NextResponse.json({ error: safeMessage }, { status: 400 });
   }
 }
