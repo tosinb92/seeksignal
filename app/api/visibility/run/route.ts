@@ -112,7 +112,10 @@ export async function POST(request: Request) {
     );
   }
 
-  const [projectResponse, competitorResponse, recentResponse] = await Promise.all([
+  const dayStart = new Date();
+  dayStart.setUTCHours(0, 0, 0, 0);
+
+  const [projectResponse, competitorResponse, recentResponse, dailyRunsResponse] = await Promise.all([
     supabaseRest(
       "/rest/v1/projects?select=id,name,domain,market,category&limit=1&id=eq." +
         encodeURIComponent(projectId),
@@ -131,16 +134,32 @@ export async function POST(request: Request) {
         "&order=captured_at.desc&limit=1",
       { method: "GET" },
       accessToken
+    ),
+    supabaseRest(
+      "/rest/v1/prompt_sets?select=id,created_at&project_id=eq." +
+        encodeURIComponent(projectId) +
+        "&created_at=gte." +
+        encodeURIComponent(dayStart.toISOString()),
+      { method: "GET" },
+      accessToken
     )
   ]);
 
   const projects = projectResponse.ok ? await projectResponse.json() : [];
   const competitors = competitorResponse.ok ? await competitorResponse.json() : [];
   const recent = recentResponse.ok ? await recentResponse.json() : [];
+  const dailyRuns = dailyRunsResponse.ok ? await dailyRunsResponse.json() : [];
   const project = projects?.[0];
 
   if (!project) {
     return NextResponse.json({ error: "Project not found." }, { status: 404 });
+  }
+
+  if (dailyRuns.length >= 3) {
+    return NextResponse.json(
+      { error: "The pre-payment safety cap is 3 AI visibility runs per project per day. Try again tomorrow." },
+      { status: 429 }
+    );
   }
 
   if (recent?.[0]?.captured_at) {
