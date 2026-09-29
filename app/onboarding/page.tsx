@@ -67,7 +67,7 @@ export default function OnboardingPage() {
           <label><span>Website</span><input value={form.website} onChange={(e)=>setForm({...form,website:e.target.value})} placeholder="https://example.com" required /></label>
           <div className={styles.row}>
             <label><span>Primary market</span><input value={form.market} onChange={(e)=>setForm({...form,market:e.target.value})} /></label>
-            <label><span>Business category</span><input value={form.category} onChange={(e)=>setForm({...form,category:e.target.value})} placeholder="SaaS, ecommerce…" /></label>
+            <label><span>Business category</span><input value={form.category} onChange={(e)=>setForm({...form,category:e.target.value})} placeholder="Fire compliance, SaaS, ecommerce…" required /></label>
           </div>
           <label><span>Who are your customers?</span><input value={form.audience} onChange={(e)=>setForm({...form,audience:e.target.value})} placeholder="Marketing leaders, local homeowners…" /></label>
 
