@@ -5,6 +5,9 @@ export type AuditCheck = {
   label: string;
   status: "good" | "warn";
   detail: string;
+  whyItMatters: string;
+  benefit: string;
+  verify: string;
 };
 
 function isPrivate(ip: string) {
@@ -164,25 +167,127 @@ export function analyseWebsite(html: string, hostname: string) {
   const indexable = !/<meta[^>]+name=["']robots["'][^>]+content=["'][^"']*noindex/i.test(html) &&
     !/<meta[^>]+content=["'][^"']*noindex[^"']*["'][^>]+name=["']robots["']/i.test(html);
 
-  const items: Array<[string, boolean, string]> = [
-    ["Clear page title", hasTitle, hasTitle ? "A descriptive title helps establish page topic and entity context." : "Add a descriptive, specific title to key pages."],
-    ["Search description", hasDescription, hasDescription ? "A substantial meta description is present." : "Add unique meta descriptions that explain the business and offer."],
-    ["Primary page heading", hasH1, hasH1 ? "A clear H1 is present." : "Add one strong H1 that states what this page is about."],
-    ["Canonical URL", hasCanonical, hasCanonical ? "A canonical URL signal is present." : "Add canonical tags so crawlers can identify the preferred page URL."],
-    ["Indexability", indexable, indexable ? "No homepage noindex directive was detected." : "Remove the noindex directive if this page should be discoverable."],
-    ["Structured business data", hasBusinessSchema, hasBusinessSchema ? "Relevant structured data was detected." : "Add JSON-LD for your organization, services or products."],
-    ["Question coverage", hasFaq, hasFaq ? "The site contains question-oriented content." : "Add direct answers to the questions buyers ask before choosing you."],
-    ["Trust signals", hasTrust, hasTrust ? "Trust and company signals are visible." : "Strengthen about, contact, proof, policy and customer-evidence pages."],
-    ["Commercial clarity", hasCommercial, hasCommercial ? "Commercial intent and next steps are visible." : "Make pricing, buying, booking or enquiry pathways more explicit."]
+  const items = [
+    {
+      label: "Clear page title",
+      ok: hasTitle,
+      action: hasTitle
+        ? "Keep the title specific to this page and avoid diluting it with unrelated services."
+        : "Add a unique title that combines the primary service or product, target market where relevant, and brand name.",
+      whyItMatters: "The page title is a strong page-level context signal used by search and AI retrieval systems to understand what the page represents.",
+      benefit: "Clearer service and entity classification, stronger search snippets and less ambiguity when AI systems decide whether the page is relevant.",
+      verify: "Re-run the audit and confirm the title check passes. Also inspect the rendered <title> tag in the page source.",
+      priority: hasTitle ? 0 : 82,
+      effort: "Low"
+    },
+    {
+      label: "Search description",
+      ok: hasDescription,
+      action: hasDescription
+        ? "Keep the description factual, specific and aligned with the page's real offer."
+        : "Write a 140–170 character description that states what the business does, who it serves and the main commercial outcome.",
+      whyItMatters: "A good description reinforces topical context and gives retrieval systems a concise summary of the page.",
+      benefit: "Improves clarity around the offer and can improve click-through when the page is surfaced in search-like experiences.",
+      verify: "Re-run the audit and confirm the description check passes, then inspect the meta description in page source.",
+      priority: hasDescription ? 0 : 56,
+      effort: "Low"
+    },
+    {
+      label: "Primary page heading",
+      ok: hasH1,
+      action: hasH1
+        ? "Keep one clear primary heading that matches the page's real purpose."
+        : "Add one visible H1 that plainly states the core product, service or solution on the page.",
+      whyItMatters: "The H1 helps establish the primary subject of the page and should agree with the title, copy and structured data.",
+      benefit: "Reduces semantic ambiguity and makes the page easier for both buyers and retrieval systems to understand quickly.",
+      verify: "Re-run the audit and confirm the H1 check passes; inspect the rendered page for one clear primary heading.",
+      priority: hasH1 ? 0 : 74,
+      effort: "Low"
+    },
+    {
+      label: "Canonical URL",
+      ok: hasCanonical,
+      action: hasCanonical
+        ? "Keep canonicals self-consistent and point duplicate variants to the preferred URL."
+        : "Add a canonical link tag that points to the preferred public URL for this page.",
+      whyItMatters: "Canonical signals help crawlers consolidate duplicate URL variants and understand which page should represent the content.",
+      benefit: "Reduces duplicated signals and gives search/retrieval systems a cleaner, more stable source URL.",
+      verify: "Re-run the audit and confirm the canonical check passes; inspect rel=canonical in the page source.",
+      priority: hasCanonical ? 0 : 48,
+      effort: "Low"
+    },
+    {
+      label: "Indexability",
+      ok: indexable,
+      action: indexable
+        ? "Keep important commercial pages indexable unless there is a deliberate reason to hide them."
+        : "Remove the noindex directive from this page if it is intended to be discoverable publicly.",
+      whyItMatters: "A noindex directive explicitly tells conventional search systems not to index the page and can severely restrict discoverability.",
+      benefit: "Restores the page's eligibility to appear in search indexing workflows and removes a major visibility blocker.",
+      verify: "Re-run the audit and confirm indexability passes, then inspect the robots meta tag and Search Console indexing status.",
+      priority: indexable ? 0 : 100,
+      effort: "Low"
+    },
+    {
+      label: "Structured business data",
+      ok: hasBusinessSchema,
+      action: hasBusinessSchema
+        ? "Keep schema accurate and aligned with visible page content; add service or product detail where appropriate."
+        : "Add valid JSON-LD for the organisation plus relevant Service, Product or LocalBusiness data using only facts shown on the site.",
+      whyItMatters: "Structured data gives machines explicit entity, offer and relationship information instead of forcing them to infer everything from prose.",
+      benefit: "Makes the business, services and important attributes easier to parse consistently and can improve eligibility for structured search features.",
+      verify: "Re-run the audit, then validate the JSON-LD with Google's Rich Results Test or Schema.org validator.",
+      priority: hasBusinessSchema ? 0 : 88,
+      effort: "Medium"
+    },
+    {
+      label: "Question coverage",
+      ok: hasFaq,
+      action: hasFaq
+        ? "Expand question-led content around high-intent buyer decisions, objections, comparisons and eligibility."
+        : "Add concise answers to 5–10 real buyer questions about choosing, comparing, pricing, suitability and next steps.",
+      whyItMatters: "AI assistants often respond to natural-language questions. Direct, factual answers create retrieval-ready passages for those intents.",
+      benefit: "Increases the number of buyer questions the site can answer directly and creates content that is easier to quote, cite or retrieve.",
+      verify: "Re-run the audit, then test whether the new questions are answered clearly on-page without needing hidden UI or vague marketing copy.",
+      priority: hasFaq ? 0 : 72,
+      effort: "Medium"
+    },
+    {
+      label: "Trust signals",
+      ok: hasTrust,
+      action: hasTrust
+        ? "Keep proof current and specific: named clients where permitted, credentials, reviews, case studies and clear company details."
+        : "Add visible company identity, contact details, policies and credible proof such as certifications, case studies, reviews or accreditations.",
+      whyItMatters: "Recommendation systems and buyers need evidence that the business is legitimate, established and suitable—not just a page that claims expertise.",
+      benefit: "Improves buyer confidence and gives search/AI systems more corroborating evidence when evaluating the business.",
+      verify: "Re-run the audit and manually confirm that proof is visible, specific and attributable rather than generic claims.",
+      priority: hasTrust ? 0 : 90,
+      effort: "Medium"
+    },
+    {
+      label: "Commercial clarity",
+      ok: hasCommercial,
+      action: hasCommercial
+        ? "Keep the next step obvious and align it with the intent of each page."
+        : "Add a clear commercial pathway such as pricing, book, buy, request a quote or contact sales, with a visible primary CTA.",
+      whyItMatters: "A page can be understood without being commercially useful. Clear conversion intent tells buyers what to do next and clarifies the role of the page.",
+      benefit: "Reduces friction after discovery, improves conversion potential and makes the site's commercial purpose easier to interpret.",
+      verify: "Re-run the audit and test the page as a buyer: the primary next step should be obvious and complete successfully.",
+      priority: hasCommercial ? 0 : 84,
+      effort: "Low"
+    }
   ];
 
-  const passed = items.filter(([, ok]) => ok).length;
+  const passed = items.filter((item) => item.ok).length;
   const score = Math.round((passed / items.length) * 100);
 
-  const checks: AuditCheck[] = items.map(([label, ok, detail]) => ({
-    label,
-    status: ok ? "good" : "warn",
-    detail
+  const checks: AuditCheck[] = items.map((item) => ({
+    label: item.label,
+    status: item.ok ? "good" : "warn",
+    detail: item.action,
+    whyItMatters: item.whyItMatters,
+    benefit: item.benefit,
+    verify: item.verify
   }));
 
   const categories = [
@@ -212,13 +317,19 @@ export function analyseWebsite(html: string, hostname: string) {
     }
   ];
 
-  const opportunities = checks
-    .filter((check) => check.status === "warn")
-    .slice(0, 5)
-    .map((check, index) => ({
-      title: check.label,
-      action: check.detail,
-      impact: index < 2 ? "High" : "Medium"
+  const opportunities = items
+    .filter((item) => !item.ok)
+    .sort((a, b) => b.priority - a.priority)
+    .slice(0, 6)
+    .map((item, index) => ({
+      rank: index + 1,
+      title: item.label,
+      problem: item.whyItMatters,
+      action: item.action,
+      benefit: item.benefit,
+      verify: item.verify,
+      impact: item.priority >= 85 ? "High" : item.priority >= 65 ? "Medium" : "Foundational",
+      effort: item.effort
     }));
 
   const summary =
@@ -237,6 +348,11 @@ export function analyseWebsite(html: string, hostname: string) {
     checks,
     categories,
     opportunities,
+    actionPlan: opportunities,
+    expectedOutcome:
+      opportunities.length
+        ? "Implement the highest-impact fixes first, re-scan, then compare the before/after readiness score. Once the site fundamentals are strong, run AI visibility tests to measure whether the brand is actually being surfaced."
+        : "The core page signals are strong. The next step is AI visibility testing, competitor benchmarking and deeper content/authority analysis.",
     summary,
     methodology
   };
