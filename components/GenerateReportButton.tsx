@@ -12,18 +12,22 @@ export default function GenerateReportButton({ projectId, disabled = false }: { 
     if (!projectId || disabled || loading) return;
     setLoading(true);
     setMessage("");
-    const response = await fetch("/api/reports", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ projectId })
-    });
-    const data = await response.json();
-    if (!response.ok) setMessage(data.error || "Could not generate report.");
-    else {
+    try {
+      const response = await fetch("/api/reports", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ projectId })
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || "Could not generate report.");
+
       setMessage("Report generated.");
       router.refresh();
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : "Could not generate report.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   return (
