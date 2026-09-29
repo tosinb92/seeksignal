@@ -170,6 +170,7 @@ export async function POST(req: NextRequest) {
     const methodology = "This score measures observable website readiness signals. It does not claim that an AI platform currently recommends the business.";
 
     const resultPayload = {
+      leadId,
       url: u.hostname,
       score,
       checks,
