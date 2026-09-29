@@ -8,6 +8,8 @@ export type AuditCheck = {
   evidence: string;
   whyItMatters: string;
   benefit: string;
+  implementation: string[];
+  expectedImpact: string;
   verify: string;
 };
 
@@ -210,6 +212,15 @@ export function analyseWebsite(html: string, hostname: string) {
       evidence: hasTitle ? `Detected title: “${titleText}”` : "No usable <title> was detected in the fetched HTML.",
       whyItMatters: "The page title is a strong page-level context signal used by search and AI retrieval systems to understand what the page represents.",
       benefit: "Clearer service and entity classification, stronger search snippets and less ambiguity when AI systems decide whether the page is relevant.",
+      implementation: hasTitle ? [
+        "Check that the title still matches the page's main commercial intent.",
+        "Keep the title unique across important pages."
+      ] : [
+        "Use this pattern: Primary service or product | Location/market if relevant | Brand.",
+        "Keep the title specific to the page rather than listing every service.",
+        "Publish the change in the HTML <title> tag."
+      ],
+      expectedImpact: hasTitle ? "Protects an already-strong page-level relevance signal." : "High likelihood of improving how clearly search and retrieval systems classify the page; may also improve search-result click-through.",
       verify: "Re-run the audit and confirm the title check passes. Also inspect the rendered <title> tag in the page source.",
       priority: hasTitle ? 0 : 82,
       effort: "Low"
@@ -223,6 +234,15 @@ export function analyseWebsite(html: string, hostname: string) {
       evidence: hasDescription ? `Detected description: “${descriptionText}”` : "No substantial meta description was detected.",
       whyItMatters: "A good description reinforces topical context and gives retrieval systems a concise summary of the page.",
       benefit: "Improves clarity around the offer and can improve click-through when the page is surfaced in search-like experiences.",
+      implementation: hasDescription ? [
+        "Make sure the description names the offer, audience and outcome.",
+        "Keep it aligned with the visible page content."
+      ] : [
+        "Write 140–170 characters covering: what you do, who it is for, and the outcome.",
+        "Place it in <meta name=\"description\" content=\"…\">.",
+        "Avoid generic claims such as 'leading solutions' unless supported by evidence."
+      ],
+      expectedImpact: hasDescription ? "Maintains concise machine-readable context and search-snippet quality." : "Moderate impact on page clarity and search-result messaging; useful for humans and retrieval systems, but not a direct ranking guarantee.",
       verify: "Re-run the audit and confirm the description check passes, then inspect the meta description in page source.",
       priority: hasDescription ? 0 : 56,
       effort: "Low"
@@ -236,6 +256,15 @@ export function analyseWebsite(html: string, hostname: string) {
       evidence: hasH1 ? `Detected H1: “${h1Text}”` : "No H1 heading was detected.",
       whyItMatters: "The H1 helps establish the primary subject of the page and should agree with the title, copy and structured data.",
       benefit: "Reduces semantic ambiguity and makes the page easier for both buyers and retrieval systems to understand quickly.",
+      implementation: hasH1 ? [
+        "Confirm the H1 describes the page's primary offer in plain English.",
+        "Keep supporting headings subordinate to the H1."
+      ] : [
+        "Add one visible H1 near the top of the page.",
+        "State the main product/service and intended customer outcome.",
+        "Avoid vague brand slogans as the only H1."
+      ],
+      expectedImpact: hasH1 ? "Preserves clear page hierarchy and topic definition." : "Moderate-to-high impact on human comprehension and page-topic clarity; especially valuable when the current hero is brand-led but not service-led.",
       verify: "Re-run the audit and confirm the H1 check passes; inspect the rendered page for one clear primary heading.",
       priority: hasH1 ? 0 : 74,
       effort: "Low"
@@ -249,6 +278,14 @@ export function analyseWebsite(html: string, hostname: string) {
       evidence: hasCanonical ? `Detected canonical: ${canonicalUrl}` : "No rel=canonical URL was detected.",
       whyItMatters: "Canonical signals help crawlers consolidate duplicate URL variants and understand which page should represent the content.",
       benefit: "Reduces duplicated signals and gives search/retrieval systems a cleaner, more stable source URL.",
+      implementation: hasCanonical ? [
+        "Confirm the canonical points to the preferred public version of this exact page."
+      ] : [
+        "Add a rel=canonical tag pointing to the preferred HTTPS URL.",
+        "Use the final public URL that you want indexed.",
+        "Keep internal links consistent with that preferred URL."
+      ],
+      expectedImpact: hasCanonical ? "Protects URL consolidation and reduces duplicate-page ambiguity." : "Foundational technical impact: helps consolidate duplicate URLs and prevent fragmented indexing signals.",
       verify: "Re-run the audit and confirm the canonical check passes; inspect rel=canonical in the page source.",
       priority: hasCanonical ? 0 : 48,
       effort: "Low"
@@ -262,6 +299,14 @@ export function analyseWebsite(html: string, hostname: string) {
       evidence: indexable ? "No homepage meta noindex directive was detected." : "A meta noindex directive was detected.",
       whyItMatters: "A noindex directive explicitly tells conventional search systems not to index the page and can severely restrict discoverability.",
       benefit: "Restores the page's eligibility to appear in search indexing workflows and removes a major visibility blocker.",
+      implementation: indexable ? [
+        "Keep important public commercial pages free from accidental noindex directives."
+      ] : [
+        "Remove noindex from the page if the page should be discoverable.",
+        "Check robots.txt is not blocking the page.",
+        "Request re-indexing in your search console after the change."
+      ],
+      expectedImpact: indexable ? "Maintains eligibility for indexing and downstream discovery." : "Potentially critical impact: a page that cannot be indexed is severely constrained before any AI/SEO optimisation can matter.",
       verify: "Re-run the audit and confirm indexability passes, then inspect the robots meta tag and Search Console indexing status.",
       priority: indexable ? 0 : 100,
       effort: "Low"
@@ -275,6 +320,16 @@ export function analyseWebsite(html: string, hostname: string) {
       evidence: schemaTypes.length ? `Detected schema types: ${schemaTypes.join(", ")}` : "No JSON-LD @type values were detected.",
       whyItMatters: "Structured data gives machines explicit entity, offer and relationship information instead of forcing them to infer everything from prose.",
       benefit: "Makes the business, services and important attributes easier to parse consistently and can improve eligibility for structured search features.",
+      implementation: hasBusinessSchema ? [
+        "Check the schema values match visible content and current business facts.",
+        "Add Service or Product schema to commercially important pages where appropriate."
+      ] : [
+        "Add Organization schema for the business identity.",
+        "Add Service or Product schema on relevant commercial pages.",
+        "Include only factual fields that are visible or verifiable on the site.",
+        "Validate the JSON-LD before publishing."
+      ],
+      expectedImpact: hasBusinessSchema ? "Strengthens explicit machine-readable entity and offer information." : "High interpretability impact: gives machines explicit business/entity/offer relationships instead of relying only on prose.",
       verify: "Re-run the audit, then validate the JSON-LD with Google's Rich Results Test or Schema.org validator.",
       priority: hasBusinessSchema ? 0 : 88,
       effort: "Medium"
@@ -288,6 +343,16 @@ export function analyseWebsite(html: string, hostname: string) {
       evidence: hasFaq ? "Question-oriented language was detected on the audited page." : "No strong FAQ/question-oriented language was detected on the audited page.",
       whyItMatters: "AI assistants often respond to natural-language questions. Direct, factual answers create retrieval-ready passages for those intents.",
       benefit: "Increases the number of buyer questions the site can answer directly and creates content that is easier to quote, cite or retrieve.",
+      implementation: hasFaq ? [
+        "Expand coverage to high-intent questions that affect purchase decisions.",
+        "Answer each question directly in the first sentence before adding detail."
+      ] : [
+        "Add 5–10 questions real buyers ask before choosing you.",
+        "Cover price/cost, suitability, process, timelines, comparisons, objections and next steps.",
+        "Answer each question directly, then add supporting detail.",
+        "Link answers to deeper service/product pages where useful."
+      ],
+      expectedImpact: hasFaq ? "Expands retrieval coverage across more natural-language buyer intents." : "High content opportunity: increases the number of buyer questions the site can answer and gives AI/search systems clearer passages to retrieve or quote.",
       verify: "Re-run the audit, then test whether the new questions are answered clearly on-page without needing hidden UI or vague marketing copy.",
       priority: hasFaq ? 0 : 72,
       effort: "Medium"
@@ -301,6 +366,15 @@ export function analyseWebsite(html: string, hostname: string) {
       evidence: hasTrust ? "Trust-related language or proof indicators were detected." : "No strong trust/proof indicators were detected on the audited page.",
       whyItMatters: "Recommendation systems and buyers need evidence that the business is legitimate, established and suitable—not just a page that claims expertise.",
       benefit: "Improves buyer confidence and gives search/AI systems more corroborating evidence when evaluating the business.",
+      implementation: hasTrust ? [
+        "Make proof specific: who, what result, when, and where possible independently verifiable."
+      ] : [
+        "Add a clear About/Company page and visible contact details.",
+        "Add specific reviews, testimonials, case studies or certifications where genuine.",
+        "Show legal/company identity and relevant policies.",
+        "Link claims of expertise to evidence rather than leaving them unsupported."
+      ],
+      expectedImpact: hasTrust ? "Maintains stronger buyer confidence and corroborating evidence." : "High commercial and credibility impact: can improve conversion confidence and strengthen the evidence available when systems assess legitimacy and suitability.",
       verify: "Re-run the audit and manually confirm that proof is visible, specific and attributable rather than generic claims.",
       priority: hasTrust ? 0 : 90,
       effort: "Medium"
@@ -314,6 +388,15 @@ export function analyseWebsite(html: string, hostname: string) {
       evidence: hasCommercial ? "Commercial-intent language was detected on the audited page." : "No strong pricing, buying, booking, quote or sales language was detected.",
       whyItMatters: "A page can be understood without being commercially useful. Clear conversion intent tells buyers what to do next and clarifies the role of the page.",
       benefit: "Reduces friction after discovery, improves conversion potential and makes the site's commercial purpose easier to interpret.",
+      implementation: hasCommercial ? [
+        "Check the primary CTA matches the page intent and works end-to-end."
+      ] : [
+        "Choose one primary action: buy, book, request a quote, start trial, or contact sales.",
+        "Place that CTA above the fold and repeat it after key proof/benefit sections.",
+        "Make price, quote expectations or the next step clear enough to reduce uncertainty.",
+        "Test the full conversion path yourself."
+      ],
+      expectedImpact: hasCommercial ? "Protects conversion clarity after a visitor or AI system discovers the page." : "High conversion impact: reduces uncertainty and gives qualified visitors a clear next step, turning discovery into measurable commercial action.",
       verify: "Re-run the audit and test the page as a buyer: the primary next step should be obvious and complete successfully.",
       priority: hasCommercial ? 0 : 84,
       effort: "Low"
@@ -330,6 +413,8 @@ export function analyseWebsite(html: string, hostname: string) {
     evidence: item.evidence,
     whyItMatters: item.whyItMatters,
     benefit: item.benefit,
+    implementation: item.implementation,
+    expectedImpact: item.expectedImpact,
     verify: item.verify
   }));
 
@@ -371,6 +456,8 @@ export function analyseWebsite(html: string, hostname: string) {
       evidence: item.evidence,
       action: item.action,
       benefit: item.benefit,
+      implementation: item.implementation,
+      expectedImpact: item.expectedImpact,
       verify: item.verify,
       impact: item.priority >= 85 ? "High" : item.priority >= 65 ? "Medium" : "Foundational",
       effort: item.effort
@@ -395,8 +482,15 @@ export function analyseWebsite(html: string, hostname: string) {
     actionPlan: opportunities,
     expectedOutcome:
       opportunities.length
-        ? "Implement the highest-impact fixes first, re-scan, then compare the before/after readiness score. Once the site fundamentals are strong, run AI visibility tests to measure whether the brand is actually being surfaced."
+        ? "Work through the top three actions first. These are the changes most likely to remove practical discovery, interpretation or conversion barriers. Re-scan after publishing them, then use AI visibility tests to see whether model-level mentions actually change."
         : "The core page signals are strong. The next step is AI visibility testing, competitor benchmarking and deeper content/authority analysis.",
+    quickWins: opportunities.slice(0, 3).map((item) => ({
+      title: item.title,
+      impact: item.impact,
+      effort: item.effort,
+      action: item.action,
+      expectedImpact: item.expectedImpact
+    })),
     summary,
     methodology
   };
