@@ -15,6 +15,30 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Sign in again to continue." }, { status: 401 });
   }
 
+  const existingMembershipResponse = await supabaseRest(
+    "/rest/v1/organization_members?select=organization_id&user_id=eq." + encodeURIComponent(user.id) + "&limit=1",
+    { method: "GET" },
+    accessToken
+  );
+  const existingMemberships = existingMembershipResponse.ok ? await existingMembershipResponse.json() : [];
+
+  if (existingMemberships?.length) {
+    const organizationId = existingMemberships[0].organization_id;
+    const existingProjectResponse = await supabaseRest(
+      "/rest/v1/projects?select=id&organization_id=eq." + encodeURIComponent(organizationId) + "&order=created_at.asc&limit=1",
+      { method: "GET" },
+      accessToken
+    );
+    const existingProjects = existingProjectResponse.ok ? await existingProjectResponse.json() : [];
+
+    return NextResponse.json({
+      ok: true,
+      organizationId,
+      projectId: existingProjects?.[0]?.id ?? null,
+      alreadyOnboarded: true
+    });
+  }
+
   const body = await request.json();
   const business = typeof body?.business === "string" ? body.business.trim() : "";
   const website = typeof body?.website === "string" ? body.website.trim() : "";
