@@ -71,3 +71,5 @@
 
 /* audit results scale cleanly as checks/categories expand */
 .categoryGrid{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+
+.engineBrands .plannedEngine{opacity:.55}.engineBrands .plannedEngine small{font-size:7px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#69716b;margin-left:2px}
