@@ -68,6 +68,7 @@ export default async function WorkspacePage() {
   const visibilitySnapshots = visibilityResponse?.ok ? await visibilityResponse.json() : [];
   const latestScan = scans?.[0] || null;
   const latestVisibility = visibilitySnapshots?.[0] || null;
+  const gatewayEnabled = Boolean(process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN);
 
   return (
     <main className={styles.app}>
@@ -118,7 +119,7 @@ export default async function WorkspacePage() {
           <article className={styles.accent}><span>Competitors tracked</span><strong>{competitors.length}</strong><small>{competitors.length ? "Saved to this project" : "Add your first competitor"}</small></article>
         </div>
 
-        {project ? <RunVisibilityTest projectId={project.id} /> : null}
+        {project ? <RunVisibilityTest projectId={project.id} gatewayEnabled={gatewayEnabled} /> : null}
 
         {latestVisibility ? (
           <section className={styles.panel} style={{marginTop:11,minHeight:0}}>
