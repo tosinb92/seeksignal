@@ -17,6 +17,9 @@ export default function SignupPage() {
     setLoading(true);
     setError("");
 
+    const leadId = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("lead") : null;
+    if (leadId) window.localStorage.setItem("seeksignalPendingLeadId", leadId);
+
     const response = await fetch("/api/auth/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -36,7 +39,7 @@ export default function SignupPage() {
       return;
     }
 
-    router.push("/onboarding");
+    router.push(leadId ? `/onboarding?lead=${encodeURIComponent(leadId)}` : "/onboarding");
     router.refresh();
   }
 
