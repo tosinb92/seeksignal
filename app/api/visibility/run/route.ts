@@ -153,9 +153,16 @@ export async function POST(request: Request) {
     }
   }
 
-  const category = (project.category || "businesses like this").trim();
+  const category = (project.category || "").trim();
   const market = (project.market || "the target market").trim();
   const brand = project.name.trim();
+
+  if (category.length < 2) {
+    return NextResponse.json(
+      { error: "Add a specific business category in Project settings before running AI visibility." },
+      { status: 400 }
+    );
+  }
 
   const prompts = [
     `What are the best ${category} providers for buyers in ${market}? Give me a useful shortlist and explain why.`,
