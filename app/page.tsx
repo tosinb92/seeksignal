@@ -18,6 +18,8 @@ type Result = {
     evidence?: string;
     action: string;
     benefit?: string;
+    implementation?: string[];
+    expectedImpact?: string;
     verify?: string;
     impact: string;
     effort?: string;
@@ -29,6 +31,8 @@ type Result = {
     evidence?: string;
     action: string;
     benefit?: string;
+    implementation?: string[];
+    expectedImpact?: string;
     verify?: string;
     impact: string;
     effort?: string;
@@ -227,9 +231,25 @@ export default function Home() {
                       <p>{item.action}</p>
                     </div>
 
+                    {item.implementation?.length ? (
+                      <div className="actionBlock implementation">
+                        <span>How to implement it</span>
+                        <ol>
+                          {item.implementation.map((step, stepIndex) => <li key={stepIndex}>{step}</li>)}
+                        </ol>
+                      </div>
+                    ) : null}
+
+                    {item.expectedImpact ? (
+                      <div className="actionBlock impact">
+                        <span>Expected impact</span>
+                        <p>{item.expectedImpact}</p>
+                      </div>
+                    ) : null}
+
                     {item.benefit ? (
                       <div className="actionBlock benefit">
-                        <span>Expected benefit</span>
+                        <span>Customer / website benefit</span>
                         <p>{item.benefit}</p>
                       </div>
                     ) : null}
