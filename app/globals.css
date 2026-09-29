@@ -92,3 +92,8 @@
 .expectedOutcome span{display:block;font-size:8px;letter-spacing:.8px;text-transform:uppercase;color:#c4f873;margin-bottom:7px}
 .expectedOutcome strong{display:block;font-size:13px;line-height:1.55;max-width:900px}
 .productWindow:before{content:"EXAMPLE DATA";position:absolute;right:16px;top:46px;z-index:5;padding:6px 8px;border:1px solid rgba(255,255,255,.08);border-radius:7px;background:rgba(9,12,11,.86);color:#7f8982;font-size:7px;letter-spacing:.8px}
+
+.evidenceLine{margin:6px 0 2px!important;padding:7px 9px;border-left:2px solid rgba(196,248,115,.28);background:rgba(196,248,115,.035);color:#aeb8b0!important;font-size:9px!important;line-height:1.55!important}
+.evidenceLine b{color:#c4f873}
+.actionBlock.evidence{border-color:rgba(91,209,173,.13);background:rgba(91,209,173,.035)}
+.actionBlock.evidence span{color:#62d6ac}
