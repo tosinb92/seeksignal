@@ -28,6 +28,15 @@ async function validatePublicUrl(url: URL) {
     throw new Error("Enter a normal website address beginning with http:// or https://.");
   }
 
+  if (url.username || url.password) {
+    throw new Error("Website addresses containing embedded login credentials cannot be scanned.");
+  }
+
+  const port = url.port;
+  if (port && port !== "80" && port !== "443") {
+    throw new Error("Only standard web ports can be scanned.");
+  }
+
   const hostname = url.hostname.toLowerCase();
   if (
     ["localhost", "0.0.0.0", "::1"].includes(hostname) ||
@@ -70,6 +79,32 @@ async function validatePublicUrl(url: URL) {
   throw new Error("We couldn't verify that website right now. Please try again in a moment.");
 }
 
+async function readLimitedText(response: Response, maxBytes = 1_000_000) {
+  if (!response.body) return "";
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let total = 0;
+  let output = "";
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    if (!value) continue;
+
+    total += value.byteLength;
+    if (total > maxBytes) {
+      await reader.cancel();
+      break;
+    }
+
+    output += decoder.decode(value, { stream: true });
+  }
+
+  output += decoder.decode();
+  return output;
+}
+
 export async function fetchPublicWebsite(raw: string) {
   const initial = /^https?:\/\//i.test(raw.trim()) ? raw.trim() : `https://${raw.trim()}`;
   let current = new URL(initial);
@@ -99,9 +134,14 @@ export async function fetchPublicWebsite(raw: string) {
       throw new Error(`Website returned HTTP ${response.status}.`);
     }
 
+    const contentType = (response.headers.get("content-type") || "").toLowerCase();
+    if (contentType && !contentType.includes("text/html") && !contentType.includes("application/xhtml+xml")) {
+      throw new Error("That address did not return a normal HTML website.");
+    }
+
     return {
       url: current,
-      html: (await response.text()).slice(0, 800000)
+      html: await readLimitedText(response)
     };
   }
 
