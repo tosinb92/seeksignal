@@ -1,17 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { randomUUID } from "node:crypto";
 import { getSessionUser } from "../../../lib/auth/session";
 import { supabaseRest } from "../../../lib/supabase/rest";
-
-function slugify(value: string) {
-  return value
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "")
-    .slice(0, 48);
-}
 
 export async function POST(request: Request) {
   const user = await getSessionUser();
@@ -36,45 +26,32 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Enter your business name and website." }, { status: 400 });
   }
 
-  const organizationId = randomUUID();
-  const projectId = randomUUID();
-  const organizationSlug = `${slugify(business) || "workspace"}-${organizationId.slice(0, 6)}`;
-
-  const orgResponse = await supabaseRest("/rest/v1/organizations", {
+  const rpcResponse = await supabaseRest("/rest/v1/rpc/complete_onboarding", {
     method: "POST",
-    headers: { Prefer: "return=minimal" },
+    headers: { Prefer: "return=representation" },
     body: JSON.stringify({
-      id: organizationId,
-      name: business,
-      slug: organizationSlug,
-      owner_user_id: user.id
+      p_business: business,
+      p_website: website,
+      p_market: market || null,
+      p_category: category || audience || null
     })
   }, accessToken);
 
-  if (!orgResponse.ok) {
-    console.error("Organization creation failed", orgResponse.status, await orgResponse.text());
-    return NextResponse.json({ error: "Could not create your workspace." }, { status: 500 });
+  if (!rpcResponse.ok) {
+    const detail = await rpcResponse.text();
+    console.error("Onboarding transaction failed", rpcResponse.status, detail);
+    return NextResponse.json(
+      { error: "We couldn't create your workspace. Please try again." },
+      { status: 500 }
+    );
   }
 
-  const projectResponse = await supabaseRest("/rest/v1/projects", {
-    method: "POST",
-    headers: { Prefer: "return=minimal" },
-    body: JSON.stringify({
-      id: projectId,
-      organization_id: organizationId,
-      name: business,
-      domain: website,
-      market: market || null,
-      category: category || audience || null,
-      status: "active",
-      created_by: user.id
-    })
-  }, accessToken);
+  const data = await rpcResponse.json();
+  const result = Array.isArray(data) ? data[0] : data;
 
-  if (!projectResponse.ok) {
-    console.error("Project creation failed", projectResponse.status, await projectResponse.text());
-    return NextResponse.json({ error: "Workspace created, but the first project could not be added." }, { status: 500 });
-  }
-
-  return NextResponse.json({ ok: true, organizationId, projectId });
+  return NextResponse.json({
+    ok: true,
+    organizationId: result?.organization_id ?? null,
+    projectId: result?.project_id ?? null
+  });
 }
