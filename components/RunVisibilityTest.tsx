@@ -26,7 +26,7 @@ type VisibilityResult = {
   }>;
 };
 
-export default function RunVisibilityTest({ projectId }: { projectId: string }) {
+export default function RunVisibilityTest({ projectId, gatewayEnabled }: { projectId: string; gatewayEnabled: boolean }) {
   const router = useRouter();
   const [accepted, setAccepted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -72,15 +72,21 @@ export default function RunVisibilityTest({ projectId }: { projectId: string }) 
         </div>
       </div>
 
-      <label style={{display:"flex",gap:10,alignItems:"flex-start",marginTop:20,color:"#a5aea7",fontSize:10,lineHeight:1.5,cursor:"pointer"}}>
-        <input type="checkbox" checked={accepted} onChange={(e)=>setAccepted(e.target.checked)} style={{marginTop:2}} />
+      {!gatewayEnabled ? (
+        <div style={{marginTop:18,padding:12,border:"1px solid rgba(255,190,90,.18)",borderRadius:10,background:"rgba(255,190,90,.06)",color:"#d8bd87",fontSize:10}}>
+          AI Gateway authentication is not available on this deployment yet. No model calls can be started until it is enabled.
+        </div>
+      ) : null}
+
+      <label style={{display:"flex",gap:10,alignItems:"flex-start",marginTop:20,color:"#a5aea7",fontSize:10,lineHeight:1.5,cursor:gatewayEnabled?"pointer":"not-allowed",opacity:gatewayEnabled?1:.55}}>
+        <input type="checkbox" checked={accepted} disabled={!gatewayEnabled} onChange={(e)=>setAccepted(e.target.checked)} style={{marginTop:2}} />
         <span>I understand this run uses metered Vercel AI Gateway model calls and may incur AI usage charges.</span>
       </label>
 
-      <button onClick={run} disabled={!accepted || loading || !projectId} style={{
+      <button onClick={run} disabled={!gatewayEnabled || !accepted || loading || !projectId} style={{
         marginTop:14,height:42,padding:"0 16px",border:0,borderRadius:9,
-        background:accepted?"#c4f873":"#2a2f2b",color:accepted?"#10150d":"#747b76",
-        fontWeight:800,cursor:accepted&&!loading?"pointer":"not-allowed"
+        background:gatewayEnabled&&accepted?"#c4f873":"#2a2f2b",color:gatewayEnabled&&accepted?"#10150d":"#747b76",
+        fontWeight:800,cursor:gatewayEnabled&&accepted&&!loading?"pointer":"not-allowed"
       }}>
         {loading ? "Running 8 AI tests…" : "Run AI visibility test →"}
       </button>
