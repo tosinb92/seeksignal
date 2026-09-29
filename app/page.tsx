@@ -312,8 +312,50 @@ export default function Home() {
 
       <section className="engineStrip shell">
         <span>Designed for the new buying journey</span>
-        <div>
-          <b>ChatGPT</b><b>Google AI</b><b>Perplexity</b><b>Copilot</b><b>Claude</b>
+        <div className="engineBrands">
+          <b><i className="brandIcon openai" aria-hidden="true" />ChatGPT</b>
+          <b><i className="brandIcon google" aria-hidden="true" />Google AI</b>
+          <b><i className="brandIcon perplexity" aria-hidden="true" />Perplexity</b>
+          <b><i className="brandIcon copilot" aria-hidden="true" />Copilot</b>
+          <b><i className="brandIcon anthropic" aria-hidden="true" />Claude</b>
+        </div>
+      </section>
+
+      <section className="lightBand">
+        <div className="shell">
+          <div className="howIntro">
+            <span>How it works</span>
+            <h2>Turn AI visibility into <em>real business growth.</em></h2>
+            <p>SeekSignal turns scattered AI signals into a clear commercial workflow your team can understand and act on.</p>
+          </div>
+
+          <div className="howGrid">
+            <article>
+              <i className="howIcon green">⌕</i><small>01</small>
+              <h3>Monitor</h3>
+              <p>Track how your brand is understood and surfaced across the AI platforms buyers increasingly use.</p>
+            </article>
+            <article>
+              <i className="howIcon blue">▥</i><small>02</small>
+              <h3>Analyse</h3>
+              <p>Benchmark visibility, recommendation share and competitor presence so you know where you stand.</p>
+            </article>
+            <article>
+              <i className="howIcon violet">◇</i><small>03</small>
+              <h3>Optimise</h3>
+              <p>Receive prioritised actions to strengthen entity clarity, authority, content and AI readiness.</p>
+            </article>
+            <article>
+              <i className="howIcon coral">↗</i><small>04</small>
+              <h3>Grow</h3>
+              <p>Turn stronger discoverability into more qualified visits, opportunities and measurable commercial value.</p>
+            </article>
+          </div>
+
+          <div className="howActions">
+            <a href="#scan">Run free audit →</a>
+            <a className="textAction" href="#methodology">See the methodology →</a>
+          </div>
         </div>
       </section>
 
@@ -360,7 +402,8 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="methodSection shell" id="methodology">
+      <section className="softSection" id="methodology">
+        <div className="methodSection shell">
         <div className="methodLabel">02 / Methodology</div>
         <div className="methodCopy">
           <h2>Separate what can be measured from what can only be inferred.</h2>
@@ -374,6 +417,7 @@ export default function Home() {
           <article><span>01</span><strong>Readiness</strong><p>Audit whether your website clearly communicates entity, offer, authority and commercial intent.</p></article>
           <article><span>02</span><strong>Visibility</strong><p>Test representative buyer prompts across supported AI engines and record observable mentions and citations.</p></article>
           <article><span>03</span><strong>Action</strong><p>Prioritise the gaps most likely to improve clarity, discoverability and recommendation opportunity.</p></article>
+        </div>
         </div>
       </section>
 
