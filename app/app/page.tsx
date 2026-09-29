@@ -191,9 +191,30 @@ export default async function WorkspacePage() {
 
         <div className={styles.grid} id="readiness">
           <section className={styles.panel}>
-            <div className={styles.panelHead}><div><span>Next best action</span><h2>Run your baseline scan.</h2></div><b>High impact</b></div>
+            <div className={styles.panelHead}>
+              <div>
+                <span>Next best action</span>
+                <h2>{latestScan ? "Fix the highest-impact readiness gaps." : "Run your baseline scan."}</h2>
+              </div>
+              <b>High impact</b>
+            </div>
             <p>{latestScan?.summary || "SeekSignal needs a baseline before it can show progress, historical movement and the highest-priority fixes for this project."}</p>
-            <RunProjectScanButton projectId={project?.id || ""} className={styles.primary} label={latestScan ? "Run another scan →" : "Run baseline scan →"} />
+
+            {latestScan?.raw_result?.opportunities?.length ? (
+              <div style={{display:"grid",margin:"18px 0"}}>
+                {latestScan.raw_result.opportunities.slice(0,3).map((item: any, index: number) => (
+                  <div key={index} style={{padding:"11px 0",borderTop:"1px solid rgba(255,255,255,.055)"}}>
+                    <div style={{display:"flex",justifyContent:"space-between",gap:12}}>
+                      <strong style={{fontSize:10}}>{item.title}</strong>
+                      <span style={{fontSize:8,color:item.impact==="High"?"#c4f873":"#d8bd87"}}>{item.impact} impact</span>
+                    </div>
+                    <p style={{margin:"5px 0 0",fontSize:9}}>{item.action}</p>
+                  </div>
+                ))}
+              </div>
+            ) : null}
+
+            <RunProjectScanButton projectId={project?.id || ""} className={styles.primary} label={latestScan ? "Re-scan after changes →" : "Run baseline scan →"} />
           </section>
 
           <section className={styles.panel}>
@@ -210,7 +231,7 @@ export default async function WorkspacePage() {
           <div className={styles.panelHead}>
             <div>
               <span>Reports & scan history</span>
-              <h2>Your saved readiness history.</h2>
+              <h2>Your saved intelligence history.</h2>
             </div>
             <GenerateReportButton projectId={project?.id || ""} disabled={!latestScan && !latestVisibility} />
           </div>
