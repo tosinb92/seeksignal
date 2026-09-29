@@ -68,7 +68,7 @@ export default function RunVisibilityTest({ projectId, gatewayEnabled }: { proje
         </div>
         <div style={{padding:16,border:"1px solid rgba(196,248,115,.12)",borderRadius:13,background:"rgba(196,248,115,.04)"}}>
           <strong style={{display:"block",fontSize:10}}>8 model calls maximum per run</strong>
-          <span style={{display:"block",marginTop:6,color:"#77817a",fontSize:9,lineHeight:1.5}}>This is provider-model API evidence. Consumer app answers may differ.</span>
+          <span style={{display:"block",marginTop:6,color:"#77817a",fontSize:9,lineHeight:1.5}}>This is provider-model API evidence. Consumer app answers may differ. Before billing is connected, runs are capped at 3 per project per day.</span>
         </div>
       </div>
 
