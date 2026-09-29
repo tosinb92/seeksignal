@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import dns from "node:dns/promises";
 import net from "node:net";
+import { randomUUID } from "node:crypto";
+import { supabaseRest } from "../../../lib/supabase/rest";
 
 function isPrivate(ip: string) {
   if (net.isIPv4(ip)) {
@@ -90,6 +92,24 @@ export async function POST(req: NextRequest) {
     }
     const u = await safeUrl(body.url.trim());
 
+    const leadId = randomUUID();
+    const leadResponse = await supabaseRest("/rest/v1/leads", {
+      method: "POST",
+      headers: { Prefer: "return=minimal" },
+      body: JSON.stringify({
+        id: leadId,
+        name: body.name.trim(),
+        email: body.email.trim().toLowerCase(),
+        business_name: body.business.trim(),
+        website: u.toString(),
+        source: "free_scan"
+      })
+    });
+
+    if (!leadResponse.ok) {
+      console.error("Lead persistence failed", leadResponse.status, await leadResponse.text());
+    }
+
     const res = await fetch(u, {
       redirect: "manual",
       headers: { "User-Agent": "SeekSignal-Audit/1.0" },
@@ -141,19 +161,44 @@ export async function POST(req: NextRequest) {
         impact: index < 2 ? "High" : "Medium"
       }));
 
-    return NextResponse.json({
+    const summary = score >= 80
+      ? "Strong foundations. The next gains are likely to come from deeper answer coverage, authority and real AI-engine monitoring."
+      : score >= 55
+        ? "Good foundations, but several signals could make the business easier for AI systems to interpret and surface."
+        : "Important website signals are missing or unclear. Fixing the fundamentals should come before ongoing AI visibility monitoring.";
+
+    const methodology = "This score measures observable website readiness signals. It does not claim that an AI platform currently recommends the business.";
+
+    const resultPayload = {
       url: u.hostname,
       score,
       checks,
       categories,
       opportunities,
-      summary: score >= 80
-        ? "Strong foundations. The next gains are likely to come from deeper answer coverage, authority and real AI-engine monitoring."
-        : score >= 55
-          ? "Good foundations, but several signals could make the business easier for AI systems to interpret and surface."
-          : "Important website signals are missing or unclear. Fixing the fundamentals should come before ongoing AI visibility monitoring.",
-      methodology: "This score measures observable website readiness signals. It does not claim that an AI platform currently recommends the business."
+      summary,
+      methodology
+    };
+
+    const scanResponse = await supabaseRest("/rest/v1/scans", {
+      method: "POST",
+      headers: { Prefer: "return=minimal" },
+      body: JSON.stringify({
+        id: randomUUID(),
+        project_id: null,
+        lead_id: leadId,
+        scan_type: "website_readiness",
+        score,
+        summary,
+        methodology,
+        raw_result: resultPayload
+      })
     });
+
+    if (!scanResponse.ok) {
+      console.error("Scan persistence failed", scanResponse.status, await scanResponse.text());
+    }
+
+    return NextResponse.json(resultPayload);
   } catch (e) {
     const rawMessage = e instanceof Error ? e.message : "";
     const safeMessage = rawMessage.startsWith("getaddrinfo") ||
