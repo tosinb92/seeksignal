@@ -47,7 +47,7 @@ export default function LeadGate({ website, lead, loading, onChange, onSubmit, o
             </div>
             <div className={styles.stat}>
               <span>Signals checked</span>
-              <strong>7</strong>
+              <strong>9</strong>
               <small>Website signals</small>
             </div>
           </div>
