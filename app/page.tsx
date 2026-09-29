@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import LeadGate from "../components/LeadGate";
 
 type Result = {
   score: number;
@@ -85,34 +86,17 @@ export default function Home() {
         {error && <div className="error">{error}</div>}
 
         {showGate && !result && (
-          <section className="leadGate">
-            <div className="gateVisual">
-              <div className="gateEyebrow">Your scan is ready to run</div>
-              <h2>Unlock your free AI visibility report.</h2>
-              <p>Enter your details to reveal your score, priority gaps and the actions most likely to improve how clearly AI systems understand your business.</p>
-              <div className="gatePreview">
-                <div><span>AI readiness</span><strong>••</strong></div>
-                <div><span>Priority opportunities</span><strong>••</strong></div>
-                <div><span>Signals checked</span><strong>7</strong></div>
-              </div>
-            </div>
-            <form className="leadForm" onSubmit={unlockResults}>
-              <label>
-                <span>Your name</span>
-                <input value={lead.name} onChange={(e) => setLead({ ...lead, name: e.target.value })} placeholder="Jane Smith" required />
-              </label>
-              <label>
-                <span>Work email</span>
-                <input type="email" value={lead.email} onChange={(e) => setLead({ ...lead, email: e.target.value })} placeholder="jane@company.com" required />
-              </label>
-              <label>
-                <span>Business name</span>
-                <input value={lead.business} onChange={(e) => setLead({ ...lead, business: e.target.value })} placeholder="Company Ltd" required />
-              </label>
-              <button disabled={loading}>{loading ? "Running your scan…" : "Reveal my results →"}</button>
-              <small>By continuing, you agree that SeekSignal may use these details to provide your report and relevant product follow-up.</small>
-            </form>
-          </section>
+          <LeadGate
+            website={url}
+            lead={lead}
+            loading={loading}
+            onChange={setLead}
+            onSubmit={unlockResults}
+            onBack={() => {
+              setShowGate(false);
+              setError("");
+            }}
+          />
         )}
 
         {result && (
@@ -159,7 +143,7 @@ export default function Home() {
           </section>
         )}
 
-        {!result && (
+        {!result && !showGate && (
           <div className="productFrame" id="platform">
             <div className="frameBar">
               <div className="traffic"><i/><i/><i/></div>
