@@ -11,7 +11,27 @@ type Result = {
   methodology: string;
   checks: { label: string; status: "good" | "warn"; detail: string }[];
   categories: { name: string; score: number }[];
-  opportunities: { title: string; action: string; impact: string }[];
+  opportunities: {
+    rank?: number;
+    title: string;
+    problem?: string;
+    action: string;
+    benefit?: string;
+    verify?: string;
+    impact: string;
+    effort?: string;
+  }[];
+  actionPlan?: {
+    rank?: number;
+    title: string;
+    problem?: string;
+    action: string;
+    benefit?: string;
+    verify?: string;
+    impact: string;
+    effort?: string;
+  }[];
+  expectedOutcome?: string;
 };
 
 export default function Home() {
@@ -156,7 +176,7 @@ export default function Home() {
 
             <div className="resultColumns">
               <div>
-                <div className="resultSectionTitle">Signals checked</div>
+                <div className="resultSectionTitle">What SeekSignal found</div>
                 <div className="checks">
                   {result.checks.map((check) => (
                     <div className="check" key={check.label}>
@@ -171,14 +191,45 @@ export default function Home() {
               </div>
 
               <div className="opportunities">
-                <div className="resultSectionTitle">Priority opportunities</div>
+                <div className="resultSectionTitle">Your prioritised action plan</div>
                 {result.opportunities.length ? result.opportunities.map((item) => (
-                  <div className="opportunity" key={item.title}>
-                    <div>
-                      <strong>{item.title}</strong>
-                      <em>{item.impact} impact</em>
+                  <div className="opportunity opportunityDetailed" key={item.title}>
+                    <div className="opportunityHead">
+                      <span className="opportunityRank">{String(item.rank || 1).padStart(2,"0")}</span>
+                      <div>
+                        <strong>{item.title}</strong>
+                        <div className="opportunityMeta">
+                          <em>{item.impact} impact</em>
+                          {item.effort ? <span>{item.effort} effort</span> : null}
+                        </div>
+                      </div>
                     </div>
-                    <p>{item.action}</p>
+
+                    {item.problem ? (
+                      <div className="actionBlock">
+                        <span>Why this matters</span>
+                        <p>{item.problem}</p>
+                      </div>
+                    ) : null}
+
+                    <div className="actionBlock fix">
+                      <span>What to change</span>
+                      <p>{item.action}</p>
+                    </div>
+
+                    {item.benefit ? (
+                      <div className="actionBlock benefit">
+                        <span>Expected benefit</span>
+                        <p>{item.benefit}</p>
+                      </div>
+                    ) : null}
+
+                    {item.verify ? (
+                      <div className="actionBlock verify">
+                        <span>How to verify</span>
+                        <p>{item.verify}</p>
+                      </div>
+                    ) : null}
                   </div>
                 )) : (
                   <p className="allGood">
@@ -187,6 +238,13 @@ export default function Home() {
                 )}
               </div>
             </div>
+
+            {result.expectedOutcome ? (
+              <div className="expectedOutcome">
+                <span>What happens next</span>
+                <strong>{result.expectedOutcome}</strong>
+              </div>
+            ) : null}
 
             <div className="resultActions">
               <div className="methodology">
