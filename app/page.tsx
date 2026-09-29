@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import LeadGate from "../components/LeadGate";
 
 type Result = {
+  leadId: string;
   score: number;
   url: string;
   summary: string;
@@ -189,7 +190,7 @@ export default function Home() {
                 <strong>What this score means</strong>
                 <span>{result.methodology}</span>
               </div>
-              <a href="/signup">Save report & start monitoring →</a>
+              <a href={`/signup?lead=${encodeURIComponent(result.leadId)}`}>Save report & start monitoring →</a>
             </div>
           </section>
         )}
