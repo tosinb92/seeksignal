@@ -114,3 +114,73 @@
 .actionBlock.implementation ol{margin:7px 0 0 18px;padding:0;color:#aab2ac;font-size:10px;line-height:1.65}
 .actionBlock.impact{border-color:rgba(255,194,102,.16);background:rgba(255,194,102,.035)}
 .actionBlock.impact span{color:#efc57b}
+
+
+/* Homepage visual assets */
+.heroAssetFrame{
+  position:relative;
+  max-width:1180px;
+  margin:0 auto;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:28px;
+  background:#080b0a;
+  box-shadow:0 42px 120px rgba(0,0,0,.48);
+}
+.heroAssetFrame:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  box-shadow:inset 0 0 0 1px rgba(196,248,115,.025);
+}
+.heroAssetFrame img{
+  display:block;
+  width:100%;
+  height:auto;
+}
+
+.howAsset{
+  overflow:hidden;
+  margin:-8px -8px 24px;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;
+  background:#f5f8f6;
+  aspect-ratio:16/9;
+}
+.howAsset img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.visibilityAsset{
+  position:absolute;
+  left:22px;
+  right:22px;
+  bottom:18px;
+  height:285px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  overflow:hidden;
+  border-radius:16px;
+}
+.visibilityAsset img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center bottom;
+}
+
+@media(max-width:1000px){
+  .visibilityAsset{height:250px}
+}
+@media(max-width:700px){
+  .productStage{margin-top:64px}
+  .heroAssetFrame{border-radius:18px}
+  .howAsset{margin:0 0 22px}
+  .featureLarge{min-height:570px}
+  .visibilityAsset{left:12px;right:12px;bottom:12px;height:255px}
+}
