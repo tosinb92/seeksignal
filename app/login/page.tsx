@@ -23,21 +23,24 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
 
-    const response = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form)
-    });
-    const data = await response.json();
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form)
+      });
+      const data = await response.json().catch(() => ({}));
 
-    if (!response.ok) {
-      setError(data.error || "Could not sign in.");
+      if (!response.ok) {
+        throw new Error(data.error || "Could not sign in.");
+      }
+
+      router.push("/app");
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not sign in.");
       setLoading(false);
-      return;
     }
-
-    router.push("/app");
-    router.refresh();
   }
 
   return (
