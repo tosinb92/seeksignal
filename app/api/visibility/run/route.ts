@@ -10,9 +10,9 @@ type Engine = {
 };
 
 const ENGINES: Engine[] = [
-  { name: "OpenAI", model: "openai/gpt-5.6-sol" },
-  { name: "Claude", model: "anthropic/claude-sonnet-5" },
-  { name: "Gemini", model: "google/gemini-3.1-pro-preview" },
+  { name: "OpenAI", model: "openai/gpt-5" },
+  { name: "Claude", model: "anthropic/claude-opus-5" },
+  { name: "Gemini", model: "google/gemini-3.8-flash" },
   { name: "Perplexity", model: "perplexity/sonar" }
 ];
 
@@ -351,6 +351,8 @@ export async function POST(request: Request) {
   const visibilityScore = Math.round((mentionCount / successful.length) * 100);
 
   const denominator = mentionCount + competitorMentionCount;
+  // This is a tracked mention-share metric across the tested answers, not a claim
+  // about a provider's proprietary recommendation ranking.
   const recommendationShare = denominator
     ? Math.round((mentionCount / denominator) * 1000) / 10
     : 0;
