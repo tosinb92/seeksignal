@@ -25,7 +25,12 @@ export default function OnboardingPage() {
     const response = await fetch("/api/onboarding", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form)
+      body: JSON.stringify({
+        ...form,
+        leadId:
+          (typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("lead") : null) ||
+          (typeof window !== "undefined" ? window.localStorage.getItem("seeksignalPendingLeadId") : null)
+      })
     });
     const data = await response.json();
 
@@ -35,6 +40,7 @@ export default function OnboardingPage() {
       return;
     }
 
+    if (typeof window !== "undefined") window.localStorage.removeItem("seeksignalPendingLeadId");
     router.push("/app");
     router.refresh();
   }
