@@ -104,11 +104,14 @@ export default function Home() {
         </form>
 
         <div className="heroMeta">
-          <span>No card required</span>
-          <i />
-          <span>Results in seconds</span>
-          <i />
+          <span>No card required</span><i />
+          <span>Results in seconds</span><i />
           <span>Website-readiness audit</span>
+        </div>
+        <div className="heroProof">
+          <div><strong>5</strong><span>AI discovery surfaces</span></div>
+          <div><strong>01</strong><span>Clear commercial score</span></div>
+          <div><strong>→</strong><span>Prioritised fixes, not vanity data</span></div>
         </div>
 
         {error && <div className="error">{error}</div>}
@@ -330,25 +333,27 @@ export default function Home() {
           </div>
 
           <div className="howGrid">
-            <article>
-              <i className="howIcon green">⌕</i><small>01</small>
-              <h3>Monitor</h3>
-              <p>Track how your brand is understood and surfaced across the AI platforms buyers increasingly use.</p>
+            <article className="howPrimary">
+              <div className="workflowPreview">
+                <div className="promptBubble"><span>Buyer prompt</span><strong>“Which provider should I choose?”</strong></div>
+                <div className="signalLine"><i/><span>Competitor recommended</span><b>Detected</b></div>
+                <div className="signalLine"><i/><span>Your brand visibility</span><b>24%</b></div>
+              </div>
+              <small>01 / Monitor</small>
+              <h3>See the recommendation gap.</h3>
+              <p>Track where your brand appears, where competitors win, and the AI journeys creating the gap.</p>
             </article>
             <article>
-              <i className="howIcon blue">▥</i><small>02</small>
-              <h3>Analyse</h3>
-              <p>Benchmark visibility, recommendation share and competitor presence so you know where you stand.</p>
+              <i className="howIcon blue">▥</i><small>02</small><h3>Analyse</h3>
+              <p>Benchmark recommendation share and identify the signals influencing visibility.</p>
             </article>
             <article>
-              <i className="howIcon violet">◇</i><small>03</small>
-              <h3>Optimise</h3>
-              <p>Receive prioritised actions to strengthen entity clarity, authority, content and AI readiness.</p>
+              <i className="howIcon violet">◇</i><small>03</small><h3>Optimise</h3>
+              <p>Turn evidence into prioritised fixes across authority, content and entity clarity.</p>
             </article>
             <article>
-              <i className="howIcon coral">↗</i><small>04</small>
-              <h3>Grow</h3>
-              <p>Turn stronger discoverability into more qualified visits, opportunities and measurable commercial value.</p>
+              <i className="howIcon coral">↗</i><small>04</small><h3>Verify & grow</h3>
+              <p>Re-test the changes and measure whether visibility actually improves over time.</p>
             </article>
           </div>
 
