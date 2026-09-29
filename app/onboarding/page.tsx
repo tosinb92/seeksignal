@@ -22,27 +22,30 @@ export default function OnboardingPage() {
     setLoading(true);
     setError("");
 
-    const response = await fetch("/api/onboarding", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ...form,
-        leadId:
-          (typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("lead") : null) ||
-          (typeof window !== "undefined" ? window.localStorage.getItem("seeksignalPendingLeadId") : null)
-      })
-    });
-    const data = await response.json();
+    try {
+      const response = await fetch("/api/onboarding", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...form,
+          leadId:
+            (typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("lead") : null) ||
+            (typeof window !== "undefined" ? window.localStorage.getItem("seeksignalPendingLeadId") : null)
+        })
+      });
+      const data = await response.json().catch(() => ({}));
 
-    if (!response.ok) {
-      setError(data.error || "Could not finish your workspace.");
+      if (!response.ok) {
+        throw new Error(data.error || "Could not finish your workspace.");
+      }
+
+      if (typeof window !== "undefined") window.localStorage.removeItem("seeksignalPendingLeadId");
+      router.push("/app");
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not finish your workspace.");
       setLoading(false);
-      return;
     }
-
-    if (typeof window !== "undefined") window.localStorage.removeItem("seeksignalPendingLeadId");
-    router.push("/app");
-    router.refresh();
   }
 
   return (
