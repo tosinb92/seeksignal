@@ -429,19 +429,19 @@ export function analyseWebsite(html: string, hostname: string) {
     },
     {
       name: "Structured data",
-      score: hasBusinessSchema ? 100 : hasSchema ? 55 : 20
+      score: hasBusinessSchema ? 100 : hasSchema ? 50 : 0
     },
     {
       name: "Answer coverage",
-      score: hasFaq ? 82 : 35
+      score: hasFaq ? 100 : 0
     },
     {
       name: "Trust & authority",
-      score: hasTrust ? 78 : 32
+      score: hasTrust ? 100 : 0
     },
     {
       name: "Commercial clarity",
-      score: hasCommercial ? 88 : 30
+      score: hasCommercial ? 100 : 0
     }
   ];
 
