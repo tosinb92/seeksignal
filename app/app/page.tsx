@@ -108,6 +108,23 @@ export default async function WorkspacePage() {
   const latestAiResponses = aiResponsesResponse?.ok ? await aiResponsesResponse.json() : [];
   const aiResponseByTest = new Map(latestAiResponses.map((item: any) => [item.prompt_test_id, item]));
 
+  const readinessScore = latestScan?.score != null ? Number(latestScan.score) : null;
+  const readinessChecks = Array.isArray(latestScan?.raw_result?.checks) ? latestScan.raw_result.checks : [];
+  const openIssues = readinessChecks.filter((item: any) => item.status === "warn");
+  const strongSignals = readinessChecks.filter((item: any) => item.status === "good");
+  const priorityActions = Array.isArray(latestScan?.raw_result?.opportunities)
+    ? latestScan.raw_result.opportunities.slice(0, 3)
+    : [];
+  const biggestOpportunity = priorityActions[0] || null;
+  const readinessLabel =
+    readinessScore == null
+      ? "No baseline yet"
+      : readinessScore >= 80
+        ? "Strong foundation. Important opportunities remain."
+        : readinessScore >= 55
+          ? "Good foundation. Several signals need attention."
+          : "Important gaps are limiting how clearly machines can understand this site.";
+
   return (
     <main className={styles.app}>
       <aside className={styles.sidebar}>
@@ -142,20 +159,62 @@ export default async function WorkspacePage() {
           </div>
         </header>
 
-        <div className={styles.notice}>
-          <div>
-            <span>Workspace active</span>
-            <strong>Your readiness scanning workspace is ready.</strong>
-          </div>
-          <p>Run readiness scans, track competitors and use opt-in provider-model testing to measure whether AI systems actually surface the brand.</p>
-        </div>
+        {latestScan ? (
+          <>
+            <section className={styles.resultHero}>
+              <div className={styles.scoreCard}>
+                <span className={styles.eyebrow}>Your AI readiness score</span>
+                <div className={styles.scoreValue}>{readinessScore}<small>/100</small></div>
+                <div className={styles.scoreTrack}><i style={{width: `${readinessScore}%`}} /></div>
+                <span className={styles.scoreFoot}>Website-readiness signals only — not proof of AI recommendation.</span>
+              </div>
 
-        <div className={styles.metrics}>
-          <article><span>AI Visibility</span><strong>{latestVisibility?.visibility_score != null ? latestVisibility.visibility_score + "%" : "—"}</strong><small>{latestVisibility ? "Latest provider-model run" : "Run first AI visibility test"}</small></article>
-          <article><span>Website readiness</span><strong>{latestScan?.score ?? "—"}</strong><small>{latestScan ? "Latest saved scan" : "Run first scan"}</small></article>
-          <article><span>Open opportunities</span><strong>{latestScan?.raw_result?.checks?.filter((item: any) => item.status === "warn").length ?? 0}</strong><small>{latestScan ? "From latest readiness scan" : "Run first scan"}</small></article>
-          <article className={styles.accent}><span>Competitors tracked</span><strong>{competitors.length}</strong><small>{competitors.length ? "Saved to this project" : "Add your first competitor"}</small></article>
-        </div>
+              <div className={styles.resultStory}>
+                <span className={styles.eyebrow}>Executive answer</span>
+                <h2>{readinessLabel}</h2>
+                <p>{latestScan.summary}</p>
+                <div className={styles.signalSummary}>
+                  <span><b>{strongSignals.length}</b> strong signals</span>
+                  <span><b>{openIssues.length}</b> opportunities</span>
+                  <span><b>{competitors.length}</b> competitors tracked</span>
+                </div>
+              </div>
+            </section>
+
+            <section className={styles.meaningPanel}>
+              <div className={styles.sectionHeading}>
+                <div>
+                  <span className={styles.eyebrow}>What this means for your business</span>
+                  <h2>Understand the commercial meaning before the technical detail.</h2>
+                </div>
+              </div>
+              <div className={styles.meaningGrid}>
+                <article>
+                  <span>01</span>
+                  <strong>{openIssues.length ? `${openIssues.length} readiness issues need attention` : "Your core readiness signals are strong"}</strong>
+                  <p>{openIssues.length ? "These are observable website signals that may make the business harder for search and AI retrieval systems to interpret clearly." : "No major readiness warnings were found in the latest scan. The next step is controlled AI visibility testing."}</p>
+                </article>
+                <article>
+                  <span>02</span>
+                  <strong>{biggestOpportunity ? biggestOpportunity.title : "No critical readiness issue detected"}</strong>
+                  <p>{biggestOpportunity?.problem || "Move from readiness into live provider-model testing and competitor benchmarking."}</p>
+                </article>
+                <article>
+                  <span>03</span>
+                  <strong>{latestVisibility ? `${latestVisibility.visibility_score}% observed model-level visibility` : "AI recommendation visibility has not been tested yet"}</strong>
+                  <p>{latestVisibility ? `Latest controlled run recorded ${latestVisibility.mention_count} brand mentions and ${latestVisibility.citation_count} citations.` : "A readiness score tells you whether the site provides clear signals. Run a separate provider-model test to measure whether AI systems actually surface the brand."}</p>
+                </article>
+              </div>
+            </section>
+          </>
+        ) : (
+          <section className={styles.emptyHero}>
+            <span className={styles.eyebrow}>Start with a baseline</span>
+            <h2>Find out how clearly your website explains the business to machines.</h2>
+            <p>SeekSignal checks observable website-readiness signals, turns weaknesses into a prioritised action plan, then lets you re-scan to verify improvement.</p>
+            <RunProjectScanButton projectId={project?.id || ""} className={styles.primaryLarge} label="Run baseline scan →" />
+          </section>
+        )}
 
         {project ? <RunVisibilityTest projectId={project.id} gatewayEnabled={gatewayEnabled} /> : null}
 
@@ -231,50 +290,104 @@ export default async function WorkspacePage() {
           </section>
         ) : null}
 
-        <div className={styles.grid} id="readiness">
-          <section className={styles.panel}>
-            <div className={styles.panelHead}>
-              <div>
-                <span>Next best action</span>
-                <h2>{latestScan ? "Fix the highest-impact readiness gaps." : "Run your baseline scan."}</h2>
-              </div>
-              <b>High impact</b>
+        <section className={styles.prioritySection} id="readiness">
+          <div className={styles.sectionHeading}>
+            <div>
+              <span className={styles.eyebrow}>Your priority action plan</span>
+              <h2>{latestScan ? "Fix these first." : "Run a baseline scan to create your action plan."}</h2>
+              <p>{latestScan ? "Prioritised from the actual findings in your latest scan. Open each item for implementation guidance and verification steps." : "SeekSignal will rank genuine findings by impact after the first scan."}</p>
             </div>
-            <p>{latestScan?.summary || "SeekSignal needs a baseline before it can show progress, historical movement and the highest-priority fixes for this project."}</p>
+            {latestScan ? <RunProjectScanButton projectId={project?.id || ""} className={styles.secondary} label="Re-scan website" /> : null}
+          </div>
 
-            {latestScan?.raw_result?.opportunities?.length ? (
-              <div style={{display:"grid",margin:"18px 0"}}>
-                {latestScan.raw_result.opportunities.slice(0,3).map((item: any, index: number) => (
-                  <div key={index} style={{padding:"11px 0",borderTop:"1px solid rgba(255,255,255,.055)"}}>
-                    <div style={{display:"flex",justifyContent:"space-between",gap:12}}>
-                      <strong style={{fontSize:10}}>{item.title}</strong>
-                      <span style={{fontSize:8,color:item.impact==="High"?"#c4f873":"#d8bd87"}}>{item.impact} impact</span>
+          {priorityActions.length ? (
+            <div className={styles.priorityGrid}>
+              {priorityActions.map((item: any, index: number) => (
+                <article className={styles.priorityCard} key={item.title}>
+                  <div className={styles.priorityTop}>
+                    <span className={styles.priorityNumber}>{String(index + 1).padStart(2,"0")}</span>
+                    <div className={styles.badges}>
+                      <span>{item.impact} impact</span>
+                      {item.effort ? <span>{item.effort} effort</span> : null}
                     </div>
-                    {item.evidence ? <p style={{margin:"5px 0 0",fontSize:9,color:"#7f8a83"}}><strong>Observed:</strong> {item.evidence}</p> : null}
-                    <p style={{margin:"5px 0 0",fontSize:9}}><strong>Do this:</strong> {item.action}</p>
-                    {item.expectedImpact ? <p style={{margin:"5px 0 0",fontSize:9,color:"#a9b3ac"}}><strong>Expected impact:</strong> {item.expectedImpact}</p> : null}
-                    {item.implementation?.length ? (
-                      <ol style={{margin:"7px 0 0 18px",padding:0,color:"#89938c",fontSize:9,lineHeight:1.55}}>
-                        {item.implementation.slice(0,3).map((step: string, stepIndex: number) => <li key={stepIndex}>{step}</li>)}
-                      </ol>
-                    ) : null}
                   </div>
-                ))}
-              </div>
-            ) : null}
+                  <h3>{item.title}</h3>
 
-            <RunProjectScanButton projectId={project?.id || ""} className={styles.primary} label={latestScan ? "Re-scan after changes →" : "Run baseline scan →"} />
-          </section>
+                  {item.evidence ? (
+                    <div className={styles.actionRow}>
+                      <span>What we observed</span>
+                      <p>{item.evidence}</p>
+                    </div>
+                  ) : null}
 
-          <section className={styles.panel}>
-            <div className={styles.panelHead}><div><span>Project profile</span><h2>{project?.domain}</h2></div></div>
-            <div className={styles.details}>
-              <div><span>Market</span><strong>{project?.market || "Not set"}</strong></div>
-              <div><span>Category</span><strong>{project?.category || "Not set"}</strong></div>
-              <div><span>Status</span><strong>Active</strong></div>
+                  {item.problem ? (
+                    <div className={styles.actionRow}>
+                      <span>Why this matters</span>
+                      <p>{item.problem}</p>
+                    </div>
+                  ) : null}
+
+                  <div className={styles.actionRowStrong}>
+                    <span>What to do</span>
+                    <p>{item.action}</p>
+                  </div>
+
+                  {item.expectedImpact ? (
+                    <div className={styles.actionRow}>
+                      <span>Expected benefit</span>
+                      <p>{item.expectedImpact}</p>
+                    </div>
+                  ) : null}
+
+                  {item.implementation?.length ? (
+                    <details className={styles.implementation}>
+                      <summary>Show implementation instructions</summary>
+                      <ol>
+                        {item.implementation.map((step: string, stepIndex: number) => <li key={stepIndex}>{step}</li>)}
+                      </ol>
+                    </details>
+                  ) : null}
+
+                  {item.verify ? (
+                    <div className={styles.verifyRow}>
+                      <span>Verify</span>
+                      <p>{item.verify}</p>
+                    </div>
+                  ) : null}
+                </article>
+              ))}
             </div>
-          </section>
-        </div>
+          ) : latestScan ? (
+            <div className={styles.allClear}>
+              <strong>No fundamental readiness warnings were found.</strong>
+              <p>Move on to controlled AI visibility testing, competitor benchmarking and deeper content/authority analysis.</p>
+            </div>
+          ) : null}
+        </section>
+
+        {latestScan ? (
+          <details className={styles.technicalEvidence}>
+            <summary>
+              <div>
+                <span className={styles.eyebrow}>Technical evidence</span>
+                <strong>See every signal checked in the latest scan</strong>
+              </div>
+              <b>{readinessChecks.length} checks</b>
+            </summary>
+            <div className={styles.evidenceList}>
+              {readinessChecks.map((check: any) => (
+                <div className={styles.evidenceItem} key={check.label}>
+                  <i className={check.status === "good" ? styles.goodDot : styles.warnDot} />
+                  <div>
+                    <strong>{check.label}</strong>
+                    <p>{check.evidence}</p>
+                    <small>{check.detail}</small>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </details>
+        ) : null}
 
         <section id="reports" className={styles.panel} style={{marginTop:11,minHeight:0}}>
           <div className={styles.panelHead}>
