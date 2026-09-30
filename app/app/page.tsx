@@ -162,21 +162,38 @@ export default async function WorkspacePage() {
         {latestScan ? (
           <>
             <section className={styles.resultHero}>
-              <div className={styles.scoreCard}>
-                <span className={styles.eyebrow}>Your AI readiness score</span>
-                <div className={styles.scoreValue}>{readinessScore}<small>/100</small></div>
-                <div className={styles.scoreTrack}><i style={{width: `${readinessScore}%`}} /></div>
-                <span className={styles.scoreFoot}>Website-readiness signals only — not proof of AI recommendation.</span>
+              <div className={styles.websitePreviewCard}>
+                <div className={styles.websitePreviewBar}>
+                  <span><i /> Website analysed</span>
+                  <strong>{project?.domain}</strong>
+                </div>
+                <img
+                  src={`https://image.thum.io/get/width/1200/crop/900/https://${project?.domain}`}
+                  alt={`Screenshot of ${project?.domain} analysed by SeekSignal`}
+                />
+                <div className={styles.websitePreviewCaption}>
+                  <span>Actual website</span>
+                  <strong>{project?.domain}</strong>
+                </div>
               </div>
 
-              <div className={styles.resultStory}>
-                <span className={styles.eyebrow}>Executive answer</span>
-                <h2>{readinessLabel}</h2>
-                <p>{latestScan.summary}</p>
-                <div className={styles.signalSummary}>
-                  <span><b>{strongSignals.length}</b> strong signals</span>
-                  <span><b>{openIssues.length}</b> opportunities</span>
-                  <span><b>{competitors.length}</b> competitors tracked</span>
+              <div className={styles.resultHeroStack}>
+                <div className={styles.scoreCard}>
+                  <span className={styles.eyebrow}>Your AI readiness score</span>
+                  <div className={styles.scoreValue}>{readinessScore}<small>/100</small></div>
+                  <div className={styles.scoreTrack}><i style={{width: `${readinessScore}%`}} /></div>
+                  <span className={styles.scoreFoot}>Website-readiness signals only — not proof of AI recommendation.</span>
+                </div>
+
+                <div className={styles.resultStory}>
+                  <span className={styles.eyebrow}>Executive answer</span>
+                  <h2>{readinessLabel}</h2>
+                  <p>{latestScan.summary}</p>
+                  <div className={styles.signalSummary}>
+                    <span><b>{strongSignals.length}</b> strong signals</span>
+                    <span><b>{openIssues.length}</b> opportunities</span>
+                    <span><b>{competitors.length}</b> competitors tracked</span>
+                  </div>
                 </div>
               </div>
             </section>
