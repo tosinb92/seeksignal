@@ -106,50 +106,77 @@ export default function Home() {
         </a>
 
         <nav className="mainNav">
-          <a href="#platform">Platform</a>
-          <a href="#intelligence">Intelligence</a>
-          <a href="#methodology">Methodology</a>
+          <a href="#platform">Product</a>
+          <a href="#intelligence">Solutions</a>
+          <a href="#methodology">How it works</a>
+          <a href="#scan">Free audit</a>
         </nav>
 
         <div className="navActions">
           <a className="loginLink" href="/login">Sign in</a>
-          <a className="navCta" href="#scan">Run free audit</a>
+          <a className="navCta" href="#scan">Get started <span>→</span></a>
         </div>
       </header>
 
       <section className="hero shell">
-        <div className="heroBadge"><span /> AI discovery intelligence</div>
-        <h1>
-          See where AI sends your buyers
-          <em> — and why it isn’t you.</em>
-        </h1>
-        <p className="heroCopy">
-          Start with a real website-readiness audit, then use controlled AI-model tests to measure
-          whether your brand is actually being surfaced, who appears instead, and what to improve next.
-        </p>
+        <div className="heroBackdrop" />
+        <div className="heroSplit">
+          <div className="heroContent">
+            <div className="heroBadge"><span /> The AI visibility platform</div>
+            <h1>
+              Be the brand
+              <em> AI recommends.</em>
+            </h1>
+            <p className="heroCopy">
+              See how your business appears across AI discovery, understand which competitors are winning attention,
+              and turn real evidence into the next actions that can improve your visibility.
+            </p>
 
-        <form id="scan" className="scanBox" onSubmit={startAudit}>
-          <div className="scanInput">
-            <span className="scanIcon">↗</span>
-            <input
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              placeholder="Enter your website — example.com"
-              required
-            />
+            <form id="scan" className="scanBox" onSubmit={startAudit}>
+              <div className="scanInput">
+                <span className="scanIcon">↗</span>
+                <input
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  placeholder="Enter your website — example.com"
+                  required
+                />
+              </div>
+              <button>Analyse my website <span>→</span></button>
+            </form>
+
+            <div className="heroMeta">
+              <span>No card required</span><i />
+              <span>Results in seconds</span><i />
+              <span>Actionable recommendations</span>
+            </div>
+
+            <div className="heroTrustPoints">
+              <span><i>✓</i> Website readiness</span>
+              <span><i>✓</i> AI visibility</span>
+              <span><i>✓</i> Competitor intelligence</span>
+            </div>
           </div>
-          <button>Run free AI readiness audit</button>
-        </form>
 
-        <div className="heroMeta">
-          <span>No card required</span><i />
-          <span>Results in seconds</span><i />
-          <span>Website-readiness audit</span>
+          <div className="heroVisualPremium" id="platform">
+            <div className="heroVisualGlow" />
+            <img
+              src="/assets/homepage/home--hero--primary-visual--01.png"
+              alt="SeekSignal AI visibility dashboard across desktop and mobile."
+            />
+            <div className="heroVisualBadge">
+              <span>AI visibility</span>
+              <strong>68</strong>
+              <small>Example interface</small>
+            </div>
+          </div>
         </div>
+
         <div className="heroProof">
-          <div><strong>4</strong><span>AI model providers in visibility tests</span></div>
-          <div><strong>9</strong><span>Observable website signals checked</span></div>
-          <div><strong>→</strong><span>Prioritised fixes, not vanity data</span></div>
+          <div><strong>4</strong><span>AI providers in controlled visibility testing</span></div>
+          <div><strong>9</strong><span>Observable website readiness signals</span></div>
+          <div><strong>3</strong><span>Clear priorities before technical detail</span></div>
+          <div><strong>1</strong><span>Workspace built around what to do next</span></div>
         </div>
 
         {error && <div className="error">{error}</div>}
@@ -304,7 +331,7 @@ export default function Home() {
         )}
 
         {!result && !showGate && (
-          <div className="productStage" id="platform">
+          <div className="productStage productStageLegacy">
             <div className="productGlow" />
             <div className="productWindow">
               <div className="windowBar">
@@ -419,7 +446,7 @@ export default function Home() {
       </section>
 
       <section className="engineStrip shell">
-        <span>Designed for the new buying journey</span>
+        <span>Built for the AI discovery platforms shaping buyer decisions</span>
         <div className="engineBrands">
           <b><i className="brandIcon openai" aria-hidden="true" />OpenAI</b>
           <b><i className="brandIcon google" aria-hidden="true" />Google Gemini</b>
@@ -433,8 +460,8 @@ export default function Home() {
         <div className="shell">
           <div className="howIntro">
             <span>How it works</span>
-            <h2>Turn AI visibility into <em>real business growth.</em></h2>
-            <p>SeekSignal turns scattered AI signals into a clear commercial workflow your team can understand and act on.</p>
+            <h2>A clear path from <em>signal to action.</em></h2>
+            <p>See what AI can understand, measure where your brand appears, compare the competition and act on the highest-value opportunities.</p>
           </div>
 
           <div className="howGrid">
@@ -471,8 +498,8 @@ export default function Home() {
 
       <section className="editorialSection shell" id="intelligence">
         <div className="sectionIntro">
-          <span>01 / Intelligence</span>
-          <h2>AI discovery is becoming a commercial channel. Treat it like one.</h2>
+          <span>Platform intelligence</span>
+          <h2>Everything you need to understand and improve AI visibility.</h2>
           <p>
             Search is changing from a list of links into a recommendation layer.
             SeekSignal gives your team a measurable way to see where you appear, where you do not,
@@ -534,7 +561,7 @@ export default function Home() {
       <section className="conversionBand shell">
         <div>
           <span>Free diagnostic</span>
-          <h2>Find out what AI can understand about your business today.</h2>
+          <h2>See where your brand stands in AI discovery — and what to improve next.</h2>
         </div>
         <a href="#scan">Run my free audit →</a>
       </section>
