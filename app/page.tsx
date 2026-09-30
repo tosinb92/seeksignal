@@ -466,14 +466,13 @@ export default function Home() {
 
           <div className="howGrid">
             <article className="howPrimary">
-              <div className="workflowPreview">
-                <div className="promptBubble"><span>Buyer prompt</span><strong>“Which provider should I choose?”</strong></div>
-                <div className="signalLine"><i/><span>Competitor recommended</span><b>Detected</b></div>
-                <div className="signalLine"><i/><span>Your brand visibility</span><b>24%</b></div>
+              <img className="howPrimaryImage" src="/assets/homepage/home--how-it-works--buyer-ai-journey--01.png" alt="AI buyer journey showing recommendation signals and brand visibility." />
+              <div className="howPrimaryOverlay" />
+              <div className="howPrimaryCopy">
+                <small>01 / Monitor</small>
+                <h3>See the recommendation gap.</h3>
+                <p>Track where your brand appears, where competitors win, and the AI journeys creating the gap.</p>
               </div>
-              <small>01 / Monitor</small>
-              <h3>See the recommendation gap.</h3>
-              <p>Track where your brand appears, where competitors win, and the AI journeys creating the gap.</p>
             </article>
             <article>
               <i className="howIcon blue">▥</i><small>02</small><h3>Analyse</h3>
@@ -512,7 +511,7 @@ export default function Home() {
             <span>Visibility monitoring</span>
             <h3>Track whether your brand is actually showing up.</h3>
             <p>Monitor mentions, recommendation presence and citation patterns across the AI journeys your buyers use.</p>
-            <div className="miniChart"><i/><i/><i/><i/><i/><i/><i/><i/></div>
+            <img className="visibilityFeatureImage" src="/assets/homepage/home--visibility-monitoring--ai-presence-timeline--01.png" alt="AI visibility timeline across multiple AI platforms." />
           </article>
 
           <article className="featureCard light">
@@ -536,6 +535,33 @@ export default function Home() {
               <div><i className="medium"/>Buyer questions <em>Medium</em></div>
             </div>
           </article>
+        </div>
+      </section>
+
+      <section className="customerProofBand">
+        <div className="shell customerProofGrid">
+          <div className="customerProofMedia">
+            <img src="/assets/homepage/home--commercial-channel--buyer-researching-with-ai--01.png" alt="Business buyer researching providers with AI." />
+          </div>
+          <div className="customerProofCopy">
+            <span>Why this matters</span>
+            <h2>AI is becoming part of how buyers decide who makes the shortlist.</h2>
+            <p>SeekSignal helps marketing and commercial teams understand whether their website is clear enough for machine discovery, whether AI systems actually surface the brand, and where competitors are winning attention instead.</p>
+            <div className="customerProofPoints">
+              <div><b>01</b><strong>See your real website</strong><p>Every report is tied to the exact domain being analysed, with a live homepage snapshot.</p></div>
+              <div><b>02</b><strong>Separate readiness from visibility</strong><p>We do not pretend a technically strong site automatically means an AI platform recommends you.</p></div>
+              <div><b>03</b><strong>Know what to do next</strong><p>Findings become prioritised actions with evidence, implementation guidance and a re-test path.</p></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="proofStatsBand">
+        <div className="shell proofStats">
+          <div><strong>4</strong><span>AI providers supported in controlled visibility testing</span></div>
+          <div><strong>9</strong><span>Core website-readiness signals checked</span></div>
+          <div><strong>3</strong><span>Highest-priority fixes shown first</span></div>
+          <div><strong>1</strong><span>Clear next action at every stage</span></div>
         </div>
       </section>
 
