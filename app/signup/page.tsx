@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import styles from "../login/auth.module.css";
+import { trackEvent } from "../../lib/analytics/client";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -32,6 +33,7 @@ export default function SignupPage() {
         throw new Error(data.error || "Could not create your account.");
       }
 
+      void trackEvent("signup_completed", { leadId: leadId || undefined });
       if (data.needsEmailConfirmation) {
         setSent(true);
         setLoading(false);
