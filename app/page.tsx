@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import LeadGate from "../components/LeadGate";
+import { trackEvent } from "../lib/analytics/client";
 
 type Result = {
   leadId: string;
@@ -58,6 +59,7 @@ export default function Home() {
       return;
     }
 
+    void trackEvent("audit_started", { metadata: { website: url.trim() } });
     setShowGate(true);
   }
 
@@ -78,8 +80,11 @@ export default function Home() {
 
       setResult(data);
       setShowGate(false);
+      void trackEvent("audit_completed", { leadId: data.leadId, metadata: { score: data.score, website: data.url } });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Audit failed");
+      const message = err instanceof Error ? err.message : "Audit failed";
+      setError(message);
+      void trackEvent("audit_failed", { metadata: { website: url.trim(), message } });
     } finally {
       setLoading(false);
     }
@@ -281,7 +286,7 @@ export default function Home() {
                 <strong>What this score means</strong>
                 <span>{result.methodology}</span>
               </div>
-              <a href={`/signup?lead=${encodeURIComponent(result.leadId)}`}>Create free workspace, save this report & re-test →</a>
+              <a onClick={() => void trackEvent("signup_clicked", { leadId: result.leadId })} href={`/signup?lead=${encodeURIComponent(result.leadId)}`}>Create free workspace, save this report & re-test →</a>
             </div>
           </section>
         )}
