@@ -55,7 +55,7 @@ export default async function WorkspacePage() {
           accessToken
         ),
         supabaseRest(
-          "/rest/v1/visibility_snapshots?select=id,visibility_score,recommendation_share,mention_count,citation_count,engine_breakdown,captured_at&project_id=eq." + encodeURIComponent(project.id) + "&order=captured_at.desc&limit=1",
+          "/rest/v1/visibility_snapshots?select=id,visibility_score,recommendation_share,mention_count,citation_count,engine_breakdown,captured_at&project_id=eq." + encodeURIComponent(project.id) + "&order=captured_at.desc&limit=10",
           { method: "GET" },
           accessToken
         )
@@ -67,7 +67,13 @@ export default async function WorkspacePage() {
   const reports = reportResponse?.ok ? await reportResponse.json() : [];
   const visibilitySnapshots = visibilityResponse?.ok ? await visibilityResponse.json() : [];
   const latestScan = scans?.[0] || null;
+  const previousScan = scans?.[1] || null;
   const latestVisibility = visibilitySnapshots?.[0] || null;
+  const previousVisibility = visibilitySnapshots?.[1] || null;
+  const readinessDelta = latestScan && previousScan ? Number(latestScan.score) - Number(previousScan.score) : null;
+  const visibilityDelta = latestVisibility && previousVisibility
+    ? Number(latestVisibility.visibility_score) - Number(previousVisibility.visibility_score)
+    : null;
   const gatewayEnabled = Boolean(process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN);
 
   const latestPromptSetResponse = project?.id
@@ -186,6 +192,42 @@ export default async function WorkspacePage() {
                 </div>
               </div>
             ) : null}
+          </section>
+        ) : null}
+
+        {(previousScan || previousVisibility) ? (
+          <section className={styles.panel} style={{marginTop:11,minHeight:0}}>
+            <div className={styles.panelHead}>
+              <div>
+                <span>Before vs after</span>
+                <h2>Measure whether your changes are actually improving anything.</h2>
+              </div>
+            </div>
+            <div className={styles.metrics} style={{marginTop:14}}>
+              <article>
+                <span>Website readiness change</span>
+                <strong>{readinessDelta == null ? "—" : (readinessDelta > 0 ? "+" : "") + readinessDelta}</strong>
+                <small>{previousScan ? `${previousScan.score} → ${latestScan?.score}` : "Run another scan to compare"}</small>
+              </article>
+              <article>
+                <span>AI visibility change</span>
+                <strong>{visibilityDelta == null ? "—" : (visibilityDelta > 0 ? "+" : "") + visibilityDelta + " pts"}</strong>
+                <small>{previousVisibility ? `${previousVisibility.visibility_score}% → ${latestVisibility?.visibility_score}%` : "Run another AI visibility test to compare"}</small>
+              </article>
+              <article>
+                <span>Brand mentions</span>
+                <strong>{latestVisibility?.mention_count ?? "—"}</strong>
+                <small>{previousVisibility ? `Previously ${previousVisibility.mention_count}` : "Latest controlled model run"}</small>
+              </article>
+              <article className={styles.accent}>
+                <span>Citations observed</span>
+                <strong>{latestVisibility?.citation_count ?? "—"}</strong>
+                <small>{previousVisibility ? `Previously ${previousVisibility.citation_count}` : "Latest controlled model run"}</small>
+              </article>
+            </div>
+            <p style={{marginTop:14,color:"#707a73",fontSize:10,lineHeight:1.6}}>
+              Improvement here is evidence of movement, not proof that any single change caused it. Use the same prompts and comparable site conditions when re-testing.
+            </p>
           </section>
         ) : null}
 
