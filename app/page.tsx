@@ -289,11 +289,113 @@ export default function Home() {
         {!result && !showGate && (
           <div className="productStage" id="platform">
             <div className="productGlow" />
-            <div className="heroAssetFrame">
-              <img
-                src="/assets/homepage/home--hero--primary-visual--01.png"
-                alt="SeekSignal AI visibility dashboard showing brand visibility, AI search presence and competitive performance signals."
-              />
+            <div className="productWindow">
+              <div className="windowBar">
+                <div className="traffic"><i/><i/><i/></div>
+                <span>acme.com / intelligence overview</span>
+                <div className="windowLive"><b/> Example workspace</div>
+              </div>
+
+              <div className="productApp">
+                <aside className="productSidebar">
+                  <div className="sideBrand"><span className="brandMark small">S</span>SeekSignal</div>
+                  <div className="projectPicker"><small>Project</small><strong>Acme</strong><span>⌄</span></div>
+                  <nav aria-label="Example workspace navigation">
+                    <span className="active">Overview</span>
+                    <span>AI visibility</span>
+                    <span>Website readiness</span>
+                    <span>Competitors</span>
+                    <span>Opportunities</span>
+                    <span>Reports</span>
+                  </nav>
+                  <div className="sideFooter"><span>Example monitoring</span><b>●</b></div>
+                </aside>
+
+                <div className="productMain">
+                  <div className="productHeader">
+                    <div>
+                      <span>Overview</span>
+                      <h3>Your visibility across AI discovery.</h3>
+                    </div>
+                    <span className="demoFilter">Last 30 days⌄</span>
+                  </div>
+
+                  <div className="heroMetrics">
+                    <article>
+                      <span>Visibility score</span>
+                      <strong>68</strong>
+                      <small>↑ 12 this month</small>
+                    </article>
+                    <article>
+                      <span>Recommendation share</span>
+                      <strong>24%</strong>
+                      <small>↑ 6.4 pts</small>
+                    </article>
+                    <article>
+                      <span>Tracked answers</span>
+                      <strong>184</strong>
+                      <small>Across 4 providers</small>
+                    </article>
+                  </div>
+
+                  <div className="intelligenceGrid">
+                    <section className="trendPanel">
+                      <div className="panelTitle">
+                        <div><span>Visibility trend</span><strong>+18.4%</strong></div>
+                        <small>May — Sep</small>
+                      </div>
+                      <div className="chart">
+                        <div className="gridLines"><i/><i/><i/><i/></div>
+                        <svg viewBox="0 0 620 210" preserveAspectRatio="none">
+                          <defs>
+                            <linearGradient id="fill" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="currentColor" stopOpacity=".18"/>
+                              <stop offset="100%" stopColor="currentColor" stopOpacity="0"/>
+                            </linearGradient>
+                          </defs>
+                          <path d="M0,180 C55,164 86,173 122,150 S184,157 222,121 S292,137 332,94 S404,108 447,67 S540,88 620,26 L620,210 L0,210Z" fill="url(#fill)"/>
+                          <path d="M0,180 C55,164 86,173 122,150 S184,157 222,121 S292,137 332,94 S404,108 447,67 S540,88 620,26" fill="none" stroke="currentColor" strokeWidth="3"/>
+                        </svg>
+                        <div className="axis"><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span></div>
+                      </div>
+                    </section>
+
+                    <section className="sharePanel">
+                      <div className="panelTitle"><div><span>Recommendation share</span><strong>24%</strong></div><small>vs tracked competitors</small></div>
+                      <div className="shareBody">
+                        <div className="donut"><span>24<small>%</small></span></div>
+                        <div className="legend">
+                          <div><i className="brandKey"/><span>Your brand</span><strong>24%</strong></div>
+                          <div><i/><span>Competitor A</span><strong>31%</strong></div>
+                          <div><i/><span>Competitor B</span><strong>18%</strong></div>
+                          <div><i/><span>Other</span><strong>27%</strong></div>
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+
+                  <div className="bottomGrid">
+                    <section className="enginePanel">
+                      <div className="panelTitle"><div><span>Engine coverage</span><strong>4 tracked</strong></div><small>Visibility score</small></div>
+                      <div className="engineRows">
+                        <div><span>OpenAI</span><b><i style={{width:"78%"}}/></b><strong>78</strong></div>
+                        <div><span>Gemini</span><b><i style={{width:"64%"}}/></b><strong>64</strong></div>
+                        <div><span>Perplexity</span><b><i style={{width:"58%"}}/></b><strong>58</strong></div>
+                        <div><span>Claude</span><b><i style={{width:"42%"}}/></b><strong>42</strong></div>
+                      </div>
+                    </section>
+
+                    <section className="actionsPanel">
+                      <div className="panelTitle"><div><span>Next best actions</span><strong>7 open</strong></div><small>Prioritised by impact</small></div>
+                      <div className="actionRows">
+                        <div><i/><strong>Add service schema</strong><em>High</em></div>
+                        <div><i/><strong>Strengthen entity signals</strong><em>High</em></div>
+                        <div><i className="medium"/><strong>Answer buyer questions</strong><em>Medium</em></div>
+                      </div>
+                    </section>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -320,11 +422,10 @@ export default function Home() {
 
           <div className="howGrid">
             <article className="howPrimary">
-              <div className="howAsset">
-                <img
-                  src="/assets/homepage/home--how-it-works--buyer-ai-journey--01.png"
-                  alt="Buyer question moving through AI search and producing a shortlist of recommended brands."
-                />
+              <div className="workflowPreview">
+                <div className="promptBubble"><span>Buyer prompt</span><strong>“Which provider should I choose?”</strong></div>
+                <div className="signalLine"><i/><span>Competitor recommended</span><b>Detected</b></div>
+                <div className="signalLine"><i/><span>Your brand visibility</span><b>24%</b></div>
               </div>
               <small>01 / Monitor</small>
               <h3>See the recommendation gap.</h3>
@@ -367,12 +468,7 @@ export default function Home() {
             <span>Visibility monitoring</span>
             <h3>Track whether your brand is actually showing up.</h3>
             <p>Monitor mentions, recommendation presence and citation patterns across the AI journeys your buyers use.</p>
-            <div className="visibilityAsset">
-              <img
-                src="/assets/homepage/home--visibility-monitoring--ai-presence-timeline--01.png"
-                alt="SeekSignal timeline showing brand recommendation visibility across multiple AI platforms over time."
-              />
-            </div>
+            <div className="miniChart"><i/><i/><i/><i/><i/><i/><i/><i/></div>
           </article>
 
           <article className="featureCard light">
@@ -434,5 +530,3 @@ export default function Home() {
     </main>
   );
 }
-
-// deployment-retrigger-2026-09-30
