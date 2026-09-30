@@ -39,6 +39,13 @@ type Result = {
     effort?: string;
   }[];
   expectedOutcome?: string;
+  quickWins?: {
+    title: string;
+    impact: string;
+    effort?: string;
+    action: string;
+    expectedImpact?: string;
+  }[];
 };
 
 export default function Home() {
@@ -184,6 +191,25 @@ export default function Home() {
                 </div>
               ))}
             </div>
+
+            {result.quickWins?.length ? (
+              <section className="quickWins">
+                <div className="resultSectionTitle">Start here — your top 3 fixes</div>
+                <div className="quickWinsGrid">
+                  {result.quickWins.map((item, index) => (
+                    <article key={item.title}>
+                      <span className="quickWinNumber">{String(index + 1).padStart(2,"0")}</span>
+                      <div>
+                        <strong>{item.title}</strong>
+                        <small>{item.impact} impact{item.effort ? ` · ${item.effort} effort` : ""}</small>
+                        <p>{item.action}</p>
+                        {item.expectedImpact ? <em>{item.expectedImpact}</em> : null}
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </section>
+            ) : null}
 
             <div className="resultColumns">
               <div>
