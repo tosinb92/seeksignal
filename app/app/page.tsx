@@ -125,6 +125,23 @@ export default async function WorkspacePage() {
           ? "Good foundation. Several signals need attention."
           : "Important gaps are limiting how clearly machines can understand this site.";
 
+  const activationStep =
+    !latestScan ? 1 :
+    !latestVisibility ? 2 :
+    competitors.length === 0 ? 3 : 4;
+
+  const activationTitle =
+    activationStep === 1 ? "First, let’s understand your website." :
+    activationStep === 2 ? "Now find out whether AI actually recommends you." :
+    activationStep === 3 ? "Now compare yourself with the brands buyers may see instead." :
+    "You have enough signal to start improving visibility.";
+
+  const activationCopy =
+    activationStep === 1 ? "We’ll scan the website you just added and turn the findings into a short, prioritised action plan." :
+    activationStep === 2 ? "Website readiness is only the foundation. This test checks real provider-model responses so you can see whether your brand is being surfaced." :
+    activationStep === 3 ? "Competitors make the results commercially useful. Add the brands you genuinely compete with so SeekSignal can show where the recommendation gap is." :
+    "Your workspace now has readiness, AI visibility and competitor context. Focus on the highest-impact actions and re-test after changes.";
+
   return (
     <main className={styles.app}>
       <aside className={styles.sidebar}>
@@ -158,6 +175,56 @@ export default async function WorkspacePage() {
             <a className={styles.primary} href="#competitors" style={{display:"inline-flex",alignItems:"center"}}>Add competitor</a>
           </div>
         </header>
+
+        <section className={styles.customerJourney}>
+          <div className={styles.journeyIntro}>
+            <span className={styles.eyebrow}>Your SeekSignal journey</span>
+            <h2>Answer three questions, in the right order.</h2>
+            <p>Don’t think of this as a dashboard. SeekSignal is here to answer: <strong>Are you visible?</strong> <strong>Who is winning instead?</strong> and <strong>What should you change next?</strong></p>
+          </div>
+
+          <div className={styles.journeySteps}>
+            <div className={activationStep > 1 ? styles.journeyDone : activationStep === 1 ? styles.journeyActive : ""}>
+              <span>01</span>
+              <strong>Understand your website</strong>
+              <small>{latestScan ? "Complete" : "Start here"}</small>
+            </div>
+            <div className={activationStep > 2 ? styles.journeyDone : activationStep === 2 ? styles.journeyActive : ""}>
+              <span>02</span>
+              <strong>Check real AI visibility</strong>
+              <small>{latestVisibility ? "Complete" : activationStep === 2 ? "Next" : "Locked until step 1"}</small>
+            </div>
+            <div className={activationStep > 3 ? styles.journeyDone : activationStep === 3 ? styles.journeyActive : ""}>
+              <span>03</span>
+              <strong>Compare competitors</strong>
+              <small>{competitors.length ? "Complete" : activationStep === 3 ? "Next" : "Add after visibility test"}</small>
+            </div>
+            <div className={activationStep === 4 ? styles.journeyActive : ""}>
+              <span>04</span>
+              <strong>Improve & re-test</strong>
+              <small>{activationStep === 4 ? "Your focus now" : "Final step"}</small>
+            </div>
+          </div>
+
+          <div className={styles.nextBestAction}>
+            <div>
+              <span className={styles.eyebrow}>Your next best action</span>
+              <h3>{activationTitle}</h3>
+              <p>{activationCopy}</p>
+            </div>
+            <div className={styles.nextActionControl}>
+              {activationStep === 1 ? (
+                <RunProjectScanButton projectId={project?.id || ""} className={styles.primaryLarge} label="Analyse my website →" />
+              ) : activationStep === 2 ? (
+                <a className={styles.primaryLarge} href="#ai-visibility">Check my AI visibility →</a>
+              ) : activationStep === 3 ? (
+                <a className={styles.primaryLarge} href="#competitors">Add competitors →</a>
+              ) : (
+                <a className={styles.primaryLarge} href="#readiness">See what to fix first →</a>
+              )}
+            </div>
+          </div>
+        </section>
 
         {latestScan ? (
           <>
