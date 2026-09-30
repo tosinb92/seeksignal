@@ -147,7 +147,14 @@ export default function Home() {
             <div className="heroMeta">
               <span>Free diagnostic</span><i />
               <span>No card required</span><i />
-              <span>See the evidence</span>
+              <span>No login or website access needed</span>
+            </div>
+
+            <div className="signalPreview" aria-label="Signals included in the diagnostic">
+              <span>Entity clarity</span>
+              <span>Authority signals</span>
+              <span>Technical readiness</span>
+              <span>Machine-readable context</span>
             </div>
 
             <div className="scanWhisper">
@@ -157,11 +164,20 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="heroProof">
-          <div><strong>4</strong><span>AI providers in controlled visibility testing</span></div>
-          <div><strong>9</strong><span>Observable website readiness signals</span></div>
-          <div><strong>3</strong><span>Clear priorities before technical detail</span></div>
-          <div><strong>1</strong><span>Workspace built around what to do next</span></div>
+        <div className="credibilityPanel">
+          <div className="exampleFinding">
+            <span className="credibilityEyebrow">EXAMPLE DIAGNOSTIC OUTPUT</span>
+            <div className="exampleScore"><strong>47</strong><small>/100</small></div>
+            <div>
+              <b>3 priority gaps detected</b>
+              <p>See the evidence behind each finding, why it matters and what to change first.</p>
+            </div>
+          </div>
+          <div className="methodProof">
+            <span className="credibilityEyebrow">EVIDENCE, NOT A BLACK BOX</span>
+            <p>SeekSignal checks observable signals on the website you submit. Findings show the evidence detected and separate website readiness from claims about whether an AI system currently recommends your business.</p>
+            <a href="#methodology">How the diagnostic works →</a>
+          </div>
         </div>
 
         {error && <div className="error">{error}</div>}
@@ -428,6 +444,15 @@ export default function Home() {
             </div>
           </div>
         )}
+      </section>
+
+      <section id="methodology" className="methodologyStrip shell">
+        <span>WHAT WE ACTUALLY MEASURE</span>
+        <div>
+          <article><b>01</b><strong>Observable evidence</strong><p>We inspect signals available from the submitted website rather than inventing a visibility score from unsupported assumptions.</p></article>
+          <article><b>02</b><strong>Explainable findings</strong><p>Important findings include what was observed, why it matters, a practical action and a way to verify the fix.</p></article>
+          <article><b>03</b><strong>Clear limits</strong><p>Website readiness is not the same as being recommended by ChatGPT, Gemini or another AI system. SeekSignal states that distinction explicitly.</p></article>
+        </div>
       </section>
 
       <section className="minimalProof shell">
