@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { trackEvent } from "../lib/analytics/client";
+import { trackEvent } from "../lib/analytics/client";
 
 type Competitor = { id: string; name: string; domain: string | null };
 
