@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { trackEvent } from "../lib/analytics/client";
 
 export default function RunProjectScanButton({ projectId, className, label = "Run scan" }: { projectId: string; className?: string; label?: string }) {
   const router = useRouter();
@@ -22,6 +23,7 @@ export default function RunProjectScanButton({ projectId, className, label = "Ru
       const data = await response.json();
 
       if (!response.ok) throw new Error(data.error || "Could not run scan.");
+      void trackEvent("project_scan_completed", { projectId, metadata: { score: data.score } });
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not run scan.");
