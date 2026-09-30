@@ -114,3 +114,13 @@
 .actionBlock.implementation ol{margin:7px 0 0 18px;padding:0;color:#aab2ac;font-size:10px;line-height:1.65}
 .actionBlock.impact{border-color:rgba(255,194,102,.16);background:rgba(255,194,102,.035)}
 .actionBlock.impact span{color:#efc57b}
+
+.quickWins{margin:24px 0;padding:20px;border:1px solid rgba(196,248,115,.12);border-radius:16px;background:linear-gradient(180deg,rgba(196,248,115,.055),rgba(196,248,115,.018))}
+.quickWinsGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.quickWinsGrid article{display:flex;gap:12px;padding:14px;border:1px solid rgba(255,255,255,.06);border-radius:12px;background:rgba(8,12,10,.58)}
+.quickWinNumber{display:inline-flex;align-items:center;justify-content:center;flex:0 0 28px;height:28px;border-radius:8px;background:#c4f873;color:#10150d;font-size:9px;font-weight:900}
+.quickWinsGrid strong{display:block;font-size:11px}
+.quickWinsGrid small{display:block;margin-top:4px;color:#829087;font-size:8px;text-transform:uppercase;letter-spacing:.5px}
+.quickWinsGrid p{margin:9px 0 0;color:#aab4ad;font-size:10px;line-height:1.55}
+.quickWinsGrid em{display:block;margin-top:8px;color:#c4f873;font-size:9px;line-height:1.5;font-style:normal}
+@media(max-width:800px){.quickWinsGrid{grid-template-columns:1fr}}
