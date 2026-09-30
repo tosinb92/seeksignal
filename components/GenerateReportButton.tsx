@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { trackEvent } from "../lib/analytics/client";
 
 export default function GenerateReportButton({ projectId, disabled = false }: { projectId: string; disabled?: boolean }) {
   const router = useRouter();
@@ -22,6 +23,7 @@ export default function GenerateReportButton({ projectId, disabled = false }: { 
       if (!response.ok) throw new Error(data.error || "Could not generate report.");
 
       setMessage("Report generated.");
+      void trackEvent("report_generated", { projectId });
       router.refresh();
     } catch (err) {
       setMessage(err instanceof Error ? err.message : "Could not generate report.");
