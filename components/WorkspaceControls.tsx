@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { trackEvent } from "../lib/analytics/client";
 
 type Competitor = { id: string; name: string; domain: string | null };
 
@@ -45,6 +46,7 @@ export default function WorkspaceControls({
       setCompetitors((items) => [...items, data.competitor]);
       setCompetitorForm({ name: "", domain: "" });
       setMessage("Competitor added.");
+      void trackEvent("competitor_added", { projectId, metadata: { name: data.competitor?.name || competitorForm.name } });
       router.refresh();
     } catch (err) {
       setMessage(err instanceof Error ? err.message : "Could not add competitor.");
@@ -67,6 +69,7 @@ export default function WorkspaceControls({
 
       setCompetitors((items) => items.filter((item) => item.id !== id));
       setMessage("Competitor removed.");
+      void trackEvent("competitor_removed", { projectId });
       router.refresh();
     } catch (err) {
       setMessage(err instanceof Error ? err.message : "Could not remove competitor.");
