@@ -873,3 +873,46 @@
   .proofStats>div{border-right:0;border-bottom:1px solid #e1e6e2}
   .proofStats>div:last-child{border-bottom:0}
 }
+
+
+/* Hero image proportion fix */
+.heroSplit{
+  grid-template-columns:.88fr 1.12fr;
+  align-items:center;
+}
+.heroVisualPremium{
+  min-height:640px;
+  align-items:center;
+  justify-content:flex-end;
+  overflow:visible;
+}
+.heroVisualPremium img{
+  width:108%;
+  max-width:760px;
+  height:auto;
+  object-fit:contain;
+  transform:none;
+}
+.heroVisualGlow{
+  inset:8% -2% 2% 8%;
+}
+.heroVisualBadge{
+  left:4%;
+  bottom:11%;
+}
+@media(max-width:1180px){
+  .heroVisualPremium{min-height:560px}
+  .heroVisualPremium img{width:100%;max-width:680px}
+}
+@media(max-width:1050px){
+  .heroSplit{grid-template-columns:1fr}
+  .heroVisualPremium{
+    min-height:auto;
+    padding-top:24px;
+    justify-content:center;
+  }
+  .heroVisualPremium img{
+    width:100%;
+    max-width:880px;
+  }
+}
