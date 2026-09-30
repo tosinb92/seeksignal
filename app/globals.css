@@ -916,3 +916,33 @@
     max-width:880px;
   }
 }
+
+
+/* 2026-10 conversion reset: the scan is the homepage */
+.hero{min-height:calc(100vh - 84px);display:flex;flex-direction:column;justify-content:center;padding-top:72px;padding-bottom:64px}
+.heroBackdrop{height:100%;inset:0 -20%;background:
+radial-gradient(circle at 50% 44%,rgba(196,248,115,.10),transparent 20%),
+radial-gradient(circle at 50% 44%,rgba(62,239,164,.055),transparent 38%),
+linear-gradient(180deg,rgba(5,8,7,.12),rgba(5,8,7,.78))}
+.heroSplit{display:block;position:relative;z-index:2}
+.heroContent{max-width:1040px;margin:0 auto;padding:0;text-align:center}
+.heroBadge{margin:0 auto;color:#9ca9a0;background:rgba(255,255,255,.025);border-color:rgba(255,255,255,.075)}
+.hero h1{max-width:1000px;margin:30px auto 24px;font-size:clamp(68px,8.2vw,128px);line-height:.86;letter-spacing:-7px;font-weight:650}
+.hero h1 em{margin-top:12px;letter-spacing:-7px;background:linear-gradient(90deg,#eef5f0 4%,#c4f873 52%,#62e9aa 100%);-webkit-background-clip:text;background-clip:text}
+.heroCopy{max-width:720px;margin:0 auto;color:#8d9991;font-size:16px;line-height:1.72}
+.scanBox{position:relative;max-width:860px;margin:42px auto 0;padding:8px;border:1px solid rgba(196,248,115,.25);border-radius:17px;background:#090e0c;box-shadow:0 0 0 1px rgba(196,248,115,.025),0 24px 80px rgba(0,0,0,.46),0 0 85px rgba(111,244,170,.08)}
+.scanBox:before{content:"";position:absolute;inset:-1px;border-radius:17px;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(196,248,115,.12),transparent);mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;padding:1px}
+.scanInput{min-height:62px}.scanInput input{font-size:15px}.scanIcon{color:#c4f873}
+.scanBox button{min-width:220px;justify-content:center;padding:0 22px;border-radius:11px;background:#c4f873;color:#0a0e0b;font-size:11px;letter-spacing:.1px;box-shadow:0 0 32px rgba(196,248,115,.12)}
+.heroMeta{justify-content:center;color:#5f6a63}
+.scanWhisper{display:flex;justify-content:center;align-items:center;gap:9px;max-width:650px;margin:24px auto 0;color:#66716a;font-size:9px;letter-spacing:.15px}
+.pulseDot{width:6px;height:6px;border-radius:50%;background:#c4f873;box-shadow:0 0 0 0 rgba(196,248,115,.3);animation:signalPulse 2s infinite}
+@keyframes signalPulse{0%{box-shadow:0 0 0 0 rgba(196,248,115,.25)}70%{box-shadow:0 0 0 9px rgba(196,248,115,0)}100%{box-shadow:0 0 0 0 rgba(196,248,115,0)}}
+.heroProof{max-width:860px;margin:58px auto 0;background:transparent;border:0;border-top:1px solid rgba(255,255,255,.06);border-radius:0}
+.heroProof div{min-height:70px;padding:18px 15px;text-align:center}.heroProof strong{font-size:17px;color:#dfe8e2}.heroProof span{margin:5px auto 0;font-size:8px;color:#5d6861}
+.minimalProof{padding:105px 0 120px;text-align:center;border-top:1px solid rgba(255,255,255,.055)}
+.minimalProof>span{color:#647169;font-size:9px;font-weight:800;letter-spacing:1.4px}
+.minimalProof h2{max-width:940px;margin:18px auto 28px;font-size:clamp(34px,4.6vw,62px);line-height:1.04;letter-spacing:-3px;color:#e9efeb}
+.minimalProof a{display:inline-flex;padding:14px 18px;border-radius:10px;background:#c4f873;color:#10150d;font-size:10px;font-weight:850}
+.heroVisualPremium,.heroTrustPoints,.engineStrip,.lightBand,.editorialSection,.customerProofBand,.proofStatsBand,.softSection,.conversionBand{display:none!important}
+@media(max-width:700px){.hero{min-height:auto;padding-top:72px}.hero h1{font-size:clamp(58px,17vw,82px);letter-spacing:-4.5px}.hero h1 em{letter-spacing:-4.5px}.heroCopy{font-size:14px}.scanBox{margin-top:32px}.heroProof{grid-template-columns:1fr 1fr}.heroProof div+div{border-top:0}.minimalProof{padding:78px 0 90px}.minimalProof h2{letter-spacing:-2px}}
