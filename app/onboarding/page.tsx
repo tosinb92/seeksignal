@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import styles from "./onboarding.module.css";
+import { trackEvent } from "../../lib/analytics/client";
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -39,6 +40,7 @@ export default function OnboardingPage() {
         throw new Error(data.error || "Could not finish your workspace.");
       }
 
+      void trackEvent("onboarding_completed", { projectId: data.projectId || undefined });
       if (typeof window !== "undefined") window.localStorage.removeItem("seeksignalPendingLeadId");
       router.push("/app");
       router.refresh();
