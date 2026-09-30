@@ -169,151 +169,137 @@ export default function Home() {
         )}
 
         {result && (
-          <section className="resultCard">
-            <div className="resultTop">
-              <div>
-                <span className="resultLabel">AI readiness audit</span>
-                <h2>{result.url}</h2>
-              </div>
-              <div className="score">{result.score}<span>/100</span></div>
-            </div>
-
-            <p className="resultSummary">{result.summary}</p>
-
-            <div className="categoryGrid">
-              {result.categories.map((category) => (
-                <div className="category" key={category.name}>
-                  <div>
-                    <span>{category.name}</span>
-                    <strong>{category.score}</strong>
-                  </div>
-                  <div className="bar"><i style={{ width: `${category.score}%` }} /></div>
+          <section className="resultExperience">
+            <div className="resultHeroNew">
+              <div className="siteSnapshot">
+                <div className="snapshotBar">
+                  <span><i /> Website analysed</span>
+                  <strong>{result.url}</strong>
                 </div>
-              ))}
-            </div>
-
-            {result.quickWins?.length ? (
-              <section className="quickWins">
-                <div className="resultSectionTitle">Start here — your top 3 fixes</div>
-                <div className="quickWinsGrid">
-                  {result.quickWins.map((item, index) => (
-                    <article key={item.title}>
-                      <span className="quickWinNumber">{String(index + 1).padStart(2,"0")}</span>
-                      <div>
-                        <strong>{item.title}</strong>
-                        <small>{item.impact} impact{item.effort ? ` · ${item.effort} effort` : ""}</small>
-                        <p>{item.action}</p>
-                        {item.expectedImpact ? <em>{item.expectedImpact}</em> : null}
-                      </div>
-                    </article>
-                  ))}
-                </div>
-              </section>
-            ) : null}
-
-            <div className="resultColumns">
-              <div>
-                <div className="resultSectionTitle">What SeekSignal found</div>
-                <div className="checks">
-                  {result.checks.map((check) => (
-                    <div className="check" key={check.label}>
-                      <div className={check.status === "good" ? "dot good" : "dot warn"} />
-                      <div>
-                        <strong>{check.label}</strong>
-                        {check.evidence ? <p className="evidenceLine"><b>Evidence:</b> {check.evidence}</p> : null}
-                        <p>{check.detail}</p>
-                      </div>
-                    </div>
-                  ))}
+                <img
+                  src={`https://image.thum.io/get/width/1200/crop/900/https://${result.url}`}
+                  alt={`Screenshot of ${result.url} analysed by SeekSignal`}
+                />
+                <div className="snapshotCaption">
+                  <span>Actual website</span>
+                  <strong>{result.url}</strong>
                 </div>
               </div>
 
-              <div className="opportunities">
-                <div className="resultSectionTitle">Your prioritised action plan</div>
-                {result.opportunities.length ? result.opportunities.map((item) => (
-                  <div className="opportunity opportunityDetailed" key={item.title}>
-                    <div className="opportunityHead">
-                      <span className="opportunityRank">{String(item.rank || 1).padStart(2,"0")}</span>
-                      <div>
-                        <strong>{item.title}</strong>
-                        <div className="opportunityMeta">
-                          <em>{item.impact} impact</em>
+              <div className="resultScorePanel">
+                <span className="resultKicker">Your AI readiness score</span>
+                <div className="resultScoreValue">{result.score}<small>/100</small></div>
+                <div className="resultScoreTrack"><i style={{width:`${result.score}%`}} /></div>
+                <h2>
+                  {result.score >= 80
+                    ? "Strong foundation. Important opportunities remain."
+                    : result.score >= 55
+                      ? "Good foundation. Several signals need attention."
+                      : "Important gaps are limiting how clearly machines can understand this site."}
+                </h2>
+                <p>{result.summary}</p>
+                <div className="resultFacts">
+                  <span><b>{result.checks.filter((item) => item.status === "good").length}</b> strong signals</span>
+                  <span><b>{result.checks.filter((item) => item.status === "warn").length}</b> opportunities</span>
+                  <span><b>{result.opportunities.length}</b> prioritised fixes</span>
+                </div>
+                <div className="scoreMeaning">
+                  <strong>What this score means</strong>
+                  <span>{result.methodology}</span>
+                </div>
+              </div>
+            </div>
+
+            <section className="businessMeaning">
+              <div className="resultSectionHead">
+                <span>What this means for your business</span>
+                <h2>Understand the commercial meaning before the technical detail.</h2>
+              </div>
+              <div className="meaningCards">
+                <article>
+                  <span>01</span>
+                  <strong>{result.checks.filter((item) => item.status === "warn").length} readiness issues need attention</strong>
+                  <p>These are observable website signals that may make the business harder for search and AI retrieval systems to interpret clearly.</p>
+                </article>
+                <article>
+                  <span>02</span>
+                  <strong>{result.opportunities[0]?.title || "No critical readiness issue detected"}</strong>
+                  <p>{result.opportunities[0]?.problem || "Your core readiness signals are strong. The next step is controlled AI visibility testing."}</p>
+                </article>
+                <article>
+                  <span>03</span>
+                  <strong>Readiness is not recommendation visibility</strong>
+                  <p>This audit measures how clearly your website presents machine-readable business signals. It does not claim ChatGPT, Gemini or another AI currently recommends you.</p>
+                </article>
+              </div>
+            </section>
+
+            <section className="priorityExperience">
+              <div className="resultSectionHead">
+                <span>Your priority action plan</span>
+                <h2>Fix these first.</h2>
+                <p>These are ranked from the actual findings in this scan, with evidence, implementation guidance and a verification step.</p>
+              </div>
+              {result.opportunities.length ? (
+                <div className="priorityResultGrid">
+                  {result.opportunities.slice(0,3).map((item,index)=>(
+                    <article className="priorityResultCard" key={item.title}>
+                      <div className="priorityResultTop">
+                        <span className="priorityResultNumber">{String(index+1).padStart(2,"0")}</span>
+                        <div>
+                          <span>{item.impact} impact</span>
                           {item.effort ? <span>{item.effort} effort</span> : null}
                         </div>
                       </div>
+                      <h3>{item.title}</h3>
+                      {item.evidence ? <div className="resultDetail"><span>What we observed</span><p>{item.evidence}</p></div> : null}
+                      {item.problem ? <div className="resultDetail"><span>Why this matters</span><p>{item.problem}</p></div> : null}
+                      <div className="resultDetail resultDetailAction"><span>What to do</span><p>{item.action}</p></div>
+                      {item.expectedImpact ? <div className="resultDetail"><span>Expected benefit</span><p>{item.expectedImpact}</p></div> : null}
+                      {item.implementation?.length ? (
+                        <details className="implementationDetails">
+                          <summary>Show implementation instructions</summary>
+                          <ol>{item.implementation.map((step,stepIndex)=><li key={stepIndex}>{step}</li>)}</ol>
+                        </details>
+                      ) : null}
+                      {item.verify ? <div className="resultVerify"><span>Verify fix</span><p>{item.verify}</p></div> : null}
+                    </article>
+                  ))}
+                </div>
+              ) : <p className="allGood">No fundamental readiness warnings were found.</p>}
+            </section>
+
+            <details className="technicalResults">
+              <summary>
+                <div>
+                  <span>Technical evidence</span>
+                  <strong>See every signal checked in this scan</strong>
+                </div>
+                <b>{result.checks.length} checks</b>
+              </summary>
+              <div className="technicalResultList">
+                {result.checks.map((check)=>(
+                  <div className="technicalResultItem" key={check.label}>
+                    <i className={check.status === "good" ? "techGood" : "techWarn"} />
+                    <div>
+                      <strong>{check.label}</strong>
+                      {check.evidence ? <p>{check.evidence}</p> : null}
+                      <small>{check.detail}</small>
                     </div>
-
-                    {item.evidence ? (
-                      <div className="actionBlock evidence">
-                        <span>What we observed</span>
-                        <p>{item.evidence}</p>
-                      </div>
-                    ) : null}
-
-                    {item.problem ? (
-                      <div className="actionBlock">
-                        <span>Why this matters</span>
-                        <p>{item.problem}</p>
-                      </div>
-                    ) : null}
-
-                    <div className="actionBlock fix">
-                      <span>What to change</span>
-                      <p>{item.action}</p>
-                    </div>
-
-                    {item.implementation?.length ? (
-                      <div className="actionBlock implementation">
-                        <span>How to implement it</span>
-                        <ol>
-                          {item.implementation.map((step, stepIndex) => <li key={stepIndex}>{step}</li>)}
-                        </ol>
-                      </div>
-                    ) : null}
-
-                    {item.expectedImpact ? (
-                      <div className="actionBlock impact">
-                        <span>Expected impact</span>
-                        <p>{item.expectedImpact}</p>
-                      </div>
-                    ) : null}
-
-                    {item.benefit ? (
-                      <div className="actionBlock benefit">
-                        <span>Customer / website benefit</span>
-                        <p>{item.benefit}</p>
-                      </div>
-                    ) : null}
-
-                    {item.verify ? (
-                      <div className="actionBlock verify">
-                        <span>How to verify</span>
-                        <p>{item.verify}</p>
-                      </div>
-                    ) : null}
                   </div>
-                )) : (
-                  <p className="allGood">
-                    No fundamental issues found. Move on to live AI visibility monitoring and competitor benchmarking.
-                  </p>
-                )}
+                ))}
               </div>
-            </div>
+            </details>
 
             {result.expectedOutcome ? (
-              <div className="expectedOutcome">
-                <span>What happens next</span>
-                <strong>{result.expectedOutcome}</strong>
+              <div className="nextStepBand">
+                <div>
+                  <span>What happens next</span>
+                  <strong>{result.expectedOutcome}</strong>
+                </div>
+                <a onClick={() => void trackEvent("signup_clicked", { leadId: result.leadId })} href={`/signup?lead=${encodeURIComponent(result.leadId)}`}>Create free workspace & save this report →</a>
               </div>
             ) : null}
-
-            <div className="resultActions">
-              <div className="methodology">
-                <strong>What this score means</strong>
-                <span>{result.methodology}</span>
-              </div>
-              <a onClick={() => void trackEvent("signup_clicked", { leadId: result.leadId })} href={`/signup?lead=${encodeURIComponent(result.leadId)}`}>Create free workspace, save this report & re-test →</a>
-            </div>
           </section>
         )}
 
