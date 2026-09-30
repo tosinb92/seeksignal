@@ -114,3 +114,188 @@
 .actionBlock.implementation ol{margin:7px 0 0 18px;padding:0;color:#aab2ac;font-size:10px;line-height:1.65}
 .actionBlock.impact{border-color:rgba(255,194,102,.16);background:rgba(255,194,102,.035)}
 .actionBlock.impact span{color:#efc57b}
+
+
+/* Premium homepage composition — image-led, restrained, editorial */
+.hero{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  min-height:760px;
+  margin-top:24px;
+  padding:118px clamp(24px,5vw,72px) 72px;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:30px;
+  text-align:left;
+  box-shadow:0 50px 140px rgba(0,0,0,.42);
+}
+.hero:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-2;
+  background:url("/assets/homepage/home--hero--primary-visual--01.png") center center/cover no-repeat;
+}
+.hero:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  background:
+    linear-gradient(90deg,rgba(5,8,7,.97) 0%,rgba(5,8,7,.9) 30%,rgba(5,8,7,.42) 58%,rgba(5,8,7,.10) 100%),
+    linear-gradient(0deg,rgba(5,8,7,.72) 0%,transparent 42%);
+}
+.heroBadge{margin-left:0}
+.hero h1{
+  max-width:720px;
+  margin:24px 0 20px;
+  font-size:clamp(54px,6vw,88px);
+  line-height:.94;
+  letter-spacing:-5.5px;
+}
+.hero h1 em{display:block;margin-top:8px}
+.heroCopy{max-width:620px;margin:0;color:#c1c9c3}
+.scanBox{
+  max-width:700px;
+  margin:34px 0 0;
+  background:rgba(8,12,10,.82);
+  border-color:rgba(255,255,255,.14);
+  backdrop-filter:blur(18px);
+}
+.heroMeta{justify-content:flex-start;max-width:700px}
+.heroProof{
+  max-width:700px;
+  margin:28px 0 0;
+  background:rgba(8,12,10,.38);
+  backdrop-filter:blur(10px);
+}
+.heroProof span{color:#9ca69f}
+.productStage{display:none!important}
+
+/* How it works — the monitor visual is the card, copy sits over it */
+.howGrid .howPrimary{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  min-height:430px;
+  padding:30px;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  background:#0b100d;
+  border:0;
+  box-shadow:0 28px 70px rgba(24,39,29,.16);
+}
+.howPrimaryBg{
+  position:absolute;
+  inset:0;
+  z-index:-2;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+}
+.howPrimaryShade{
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  background:linear-gradient(180deg,rgba(7,11,9,.03) 18%,rgba(7,11,9,.28) 48%,rgba(7,11,9,.94) 86%);
+}
+.howPrimary small,.howPrimary h3,.howPrimary p{position:relative;z-index:1}
+.howPrimary h3{max-width:390px;margin-top:8px;font-size:34px}
+.howPrimary p{max-width:460px;color:#c1cbc3}
+
+/* Intelligence section — better scale and less dead space */
+.sectionIntro{align-items:stretch}
+.intelligenceSide{display:flex;flex-direction:column;justify-content:space-between;gap:24px;min-width:0}
+.intelligenceSide p{margin:5px 0 0}
+.buyerHuman{
+  display:block;
+  width:100%;
+  max-height:230px;
+  object-fit:contain;
+  object-position:center bottom;
+  filter:drop-shadow(0 18px 30px rgba(0,0,0,.28));
+}
+.featureMosaic{gap:16px;margin-top:48px}
+.featureLarge{min-height:600px;padding:34px}
+.visibilityVisual{
+  position:absolute;
+  left:26px;
+  right:26px;
+  bottom:24px;
+  height:340px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  overflow:hidden;
+}
+.visibilityVisual img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center bottom;
+}
+.featureLarge h3{max-width:650px;font-size:36px}
+.featureLarge p{max-width:630px;font-size:13px}
+
+/* Methodology gets one human moment without becoming stock-photo heavy */
+.methodCopy{min-width:0}
+.methodHuman{
+  display:block;
+  width:min(100%,420px);
+  max-height:250px;
+  margin-top:28px;
+  object-fit:contain;
+  object-position:left bottom;
+  filter:drop-shadow(0 20px 36px rgba(18,30,22,.12));
+}
+
+/* Premium finishing */
+.featureLarge,.featureCard,.howGrid article{
+  border-radius:22px;
+}
+.featureCard{
+  padding:32px;
+}
+.featureCard.light{
+  box-shadow:0 24px 70px rgba(196,248,115,.09);
+}
+.conversionBand{
+  border-radius:24px;
+  box-shadow:0 30px 80px rgba(139,188,88,.10);
+}
+.topbar{padding-top:20px}
+.navCta{box-shadow:0 8px 30px rgba(255,255,255,.08)}
+
+@media(max-width:1000px){
+  .hero{min-height:700px;padding:92px 36px 52px}
+  .hero:after{
+    background:linear-gradient(90deg,rgba(5,8,7,.95),rgba(5,8,7,.72) 58%,rgba(5,8,7,.34));
+  }
+  .intelligenceSide{display:block}
+  .buyerHuman{max-width:320px;margin-top:28px}
+  .featureLarge{min-height:560px}
+  .visibilityVisual{height:300px}
+}
+@media(max-width:700px){
+  .hero{
+    min-height:720px;
+    margin-top:12px;
+    padding:72px 20px 34px;
+    border-radius:20px;
+  }
+  .hero:before{background-position:68% center}
+  .hero:after{
+    background:linear-gradient(180deg,rgba(5,8,7,.82) 0%,rgba(5,8,7,.92) 62%,rgba(5,8,7,.98) 100%);
+  }
+  .hero h1{font-size:clamp(46px,14vw,68px);letter-spacing:-3.7px}
+  .scanBox{grid-template-columns:1fr}
+  .heroMeta{flex-wrap:wrap}
+  .howGrid .howPrimary{min-height:420px}
+  .featureLarge{min-height:520px;padding:24px}
+  .visibilityVisual{left:12px;right:12px;bottom:12px;height:275px}
+  .buyerHuman{max-width:260px}
+  .methodHuman{max-width:300px}
+}

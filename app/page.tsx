@@ -422,11 +422,12 @@ export default function Home() {
 
           <div className="howGrid">
             <article className="howPrimary">
-              <div className="workflowPreview">
-                <div className="promptBubble"><span>Buyer prompt</span><strong>“Which provider should I choose?”</strong></div>
-                <div className="signalLine"><i/><span>Competitor recommended</span><b>Detected</b></div>
-                <div className="signalLine"><i/><span>Your brand visibility</span><b>24%</b></div>
-              </div>
+              <img
+                className="howPrimaryBg"
+                src="/assets/homepage/home--how-it-works--buyer-ai-journey--01.png"
+                alt="AI recommendation journey showing how buyer prompts surface competing brands."
+              />
+              <div className="howPrimaryShade" />
               <small>01 / Monitor</small>
               <h3>See the recommendation gap.</h3>
               <p>Track where your brand appears, where competitors win, and the AI journeys creating the gap.</p>
@@ -456,11 +457,18 @@ export default function Home() {
         <div className="sectionIntro">
           <span>01 / Intelligence</span>
           <h2>AI discovery is becoming a commercial channel. Treat it like one.</h2>
-          <p>
-            Search is changing from a list of links into a recommendation layer.
-            SeekSignal gives your team a measurable way to see where you appear, where you do not,
-            and what should change next.
-          </p>
+          <div className="intelligenceSide">
+            <p>
+              Search is changing from a list of links into a recommendation layer.
+              SeekSignal gives your team a measurable way to see where you appear, where you do not,
+              and what should change next.
+            </p>
+            <img
+              className="buyerHuman"
+              src="/assets/homepage/home--commercial-channel--buyer-researching-with-ai--01.png"
+              alt="Business buyer using an AI assistant while researching providers."
+            />
+          </div>
         </div>
 
         <div className="featureMosaic">
@@ -468,7 +476,12 @@ export default function Home() {
             <span>Visibility monitoring</span>
             <h3>Track whether your brand is actually showing up.</h3>
             <p>Monitor mentions, recommendation presence and citation patterns across the AI journeys your buyers use.</p>
-            <div className="miniChart"><i/><i/><i/><i/><i/><i/><i/><i/></div>
+            <div className="visibilityVisual">
+              <img
+                src="/assets/homepage/home--visibility-monitoring--ai-presence-timeline--01.png"
+                alt="SeekSignal AI visibility timeline showing recommendation presence across AI platforms."
+              />
+            </div>
           </article>
 
           <article className="featureCard light">
@@ -504,6 +517,11 @@ export default function Home() {
             SeekSignal keeps website AI-readiness separate from actual AI recommendation testing.
             A technically strong site does not automatically mean an AI platform recommends it — so we do not pretend it does.
           </p>
+          <img
+            className="methodHuman"
+            src="/assets/homepage/home--methodology--human-ai-research--01.png"
+            alt="Professional reviewing AI-assisted research on a laptop."
+          />
         </div>
 
         <div className="methodSteps">
