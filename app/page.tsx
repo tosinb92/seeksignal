@@ -122,19 +122,18 @@ export default function Home() {
         <div className="heroBackdrop" />
         <div className="heroSplit">
           <div className="heroContent">
-            <div className="heroBadge"><span /> The AI visibility platform</div>
+            <div className="heroBadge"><span /> AI visibility diagnostic</div>
             <h1>
-              Be the brand
-              <em> AI recommends.</em>
+              What does AI
+              <em> see when it sees you?</em>
             </h1>
             <p className="heroCopy">
-              See how your business appears across AI discovery, understand which competitors are winning attention,
-              and turn real evidence into the next actions that can improve your visibility.
+              Your website is already sending signals to search engines and AI systems. SeekSignal exposes what they can understand, what they may miss, and the gaps that could keep your business out of the answer.
             </p>
 
             <form id="scan" className="scanBox" onSubmit={startAudit}>
               <div className="scanInput">
-                <span className="scanIcon">↗</span>
+                <span className="scanIcon">⌁</span>
                 <input
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
@@ -146,28 +145,14 @@ export default function Home() {
             </form>
 
             <div className="heroMeta">
+              <span>Free diagnostic</span><i />
               <span>No card required</span><i />
-              <span>Results in seconds</span><i />
-              <span>Actionable recommendations</span>
+              <span>See the evidence</span>
             </div>
 
-            <div className="heroTrustPoints">
-              <span><i>✓</i> Website readiness</span>
-              <span><i>✓</i> AI visibility</span>
-              <span><i>✓</i> Competitor intelligence</span>
-            </div>
-          </div>
-
-          <div className="heroVisualPremium" id="platform">
-            <div className="heroVisualGlow" />
-            <img
-              src="/assets/homepage/home--hero--primary-visual--01.png"
-              alt="SeekSignal AI visibility dashboard across desktop and mobile."
-            />
-            <div className="heroVisualBadge">
-              <span>AI visibility</span>
-              <strong>68</strong>
-              <small>Example interface</small>
+            <div className="scanWhisper">
+              <span className="pulseDot" />
+              <span>Scanning entity clarity, authority, technical signals and machine-readable context.</span>
             </div>
           </div>
         </div>
@@ -445,151 +430,10 @@ export default function Home() {
         )}
       </section>
 
-      <section className="engineStrip shell">
-        <span>Built for the AI discovery platforms shaping buyer decisions</span>
-        <div className="engineBrands">
-          <b><i className="brandIcon openai" aria-hidden="true" />OpenAI</b>
-          <b><i className="brandIcon google" aria-hidden="true" />Google Gemini</b>
-          <b><i className="brandIcon perplexity" aria-hidden="true" />Perplexity</b>
-          <b className="plannedEngine"><i className="brandIcon copilot" aria-hidden="true" />Copilot <small>planned</small></b>
-          <b><i className="brandIcon anthropic" aria-hidden="true" />Claude</b>
-        </div>
-      </section>
-
-      <section className="lightBand">
-        <div className="shell">
-          <div className="howIntro">
-            <span>How it works</span>
-            <h2>A clear path from <em>signal to action.</em></h2>
-            <p>See what AI can understand, measure where your brand appears, compare the competition and act on the highest-value opportunities.</p>
-          </div>
-
-          <div className="howGrid">
-            <article className="howPrimary">
-              <img className="howPrimaryImage" src="/assets/homepage/home--how-it-works--buyer-ai-journey--01.png" alt="AI buyer journey showing recommendation signals and brand visibility." />
-              <div className="howPrimaryOverlay" />
-              <div className="howPrimaryCopy">
-                <small>01 / Monitor</small>
-                <h3>See the recommendation gap.</h3>
-                <p>Track where your brand appears, where competitors win, and the AI journeys creating the gap.</p>
-              </div>
-            </article>
-            <article>
-              <i className="howIcon blue">▥</i><small>02</small><h3>Analyse</h3>
-              <p>Benchmark recommendation share and identify the signals influencing visibility.</p>
-            </article>
-            <article>
-              <i className="howIcon violet">◇</i><small>03</small><h3>Optimise</h3>
-              <p>Turn evidence into prioritised fixes across authority, content and entity clarity.</p>
-            </article>
-            <article>
-              <i className="howIcon coral">↗</i><small>04</small><h3>Verify & grow</h3>
-              <p>Re-test the changes and measure whether visibility actually improves over time.</p>
-            </article>
-          </div>
-
-          <div className="howActions">
-            <a href="#scan">Run free audit →</a>
-            <a className="textAction" href="#methodology">See the methodology →</a>
-          </div>
-        </div>
-      </section>
-
-      <section className="editorialSection shell" id="intelligence">
-        <div className="sectionIntro">
-          <span>Platform intelligence</span>
-          <h2>Everything you need to understand and improve AI visibility.</h2>
-          <p>
-            Search is changing from a list of links into a recommendation layer.
-            SeekSignal gives your team a measurable way to see where you appear, where you do not,
-            and what should change next.
-          </p>
-        </div>
-
-        <div className="featureMosaic">
-          <article className="featureLarge">
-            <span>Visibility monitoring</span>
-            <h3>Track whether your brand is actually showing up.</h3>
-            <p>Monitor mentions, recommendation presence and citation patterns across the AI journeys your buyers use.</p>
-            <img className="visibilityFeatureImage" src="/assets/homepage/home--visibility-monitoring--ai-presence-timeline--01.png" alt="AI visibility timeline across multiple AI platforms." />
-          </article>
-
-          <article className="featureCard light">
-            <span>Competitor intelligence</span>
-            <h3>See who AI recommends instead.</h3>
-            <p>Compare your share of recommendation against the brands appearing in the same buying conversations.</p>
-            <div className="rankList">
-              <div><b>01</b><span>Competitor A</span><strong>31%</strong></div>
-              <div className="you"><b>02</b><span>Your brand</span><strong>24%</strong></div>
-              <div><b>03</b><span>Competitor B</span><strong>18%</strong></div>
-            </div>
-          </article>
-
-          <article className="featureCard">
-            <span>Opportunity engine</span>
-            <h3>Know what to fix before you waste budget.</h3>
-            <p>Translate weak signals into prioritised actions across entity clarity, content, trust and technical readiness.</p>
-            <div className="priorityList">
-              <div><i/>Structured data <em>High impact</em></div>
-              <div><i/>Entity clarity <em>High impact</em></div>
-              <div><i className="medium"/>Buyer questions <em>Medium</em></div>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section className="customerProofBand">
-        <div className="shell customerProofGrid">
-          <div className="customerProofMedia">
-            <img src="/assets/homepage/home--commercial-channel--buyer-researching-with-ai--01.png" alt="Business buyer researching providers with AI." />
-          </div>
-          <div className="customerProofCopy">
-            <span>Why this matters</span>
-            <h2>AI is becoming part of how buyers decide who makes the shortlist.</h2>
-            <p>SeekSignal helps marketing and commercial teams understand whether their website is clear enough for machine discovery, whether AI systems actually surface the brand, and where competitors are winning attention instead.</p>
-            <div className="customerProofPoints">
-              <div><b>01</b><strong>See your real website</strong><p>Every report is tied to the exact domain being analysed, with a live homepage snapshot.</p></div>
-              <div><b>02</b><strong>Separate readiness from visibility</strong><p>We do not pretend a technically strong site automatically means an AI platform recommends you.</p></div>
-              <div><b>03</b><strong>Know what to do next</strong><p>Findings become prioritised actions with evidence, implementation guidance and a re-test path.</p></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="proofStatsBand">
-        <div className="shell proofStats">
-          <div><strong>4</strong><span>AI providers supported in controlled visibility testing</span></div>
-          <div><strong>9</strong><span>Core website-readiness signals checked</span></div>
-          <div><strong>3</strong><span>Highest-priority fixes shown first</span></div>
-          <div><strong>1</strong><span>Clear next action at every stage</span></div>
-        </div>
-      </section>
-
-      <section className="softSection" id="methodology">
-        <div className="methodSection shell">
-        <div className="methodLabel">02 / Methodology</div>
-        <div className="methodCopy">
-          <h2>Separate what can be measured from what can only be inferred.</h2>
-          <p>
-            SeekSignal keeps website AI-readiness separate from actual AI recommendation testing.
-            A technically strong site does not automatically mean an AI platform recommends it — so we do not pretend it does.
-          </p>
-        </div>
-
-        <div className="methodSteps">
-          <article><span>01</span><strong>Readiness</strong><p>Audit whether your website clearly communicates entity, offer, authority and commercial intent.</p></article>
-          <article><span>02</span><strong>Visibility</strong><p>Test representative buyer prompts across supported AI engines and record observable mentions and citations.</p></article>
-          <article><span>03</span><strong>Action</strong><p>Prioritise the gaps most likely to improve clarity, discoverability and recommendation opportunity.</p></article>
-        </div>
-        </div>
-      </section>
-
-      <section className="conversionBand shell">
-        <div>
-          <span>Free diagnostic</span>
-          <h2>See where your brand stands in AI discovery — and what to improve next.</h2>
-        </div>
-        <a href="#scan">Run my free audit →</a>
+      <section className="minimalProof shell">
+        <span>THE QUESTION IS SIMPLE</span>
+        <h2>If a buyer asked AI for a business like yours today, would your website give it enough evidence to understand why you belong in the answer?</h2>
+        <a href="#scan">Find out now →</a>
       </section>
 
       <footer className="footer shell">
