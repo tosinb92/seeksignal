@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { trackEvent } from "../lib/analytics/client";
 
 type VisibilityResult = {
   methodology: string;
@@ -48,6 +49,14 @@ export default function RunVisibilityTest({ projectId, gatewayEnabled }: { proje
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Could not run AI visibility test.");
       setResult(data);
+      void trackEvent("ai_visibility_completed", {
+        projectId,
+        metadata: {
+          visibilityScore: data.visibilityScore,
+          successfulTests: data.successfulTests,
+          totalTests: data.totalTests
+        }
+      });
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not run AI visibility test.");
