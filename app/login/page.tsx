@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import styles from "./auth.module.css";
+import { trackEvent } from "../../lib/analytics/client";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -35,6 +36,7 @@ export default function LoginPage() {
         throw new Error(data.error || "Could not sign in.");
       }
 
+      void trackEvent("login_completed");
       router.push("/app");
       router.refresh();
     } catch (err) {
