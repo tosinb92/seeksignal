@@ -180,11 +180,8 @@ export async function fetchPublicWebsite(raw: string) {
   const original = new URL(initial);
 
   const candidates = [original];
-
-  // Many UK business sites publish one hostname but redirect the other.
-  // If the submitted www hostname has a DNS/connection problem, try the apex
-  // domain before telling the customer that the website cannot be reached.
   const hostname = original.hostname.toLowerCase();
+
   if (hostname.startsWith("www.")) {
     const apex = new URL(original.toString());
     apex.hostname = hostname.slice(4);
@@ -197,31 +194,29 @@ export async function fetchPublicWebsite(raw: string) {
 
   let lastError: unknown;
 
+  // First try the same kind of browser-backed retrieval that can reach
+  // public sites when the Vercel runtime DNS/network path cannot.
+  for (const candidate of candidates) {
+    try {
+      return await fetchViaBrowserProxy(candidate);
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  // Then try direct retrieval. This remains useful because it gives us the
+  // exact final URL and response headers when the runtime can reach the site.
   for (const candidate of candidates) {
     try {
       return await fetchWebsiteAt(candidate);
     } catch (error) {
       lastError = error;
       const message = error instanceof Error ? error.message : "";
-      // Only try the alternate hostname for connectivity/DNS problems.
-      // Real HTTP/application errors should be shown instead of silently
-      // switching the site being audited.
       if (
         !/couldn't reach that domain|couldn't verify that website|ENOTFOUND|EAI_AGAIN|ENODATA|ECONN|ETIMEDOUT|fetch failed/i.test(message)
       ) {
         throw error;
       }
-    }
-  }
-
-  // Vercel's runtime can occasionally fail to resolve a perfectly public
-  // domain even though a real browser can reach it. Before failing the scan,
-  // use a browser-backed fetch service as a second acquisition path.
-  for (const candidate of candidates) {
-    try {
-      return await fetchViaBrowserProxy(candidate);
-    } catch {
-      // Continue to the final, honest error below.
     }
   }
 
