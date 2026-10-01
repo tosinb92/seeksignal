@@ -33,12 +33,15 @@ export default function RunVisibilityTest({ projectId, gatewayEnabled }: { proje
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState<VisibilityResult | null>(null);
+  const [upgradeRequired, setUpgradeRequired] = useState(false);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
 
   async function run() {
     if (!accepted || loading) return;
     setLoading(true);
     setError("");
     setResult(null);
+    setUpgradeRequired(false);
 
     try {
       const response = await fetch("/api/visibility/run", {
@@ -47,7 +50,10 @@ export default function RunVisibilityTest({ projectId, gatewayEnabled }: { proje
         body: JSON.stringify({ projectId, acceptUsageCosts: true })
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Could not run AI visibility test.");
+      if (!response.ok) {
+        if (data.upgradeRequired) setUpgradeRequired(true);
+        throw new Error(data.error || "Could not run AI visibility test.");
+      }
       setResult(data);
       void trackEvent("ai_visibility_completed", {
         projectId,
@@ -62,6 +68,22 @@ export default function RunVisibilityTest({ projectId, gatewayEnabled }: { proje
       setError(err instanceof Error ? err.message : "Could not run AI visibility test.");
     } finally {
       setLoading(false);
+    }
+  }
+
+
+  async function upgrade() {
+    if (checkoutLoading) return;
+    setCheckoutLoading(true);
+    setError("");
+    try {
+      const response = await fetch("/api/billing/checkout", { method: "POST" });
+      const data = await response.json();
+      if (!response.ok || !data.url) throw new Error(data.error || "Could not start checkout.");
+      window.location.href = data.url;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not start checkout.");
+      setCheckoutLoading(false);
     }
   }
 
@@ -101,6 +123,18 @@ export default function RunVisibilityTest({ projectId, gatewayEnabled }: { proje
       </button>
 
       {error ? <div style={{marginTop:14,padding:12,borderRadius:9,background:"rgba(255,90,90,.07)",color:"#ffaaaa",fontSize:10}}>{error}</div> : null}
+
+      {upgradeRequired ? (
+        <div style={{marginTop:14,padding:16,border:"1px solid rgba(196,248,115,.18)",borderRadius:12,background:"rgba(196,248,115,.05)"}}>
+          <strong style={{display:"block",fontSize:11}}>Unlock SeekSignal Pro</strong>
+          <span style={{display:"block",marginTop:6,color:"#88928b",fontSize:9,lineHeight:1.5}}>
+            £49/month unlocks live AI visibility testing, saved intelligence and ongoing re-testing.
+          </span>
+          <button onClick={upgrade} disabled={checkoutLoading} style={{marginTop:12,height:40,padding:"0 15px",border:0,borderRadius:9,background:"#c4f873",color:"#10150d",fontWeight:800,cursor:checkoutLoading?"wait":"pointer"}}>
+            {checkoutLoading ? "Opening secure checkout…" : "Upgrade to Pro — £49/month →"}
+          </button>
+        </div>
+      ) : null}
 
       {result ? (
         <div style={{marginTop:24}}>
