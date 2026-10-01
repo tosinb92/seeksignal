@@ -1,4 +1,5 @@
 "use client";
+import WebsiteScreenshot from "../components/WebsiteScreenshot";
 
 import { FormEvent, useState } from "react";
 import LeadGate from "../components/LeadGate";
@@ -206,10 +207,7 @@ export default function Home() {
                   <span><i /> Website analysed</span>
                   <strong>{result.url}</strong>
                 </div>
-                <img
-                  src={`/api/website-screenshot?url=${encodeURIComponent(result.url)}`}
-                  alt={`Screenshot of ${result.url} analysed by SeekSignal`}
-                />
+                <WebsiteScreenshot url={result.url} />
                 <div className="snapshotCaption">
                   <span>Actual website</span>
                   <strong>{result.url}</strong>
@@ -273,7 +271,7 @@ export default function Home() {
                 <div className="diagnosisGrid">
                   <article><span>What is happening</span><p>{result.commercialDiagnosis.detail}</p></article>
                   <article><span>Why it costs visibility</span><p>{result.commercialDiagnosis.consequence}</p></article>
-                  <article><span>What to do next</span><p>Complete the priority fixes below, publish them, then re-scan. Only after the website evidence improves should you judge model-level visibility changes.</p></article>
+                  <article><span>What to do next</span><p>{result.opportunities.length ? "Complete the priority fixes below, publish them, then re-scan. Compare real model visibility after improving the website evidence." : "Test three real buyer questions against AI models, record whether your business and competitors appear, and inspect the cited sources. Repeat the same questions after any improvements."}</p></article>
                 </div>
               </section>
             ) : null}

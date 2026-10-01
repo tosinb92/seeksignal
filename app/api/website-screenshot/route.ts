@@ -1,54 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 
-function normaliseUrl(value: string) {
-  const raw = value.trim();
-  const candidate = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
-  const url = new URL(candidate);
-  if (!["http:", "https:"].includes(url.protocol)) throw new Error("Invalid website URL.");
-  url.hash = "";
-  return url.toString();
-}
-
-function alternateHost(target: string) {
-  const url = new URL(target);
-  const host = url.hostname.toLowerCase();
-  if (host.startsWith("www.")) {
-    url.hostname = host.slice(4);
-  } else {
-    url.hostname = `www.${host}`;
-  }
-  return url.toString();
-}
-
 export async function GET(request: NextRequest) {
   const value = request.nextUrl.searchParams.get("url");
-  if (!value) return new NextResponse("Missing url.", { status: 400 });
-
+  if (!value) return NextResponse.json({ error: "Missing website." }, { status: 400 });
   try {
-    const target = normaliseUrl(value);
-    const alternate = alternateHost(target);
-
-    // WordPress mShots is deliberately used as the primary screenshot
-    // renderer. SeekSignal must not proxy the customer's site through its
-    // own serverless runtime just to display a visual preview.
-    const screenshotUrl =
-      "https://s.wordpress.com/mshots/v1/" +
-      encodeURIComponent(target) +
-      "?w=1400";
-
-    const alternateScreenshotUrl =
-      "https://s.wordpress.com/mshots/v1/" +
-      encodeURIComponent(alternate) +
-      "?w=1400";
-
-    // The image itself is remote-rendered; the browser can load it directly.
-    // Return the primary renderer URL and keep the alternate available as a
-    // query-level fallback for domains whose www/apex host differs.
-    return NextResponse.redirect(screenshotUrl, 302);
-  } catch (error) {
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Could not capture website." },
-      { status: 400 }
-    );
+    const raw = value.trim();
+    const url = new URL(/^https?:\/\//i.test(raw) ? raw : `https://${raw}`);
+    if (!["http:", "https:"].includes(url.protocol) || url.username || url.password) throw new Error("Invalid public website.");
+    if (url.port && !["80", "443"].includes(url.port)) throw new Error("Invalid web port.");
+    if (/^(localhost|127\.|0\.|10\.|192\.168\.|\[::1\])/i.test(url.hostname) || url.hostname.endsWith(".local")) throw new Error("Invalid public website.");
+    url.hash = "";
+    const endpoint = new URL("https://api.microlink.io/");
+    endpoint.searchParams.set("url", url.toString());
+    endpoint.searchParams.set("screenshot", "true");
+    endpoint.searchParams.set("meta", "false");
+    endpoint.searchParams.set("embed", "screenshot.url");
+    // This renderer returns an actual image or an error, never a successful
+    // WordPress 'Generating Preview' placeholder masquerading as a screenshot.
+    return NextResponse.redirect(endpoint, 302);
+  } catch {
+    return NextResponse.json({ error: "Could not capture this website." }, { status: 400 });
   }
 }

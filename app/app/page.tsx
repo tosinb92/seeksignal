@@ -1,3 +1,4 @@
+import WebsiteScreenshot from "../../components/WebsiteScreenshot";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { cookies } from "next/headers";
@@ -247,10 +248,7 @@ export default async function WorkspacePage({ searchParams }: { searchParams: Pr
                   <span><i /> Website analysed</span>
                   <strong>{project?.domain}</strong>
                 </div>
-                <img
-                  src={`/api/website-screenshot?url=${encodeURIComponent(project?.domain || "")}`}
-                  alt={`Screenshot of ${project?.domain} analysed by SeekSignal`}
-                />
+                <WebsiteScreenshot url={project?.domain || ""} />
                 <div className={styles.websitePreviewCaption}>
                   <span>Actual website</span>
                   <strong>{project?.domain}</strong>

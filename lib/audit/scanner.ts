@@ -250,13 +250,28 @@ export function analyseWebsite(html: string, hostname: string) {
     html.match(/<link[^>]+rel=["'][^"']*canonical[^"']*["'][^>]+href=["']([^"']+)/i) ||
     html.match(/<link[^>]+href=["']([^"']+)["'][^>]+rel=["'][^"']*canonical[^"']*["']/i);
   const canonicalUrl = canonicalMatch?.[1]?.slice(0, 220) || "";
-  const schemaTypes = Array.from(
-    new Set(
-      [...html.matchAll(/"@type"\s*:\s*"([^"]+)"/gi)]
-        .map((match) => match[1])
-        .filter(Boolean)
-    )
-  ).slice(0, 8);
+  const types = new Set<string>();
+  function collectTypes(value: unknown) {
+    if (!value || typeof value !== "object") return;
+    if (Array.isArray(value)) { value.forEach(collectTypes); return; }
+    const record = value as Record<string, unknown>;
+    const type = record["@type"];
+    for (const item of Array.isArray(type) ? type : [type]) {
+      if (typeof item === "string") types.add(item);
+    }
+    Object.values(record).forEach(collectTypes);
+  }
+  let validSchemaCount = 0;
+  for (const match of html.matchAll(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) {
+    try { const schema = JSON.parse(match[1]); collectTypes(schema); validSchemaCount++; } catch { /* Invalid JSON is not evidence. */ }
+  }
+  const schemaTypes = [...types].slice(0, 8);
+  // Framework bundles, navigation and policies do not establish buyer answers or proof.
+  const contentHtml = html.replace(/<(script|style|nav|header|footer)\b[^>]*>[\s\S]*?<\/\1>/gi, " ");
+  const visibleText = cleanText(contentHtml);
+  const headings = [...contentHtml.matchAll(/<h[2-6]\b[^>]*>([\s\S]*?)<\/h[2-6]>/gi)].map(m => cleanText(m[1]));
+  const hasQuestionHeading = headings.some(text => /\?|^(how|what|who|why|when|where|can|do|is|are)\b/i.test(text));
+  const hasAnswerParagraph = [...contentHtml.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/gi)].some(m => cleanText(m[1]).length >= 60);
 
   const hasTitle = titleText.length >= 3;
   const hasDescription =
@@ -264,11 +279,11 @@ export function analyseWebsite(html: string, hostname: string) {
     /<meta[^>]+content=["'][^"']{30,}["'][^>]+name=["']description["']/i.test(html);
   const hasH1 = h1Text.length > 0;
   const hasCanonical = canonicalUrl.length > 0;
-  const hasSchema = /application\/ld\+json/i.test(html);
-  const hasBusinessSchema = hasSchema && /(Organization|LocalBusiness|Product|Service|Corporation|WebSite)/i.test(html);
-  const hasFaq = /(FAQ|frequently asked|questions|how does|what is|who is|why choose)/i.test(html);
-  const hasTrust = /(about us|contact|privacy|terms|case stud|testimonial|review|accredit|certif)/i.test(html);
-  const hasCommercial = /(pricing|price|buy|book|request a quote|get a quote|shop|services|contact sales)/i.test(html);
+  const hasSchema = validSchemaCount > 0;
+  const hasBusinessSchema = schemaTypes.some(type => /^(Organization|LocalBusiness|Product|Service|Corporation|WebSite)$/i.test(type));
+  const hasFaq = (hasQuestionHeading && hasAnswerParagraph) || types.has("FAQPage");
+  const hasTrust = /\b(case stud(?:y|ies)|testimonial|accredit(?:ed|ation)|certified|registered company|company number)\b/i.test(visibleText);
+  const hasCommercial = /\b(pricing|price|buy|book|request a quote|get a quote|shop|contact sales)\b/i.test(visibleText);
   const indexable = !/<meta[^>]+name=["']robots["'][^>]+content=["'][^"']*noindex/i.test(html) &&
     !/<meta[^>]+content=["'][^"']*noindex[^"']*["'][^>]+name=["']robots["']/i.test(html);
 
@@ -410,7 +425,7 @@ export function analyseWebsite(html: string, hostname: string) {
       action: hasFaq
         ? "Expand question-led content around high-intent buyer decisions, objections, comparisons and eligibility."
         : "Add concise answers to 5–10 real buyer questions about choosing, comparing, pricing, suitability and next steps.",
-      evidence: hasFaq ? "Question-oriented language was detected on the audited page." : "No strong FAQ/question-oriented language was detected on the audited page.",
+      evidence: hasFaq ? "Question headings with supporting paragraphs or valid FAQPage schema were detected. Answer quality still needs review." : "No question headings with substantial supporting paragraphs or valid FAQPage schema were detected. A FAQ navigation link alone does not pass this check.",
       whyItMatters: "AI assistants often respond to natural-language questions. Direct, factual answers create retrieval-ready passages for those intents.",
       benefit: "Increases the number of buyer questions the site can answer directly and creates content that is easier to quote, cite or retrieve.",
       implementation: hasFaq ? [
@@ -433,7 +448,7 @@ export function analyseWebsite(html: string, hostname: string) {
       action: hasTrust
         ? "Keep proof current and specific: named clients where permitted, credentials, reviews, case studies and clear company details."
         : "Add visible company identity, contact details, policies and credible proof such as certifications, case studies, reviews or accreditations.",
-      evidence: hasTrust ? "Trust-related language or proof indicators were detected." : "No strong trust/proof indicators were detected on the audited page.",
+      evidence: hasTrust ? "Specific proof-related language was detected in page content; its authenticity and attribution still need review." : "No case-study, testimonial, accreditation, certification or company-registration indicators were detected in page content. Contact and policy links alone are not proof.",
       whyItMatters: "Recommendation systems and buyers need evidence that the business is legitimate, established and suitable—not just a page that claims expertise.",
       benefit: "Improves buyer confidence and gives search/AI systems more corroborating evidence when evaluating the business.",
       implementation: hasTrust ? [
