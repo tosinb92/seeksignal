@@ -953,3 +953,12 @@ linear-gradient(180deg,rgba(5,8,7,.12),rgba(5,8,7,.78))}
 .credibilityEyebrow{display:block;margin-bottom:15px;color:#657168;font-size:7px;font-weight:850;letter-spacing:1.2px}.exampleFinding{display:grid;grid-template-columns:auto 1fr;column-gap:20px;align-items:center}.exampleFinding>.credibilityEyebrow{grid-column:1/-1}.exampleScore{display:flex;align-items:baseline;color:#c4f873}.exampleScore strong{font-size:38px;letter-spacing:-2px}.exampleScore small{font-size:10px;color:#667168}.exampleFinding b{display:block;color:#e5ebe7;font-size:11px}.exampleFinding p,.methodProof p{margin:7px 0 0;color:#78837c;font-size:9px;line-height:1.55}.methodProof a{display:inline-block;margin-top:12px;color:#a8cf76;font-size:8px;font-weight:800}
 .methodologyStrip{padding:86px 0 72px;border-top:1px solid rgba(255,255,255,.055)}.methodologyStrip>span{display:block;text-align:center;color:#647169;font-size:8px;font-weight:850;letter-spacing:1.35px}.methodologyStrip>div{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:980px;margin:24px auto 0}.methodologyStrip article{padding:23px;border:1px solid rgba(255,255,255,.065);border-radius:13px;background:rgba(255,255,255,.012)}.methodologyStrip article b{color:#7a906d;font-size:8px}.methodologyStrip article strong{display:block;margin-top:19px;color:#e2e9e4;font-size:12px}.methodologyStrip article p{margin:8px 0 0;color:#707c74;font-size:9px;line-height:1.62}
 @media(max-width:700px){.credibilityPanel{grid-template-columns:1fr}.credibilityPanel>div+div{border-left:0;border-top:1px solid rgba(255,255,255,.065)}.methodologyStrip>div{grid-template-columns:1fr}.methodologyStrip{padding:65px 0 50px}}
+
+
+/* Commercial diagnosis: evidence -> consequence -> action */
+.commercialDiagnosis{margin:28px 0;padding:30px;border:1px solid rgba(255,255,255,.1);border-radius:24px;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.018))}
+.diagnosisGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:20px}
+.diagnosisGrid article{padding:20px;border:1px solid rgba(255,255,255,.08);border-radius:16px;background:rgba(0,0,0,.18)}
+.diagnosisGrid article span{display:block;margin-bottom:10px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;opacity:.62}
+.diagnosisGrid article p{margin:0;line-height:1.65;opacity:.86}
+@media(max-width:800px){.diagnosisGrid{grid-template-columns:1fr}.commercialDiagnosis{padding:20px}}
