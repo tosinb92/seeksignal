@@ -111,9 +111,8 @@ async function readLimitedText(response: Response, maxBytes = 1_000_000) {
   return output;
 }
 
-export async function fetchPublicWebsite(raw: string) {
-  const initial = /^https?:\/\//i.test(raw.trim()) ? raw.trim() : `https://${raw.trim()}`;
-  let current = new URL(initial);
+async function fetchWebsiteAt(initial: URL) {
+  let current = initial;
 
   for (let hop = 0; hop <= 4; hop++) {
     await validatePublicUrl(current);
@@ -121,9 +120,10 @@ export async function fetchPublicWebsite(raw: string) {
     const response = await fetch(current.toString(), {
       redirect: "manual",
       headers: {
-        "User-Agent": "SeekSignal-Audit/1.0 (+website-readiness scanner)"
+        "User-Agent": "SeekSignal-Audit/1.0 (+website-readiness scanner)",
+        "Accept": "text/html,application/xhtml+xml;q=0.9,*/*;q=0.1"
       },
-      signal: AbortSignal.timeout(10000),
+      signal: AbortSignal.timeout(12000),
       cache: "no-store"
     });
 
@@ -131,27 +131,65 @@ export async function fetchPublicWebsite(raw: string) {
       const location = response.headers.get("location");
       if (!location) throw new Error("The website returned an incomplete redirect.");
       if (hop === 4) throw new Error("The website redirects too many times.");
-
       current = new URL(location, current);
       continue;
     }
 
-    if (!response.ok) {
-      throw new Error(`Website returned HTTP ${response.status}.`);
-    }
+    if (!response.ok) throw new Error(`Website returned HTTP ${response.status}.`);
 
     const contentType = (response.headers.get("content-type") || "").toLowerCase();
     if (contentType && !contentType.includes("text/html") && !contentType.includes("application/xhtml+xml")) {
       throw new Error("That address did not return a normal HTML website.");
     }
 
-    return {
-      url: current,
-      html: await readLimitedText(response)
-    };
+    return { url: current, html: await readLimitedText(response) };
   }
 
   throw new Error("We couldn't complete the website request.");
+}
+
+export async function fetchPublicWebsite(raw: string) {
+  const trimmed = raw.trim();
+  const initial = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+  const original = new URL(initial);
+
+  const candidates = [original];
+
+  // Many UK business sites publish one hostname but redirect the other.
+  // If the submitted www hostname has a DNS/connection problem, try the apex
+  // domain before telling the customer that the website cannot be reached.
+  const hostname = original.hostname.toLowerCase();
+  if (hostname.startsWith("www.")) {
+    const apex = new URL(original.toString());
+    apex.hostname = hostname.slice(4);
+    candidates.push(apex);
+  } else {
+    const www = new URL(original.toString());
+    www.hostname = `www.${hostname}`;
+    candidates.push(www);
+  }
+
+  let lastError: unknown;
+
+  for (const candidate of candidates) {
+    try {
+      return await fetchWebsiteAt(candidate);
+    } catch (error) {
+      lastError = error;
+      const message = error instanceof Error ? error.message : "";
+      // Only try the alternate hostname for connectivity/DNS problems.
+      // Real HTTP/application errors should be shown instead of silently
+      // switching the site being audited.
+      if (
+        !/couldn't reach that domain|couldn't verify that website|ENOTFOUND|EAI_AGAIN|ENODATA|ECONN|ETIMEDOUT|fetch failed/i.test(message)
+      ) {
+        throw error;
+      }
+    }
+  }
+
+  if (lastError instanceof Error) throw lastError;
+  throw new Error("We couldn't reach that domain. Check the website address and try again.");
 }
 
 function cleanText(value: string) {
