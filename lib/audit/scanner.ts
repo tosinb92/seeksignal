@@ -145,6 +145,35 @@ async function fetchWebsiteAt(initial: URL) {
   throw new Error("We couldn't complete the website request.");
 }
 
+async function fetchViaBrowserProxy(target: URL) {
+  const endpoint =
+    "https://api.microlink.io/?url=" +
+    encodeURIComponent(target.toString()) +
+    "&data.html.attr=html&meta=false&prerender=true";
+
+  const response = await fetch(endpoint, {
+    headers: { Accept: "application/json" },
+    signal: AbortSignal.timeout(20000),
+    cache: "no-store"
+  });
+
+  if (!response.ok) {
+    throw new Error(`Browser proxy returned HTTP ${response.status}.`);
+  }
+
+  const data = await response.json();
+  const html = data?.data?.html;
+
+  if (typeof html !== "string" || html.trim().length < 100) {
+    throw new Error("Browser proxy returned no usable HTML.");
+  }
+
+  return {
+    url: target,
+    html
+  };
+}
+
 export async function fetchPublicWebsite(raw: string) {
   const trimmed = raw.trim();
   const initial = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
@@ -182,6 +211,17 @@ export async function fetchPublicWebsite(raw: string) {
       ) {
         throw error;
       }
+    }
+  }
+
+  // Vercel's runtime can occasionally fail to resolve a perfectly public
+  // domain even though a real browser can reach it. Before failing the scan,
+  // use a browser-backed fetch service as a second acquisition path.
+  for (const candidate of candidates) {
+    try {
+      return await fetchViaBrowserProxy(candidate);
+    } catch {
+      // Continue to the final, honest error below.
     }
   }
 
