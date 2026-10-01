@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { createHash, randomUUID } from "node:crypto";
 import { getSessionUser } from "../../../../lib/auth/session";
 import { supabaseRest } from "../../../../lib/supabase/rest";
+import { getBillingState } from "../../../../lib/billing/stripe";
 
 type Engine = {
   name: string;
@@ -117,7 +118,7 @@ export async function POST(request: Request) {
 
   const [projectResponse, competitorResponse, recentResponse, dailyRunsResponse] = await Promise.all([
     supabaseRest(
-      "/rest/v1/projects?select=id,name,domain,market,category&limit=1&id=eq." +
+      "/rest/v1/projects?select=id,name,domain,market,category,organization_id&limit=1&id=eq." +
         encodeURIComponent(projectId),
       { method: "GET" },
       accessToken
@@ -155,9 +156,21 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Project not found." }, { status: 404 });
   }
 
+  if (!user.email) {
+    return NextResponse.json({ error: "A verified account email is required for billing." }, { status: 400 });
+  }
+
+  const billing = await getBillingState(user.email, project.organization_id);
+  if (!billing.active) {
+    return NextResponse.json(
+      { error: "SeekSignal Pro is required to run live AI visibility tests.", upgradeRequired: true },
+      { status: 402 }
+    );
+  }
+
   if (dailyRuns.length >= 3) {
     return NextResponse.json(
-      { error: "The pre-payment safety cap is 3 AI visibility runs per project per day. Try again tomorrow." },
+      { error: "The current safety cap is 3 AI visibility runs per project per day. Try again tomorrow." },
       { status: 429 }
     );
   }
