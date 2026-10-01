@@ -8,8 +8,9 @@ import RunProjectScanButton from "../../components/RunProjectScanButton";
 import WorkspaceControls from "../../components/WorkspaceControls";
 import GenerateReportButton from "../../components/GenerateReportButton";
 import RunVisibilityTest from "../../components/RunVisibilityTest";
+import ProjectSwitcher from "../../components/ProjectSwitcher";
 
-export default async function WorkspacePage() {
+export default async function WorkspacePage({ searchParams }: { searchParams: Promise<{ project?: string }> }) {
   const user = await getSessionUser();
   if (!user?.id) redirect("/login");
 
@@ -35,7 +36,8 @@ export default async function WorkspacePage() {
   const organizations = orgResponse.ok ? await orgResponse.json() : [];
   const projects = projectResponse.ok ? await projectResponse.json() : [];
   const organization = organizations?.[0];
-  const project = projects?.[0];
+  const params = await searchParams;
+  const project = projects?.find((item: any) => item.id === params.project) || projects?.[0];
 
   const [scanResponse, competitorResponse, reportResponse, visibilityResponse] = project?.id
     ? await Promise.all([
@@ -150,6 +152,10 @@ export default async function WorkspacePage() {
           <small>Workspace</small>
           <strong>{organization?.name || "SeekSignal"}</strong>
         </div>
+        <ProjectSwitcher
+          currentProjectId={project?.id || ""}
+          projects={projects.map((item: any) => ({ id: item.id, name: item.name, domain: item.domain }))}
+        />
         <nav>
           <a className={styles.active} href="#overview">Overview</a>
           <a href="#ai-visibility">AI Visibility</a>
@@ -166,11 +172,18 @@ export default async function WorkspacePage() {
       <section className={styles.main} id="overview">
         <header className={styles.header}>
           <div>
-            <span className={styles.kicker}>Overview</span>
+            <span className={styles.kicker}>Project overview</span>
             <h1>{project?.name || organization?.name}</h1>
-            <p>{project?.domain || "Add your first project"}</p>
+            <div className={styles.domainIdentity}>
+              <span>Reporting on</span>
+              <strong>{project?.domain || "No website configured"}</strong>
+            </div>
           </div>
           <div className={styles.headerActions}>
+            <ProjectSwitcher
+              currentProjectId={project?.id || ""}
+              projects={projects.map((item: any) => ({ id: item.id, name: item.name, domain: item.domain }))}
+            />
             <RunProjectScanButton projectId={project?.id || ""} className={styles.secondary} label="Run scan" />
             <a className={styles.primary} href="#competitors" style={{display:"inline-flex",alignItems:"center"}}>Add competitor</a>
           </div>
