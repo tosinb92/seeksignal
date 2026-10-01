@@ -962,3 +962,18 @@ linear-gradient(180deg,rgba(5,8,7,.12),rgba(5,8,7,.78))}
 .diagnosisGrid article span{display:block;margin-bottom:10px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;opacity:.62}
 .diagnosisGrid article p{margin:0;line-height:1.65;opacity:.86}
 @media(max-width:800px){.diagnosisGrid{grid-template-columns:1fr}.commercialDiagnosis{padding:20px}}
+
+
+/* Results monetisation */
+.monetisationPanel{margin:34px 0;padding:30px;border:1px solid rgba(255,255,255,.11);border-radius:24px;background:rgba(255,255,255,.025)}
+.monetisationGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:22px}
+.monetisationGrid article{display:flex;flex-direction:column;padding:22px;border:1px solid rgba(255,255,255,.09);border-radius:18px;background:rgba(0,0,0,.2)}
+.monetisationGrid article>span{font-size:10px;font-weight:800;letter-spacing:.12em;opacity:.65}
+.monetisationGrid h3{font-size:21px;margin:12px 0 8px}
+.monetisationGrid p{line-height:1.6;opacity:.78;flex:1}
+.monetisationGrid a,.monetisationGrid button{margin-top:16px;padding:13px 14px;border-radius:10px;text-align:center;text-decoration:none;font-weight:700}
+.monetisationPrimary{box-shadow:inset 0 0 0 1px rgba(183,255,70,.22)}
+.monetisationPrimary>span{color:#b7ff46;opacity:1!important}
+.monetisationGrid button{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:inherit}
+.monetisationNote{display:block;margin-top:14px;opacity:.5}
+@media(max-width:800px){.monetisationGrid{grid-template-columns:1fr}.monetisationPanel{padding:20px}}
