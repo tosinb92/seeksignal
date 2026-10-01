@@ -41,21 +41,21 @@ export default function ProjectSwitcher({ currentProjectId, projects }:{
   }
 
   return <div className="projectSwitcher">
-    <button type="button" className="projectSwitcherButton" onClick={()=>setOpen(v=>!v)}>
+    <button type="button" className="ss-project-switcher-button" onClick={()=>setOpen(v=>!v)}>
       <span><small>Project</small><strong>{current?.name||"Select website"}</strong></span><b>⌄</b>
     </button>
-    {open?<div className="projectMenu">
-      <div className="projectMenuHeader"><span>Your websites</span><button type="button" onClick={()=>setShowCreate(v=>!v)}>+ New website</button></div>
-      <div className="projectList">
-        {projects.map(p=><button type="button" key={p.id} className={p.id===currentProjectId?"projectItem active":"projectItem"} onClick={()=>{setOpen(false);router.push("/app?project="+encodeURIComponent(p.id));router.refresh();}}>
+    {open?<div className="ss-project-menu">
+      <div className="ss-project-menu-header"><span>Your websites</span><button type="button" onClick={()=>setShowCreate(v=>!v)}>+ New website</button></div>
+      <div className="ss-project-list">
+        {projects.map(p=><button type="button" key={p.id} className={p.id===currentProjectId?"ss-project-item active":"ss-project-item"} onClick={()=>{setOpen(false);router.push("/app?project="+encodeURIComponent(p.id));router.refresh();}}>
           <strong>{p.name}</strong><small>{p.domain}</small>
         </button>)}
       </div>
-      {showCreate?<form onSubmit={createProject} className="projectCreate">
+      {showCreate?<form onSubmit={createProject} className="ss-project-create">
         <input value={name} onChange={e=>setName(e.target.value)} placeholder="Business / website name" required />
         <input value={domain} onChange={e=>setDomain(e.target.value)} placeholder="example.com" required />
         <div><input value={market} onChange={e=>setMarket(e.target.value)} placeholder="Market" /><input value={category} onChange={e=>setCategory(e.target.value)} placeholder="Category" /></div>
-        {error?<small className="projectError">{error}</small>:null}
+        {error?<small className="ss-project-error">{error}</small>:null}
         <button type="submit" disabled={busy}>{busy?"Creating…":"Create website"}</button>
       </form>:null}
     </div>:null}
