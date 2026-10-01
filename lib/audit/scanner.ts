@@ -53,24 +53,21 @@ async function validatePublicUrl(url: URL) {
 
   let lastError: unknown;
 
-  for (let attempt = 0; attempt < 2; attempt++) {
-    const [v4, v6] = await Promise.allSettled([
-      dns.resolve4(hostname),
-      dns.resolve6(hostname)
-    ]);
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const addresses = await dns.lookup(hostname, { all: true, verbatim: true });
 
-    const addresses = [
-      ...(v4.status === "fulfilled" ? v4.value : []),
-      ...(v6.status === "fulfilled" ? v6.value : [])
-    ];
-
-    if (addresses.length) {
-      if (addresses.some(isPrivate)) throw new Error("That address cannot be scanned.");
-      return;
+      if (addresses.length) {
+        if (addresses.some((entry) => isPrivate(entry.address))) {
+          throw new Error("That address cannot be scanned.");
+        }
+        return;
+      }
+    } catch (error) {
+      lastError = error;
     }
 
-    lastError = v4.status === "rejected" ? v4.reason : v6.status === "rejected" ? v6.reason : null;
-    if (attempt === 0) await new Promise((resolve) => setTimeout(resolve, 120));
+    if (attempt < 2) await new Promise((resolve) => setTimeout(resolve, 250 * (attempt + 1)));
   }
 
   const code =
