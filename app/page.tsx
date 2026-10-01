@@ -39,6 +39,7 @@ type Result = {
     effort?: string;
   }[];
   expectedOutcome?: string;
+  commercialDiagnosis?: { headline: string; detail: string; consequence: string };
   quickWins?: {
     title: string;
     impact: string;
@@ -262,6 +263,20 @@ export default function Home() {
               </div>
             </section>
 
+            {result.commercialDiagnosis ? (
+              <section className="commercialDiagnosis">
+                <div className="resultSectionHead">
+                  <span>Commercial diagnosis</span>
+                  <h2>{result.commercialDiagnosis.headline}</h2>
+                </div>
+                <div className="diagnosisGrid">
+                  <article><span>What is happening</span><p>{result.commercialDiagnosis.detail}</p></article>
+                  <article><span>Why it costs visibility</span><p>{result.commercialDiagnosis.consequence}</p></article>
+                  <article><span>What to do next</span><p>Complete the priority fixes below, publish them, then re-scan. Only after the website evidence improves should you judge model-level visibility changes.</p></article>
+                </div>
+              </section>
+            ) : null}
+
             <section className="priorityExperience">
               <div className="resultSectionHead">
                 <span>Your priority action plan</span>
@@ -283,7 +298,7 @@ export default function Home() {
                       {item.evidence ? <div className="resultDetail"><span>What we observed</span><p>{item.evidence}</p></div> : null}
                       {item.problem ? <div className="resultDetail"><span>Why this matters</span><p>{item.problem}</p></div> : null}
                       <div className="resultDetail resultDetailAction"><span>What to do</span><p>{item.action}</p></div>
-                      {item.expectedImpact ? <div className="resultDetail"><span>Expected benefit</span><p>{item.expectedImpact}</p></div> : null}
+                      {item.expectedImpact ? <div className="resultDetail"><span>Expected business impact</span><p>{item.expectedImpact}</p></div> : null}
                       {item.implementation?.length ? (
                         <details className="implementationDetails">
                           <summary>Show implementation instructions</summary>
@@ -325,7 +340,7 @@ export default function Home() {
                   <span>What happens next</span>
                   <strong>{result.expectedOutcome}</strong>
                 </div>
-                <a onClick={() => void trackEvent("signup_clicked", { leadId: result.leadId })} href={`/signup?lead=${encodeURIComponent(result.leadId)}`}>Create free workspace & save this report →</a>
+                <a onClick={() => void trackEvent("signup_clicked", { leadId: result.leadId })} href={`/signup?lead=${encodeURIComponent(result.leadId)}`}>Save report, re-scan & track improvement →</a>
               </div>
             ) : null}
           </section>
