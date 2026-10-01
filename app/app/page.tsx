@@ -235,7 +235,7 @@ export default async function WorkspacePage() {
                   <strong>{project?.domain}</strong>
                 </div>
                 <img
-                  src={`https://image.thum.io/get/width/1200/crop/900/https://${project?.domain}`}
+                  src={`/api/website-screenshot?url=${encodeURIComponent(project?.domain || "")}`}
                   alt={`Screenshot of ${project?.domain} analysed by SeekSignal`}
                 />
                 <div className={styles.websitePreviewCaption}>
