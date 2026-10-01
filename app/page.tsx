@@ -207,7 +207,7 @@ export default function Home() {
                   <strong>{result.url}</strong>
                 </div>
                 <img
-                  src={`https://image.thum.io/get/width/1200/crop/900/noanimate/https://${result.url.replace("https://", "").replace("http://", "").replace("www.", "")}`}
+                  src={`/api/website-screenshot?url=${encodeURIComponent(result.url)}`}
                   alt={`Screenshot of ${result.url} analysed by SeekSignal`}
                 />
                 <div className="snapshotCaption">
