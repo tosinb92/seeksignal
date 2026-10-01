@@ -62,3 +62,40 @@ export async function createPortalSession(customerId: string, origin: string) {
     body
   });
 }
+
+
+export async function getBillingState(email: string, organizationId: string) {
+  const priceId = process.env.STRIPE_PRO_PRICE_ID;
+  if (!priceId) {
+    return { plan: "free", active: false, status: "inactive", customerId: null as string | null };
+  }
+
+  const customers = await stripeRequest(
+    "/v1/customers?email=" + encodeURIComponent(email) + "&limit=10"
+  );
+
+  for (const customer of customers.data || []) {
+    const subscriptions = await stripeRequest(
+      "/v1/subscriptions?customer=" + encodeURIComponent(customer.id) + "&status=all&limit=20"
+    );
+
+    for (const sub of subscriptions.data || []) {
+      const matchesOrganization = sub.metadata?.organization_id === organizationId;
+      const matchesPrice = sub.items?.data?.some(
+        (item: any) => item.price?.id === priceId
+      );
+      const active = ["active", "trialing"].includes(sub.status);
+
+      if (matchesOrganization && matchesPrice && active) {
+        return {
+          plan: "pro",
+          active: true,
+          status: sub.status,
+          customerId: customer.id as string
+        };
+      }
+    }
+  }
+
+  return { plan: "free", active: false, status: "inactive", customerId: null as string | null };
+}
