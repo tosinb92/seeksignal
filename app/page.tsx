@@ -111,6 +111,7 @@ export default function Home() {
           <a href="#intelligence">Solutions</a>
           <a href="#methodology">How it works</a>
           <a href="#scan">Free audit</a>
+          <a href="#pricing">Pricing</a>
         </nav>
 
         <div className="navActions">
@@ -467,6 +468,48 @@ export default function Home() {
           <article><b>01</b><strong>Observable evidence</strong><p>We inspect signals available from the submitted website rather than inventing a visibility score from unsupported assumptions.</p></article>
           <article><b>02</b><strong>Explainable findings</strong><p>Important findings include what was observed, why it matters, a practical action and a way to verify the fix.</p></article>
           <article><b>03</b><strong>Clear limits</strong><p>Website readiness is not the same as being recommended by ChatGPT, Gemini or another AI system. SeekSignal states that distinction explicitly.</p></article>
+        </div>
+      </section>
+
+      <section id="pricing" className="pricingSection shell">
+        <div className="pricingIntro">
+          <span>PRICING</span>
+          <h2>Start free. Upgrade when you need live AI visibility intelligence.</h2>
+          <p>The website-readiness diagnostic is free. SeekSignal Pro unlocks controlled AI visibility tests, saved intelligence, ongoing re-testing and competitor context.</p>
+        </div>
+        <div className="pricingGrid">
+          <article className="pricingCard">
+            <div>
+              <span className="pricingLabel">FREE</span>
+              <h3>Website diagnostic</h3>
+              <div className="price"><strong>£0</strong><small>no card required</small></div>
+              <p>Understand the signals your website currently gives search and AI retrieval systems.</p>
+            </div>
+            <ul>
+              <li>AI-readiness score</li>
+              <li>Evidence behind each finding</li>
+              <li>Priority website fixes</li>
+              <li>Commercial diagnosis</li>
+            </ul>
+            <a href="#scan">Analyse my website →</a>
+          </article>
+          <article className="pricingCard pricingPro">
+            <div>
+              <span className="pricingLabel">SEEKSIGNAL PRO</span>
+              <h3>Ongoing AI visibility intelligence</h3>
+              <div className="price"><strong>£49</strong><small>/ month</small></div>
+              <p>Move beyond website readiness and test whether leading AI models actually surface your business.</p>
+            </div>
+            <ul>
+              <li>Everything in the free diagnostic</li>
+              <li>Live AI visibility testing</li>
+              <li>OpenAI, Claude, Gemini & Perplexity coverage</li>
+              <li>Competitor tracking and saved reports</li>
+              <li>Re-scans and ongoing monitoring</li>
+            </ul>
+            <a href="/signup">Start with a free diagnostic →</a>
+            <small className="pricingFine">Cancel through Stripe billing. AI tests are subject to usage limits.</small>
+          </article>
         </div>
       </section>
 
