@@ -473,6 +473,24 @@ export function analyseWebsite(html: string, hostname: string) {
   const methodology =
     "This score measures observable website-readiness signals on the audited page. It does not claim that an AI platform currently recommends the business.";
 
+  const warningCount = items.filter((item) => !item.ok).length;
+  const topGap = opportunities[0];
+  const commercialDiagnosis = warningCount === 0
+    ? {
+        headline: "Your homepage communicates the fundamentals clearly. The next question is whether AI systems actually surface the business.",
+        detail: "The observable homepage signals in this diagnostic are present. That removes several common interpretation barriers, but it does not prove recommendation visibility.",
+        consequence: "Further homepage tweaks are unlikely to be the highest-value next move. Measure real model visibility, competitor presence and deeper site coverage instead."
+      }
+    : {
+        headline: `${warningCount} observable gaps are weakening the evidence machines and buyers can use to understand this business.`,
+        detail: topGap
+          ? `The highest-priority issue is ${topGap.title.toLowerCase()}. ${topGap.evidence}`
+          : "The page is missing signals that make the business easier to classify and evaluate.",
+        consequence: topGap
+          ? `${topGap.expectedImpact} Until the underlying evidence changes, simply producing more content or repeatedly testing AI prompts is unlikely to address this specific weakness.`
+          : "Missing or ambiguous evidence can reduce discoverability, interpretation quality and conversion confidence."
+      };
+
   return {
     url: hostname,
     score,
@@ -480,6 +498,7 @@ export function analyseWebsite(html: string, hostname: string) {
     categories,
     opportunities,
     actionPlan: opportunities,
+    commercialDiagnosis,
     expectedOutcome:
       opportunities.length
         ? "Work through the top three actions first. These are the changes most likely to remove practical discovery, interpretation or conversion barriers. Re-scan after publishing them, then use AI visibility tests to see whether model-level mentions actually change."
