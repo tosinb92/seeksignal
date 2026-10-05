@@ -123,26 +123,19 @@ export default function Home() {
 
       <section className="hero shell">
         <div className="heroBackdrop" />
-        <div className="heroSplit">
+        <div className="heroGrid">
           <div className="heroContent">
             <div className="heroBadge"><span /> AI visibility intelligence</div>
-            <h1>
-              Know if AI can
-              <em> find, understand & recommend you.</em>
-            </h1>
+            <h1>Know if AI can <em>find, understand & recommend you.</em></h1>
             <p className="heroCopy">
-              SeekSignal shows you how clearly AI can understand your business, whether your brand is actually being surfaced in AI recommendations, who appears instead, and what to fix next.
+              See how clearly AI can understand your business, whether your brand is actually being surfaced,
+              who appears instead, and what to fix before you spend more on SEO, content or optimisation.
             </p>
 
             <form id="scan" className="scanBox" onSubmit={startAudit}>
               <div className="scanInput">
-                <span className="scanIcon">⌁</span>
-                <input
-                  value={url}
-                  onChange={(e) => setUrl(e.target.value)}
-                  placeholder="Enter your website — example.com"
-                  required
-                />
+                <span className="scanIcon">↗</span>
+                <input value={url} onChange={(e)=>setUrl(e.target.value)} placeholder="Enter your website — example.com" required />
               </div>
               <button>Analyse my website <span>→</span></button>
             </form>
@@ -150,51 +143,106 @@ export default function Home() {
             <div className="heroMeta">
               <span>Free diagnostic</span><i />
               <span>No card required</span><i />
-              <span>No login or website access needed</span>
+              <span>No website access required</span>
             </div>
 
-            <div className="signalPreview" aria-label="What SeekSignal helps you understand">
+            <div className="heroQuestions">
               <span>Can AI understand you?</span>
               <span>Are you being recommended?</span>
               <span>Who wins instead?</span>
-              <span>What should you fix?</span>
             </div>
+          </div>
 
-            <div className="scanWhisper">
-              <span className="pulseDot" />
-              <span>Start with your website. Get the evidence before you spend more on SEO, content or AI optimisation.</span>
+          <div className="heroVisualPremium">
+            <div className="heroVisualGlow" />
+            <img src="/assets/homepage/home--hero--primary-visual--01.png" alt="SeekSignal AI visibility dashboard shown on desktop and mobile." />
+            <div className="heroCallout">
+              <span>AI visibility</span>
+              <strong>68</strong>
+              <small>Example workspace</small>
             </div>
           </div>
         </div>
+      </section>
 
-        <section className="uspBand">
-          <div className="uspInner">
-            <span className="uspLabel">Why SeekSignal is different</span>
-            <h2>Most tools tell you what to optimise. <em>SeekSignal tells you whether you're actually being found.</em></h2>
-            <div className="uspColumns">
-              <div><strong>01</strong><b>Readiness</b><span>Can machines clearly understand who you are, what you do and why you matter?</span></div>
-              <div><strong>02</strong><b>Visibility</b><span>When buyers ask AI for a business like yours, does your brand actually appear?</span></div>
-              <div><strong>03</strong><b>Competition</b><span>Which brands are being surfaced instead — and what signals are helping them win?</span></div>
-              <div><strong>04</strong><b>Action</b><span>Turn the evidence into a prioritised plan rather than another generic SEO checklist.</span></div>
-            </div>
-          </div>
-        </section>
+      <section className="trustBar">
+        <div className="shell trustInner">
+          <span>Built for the AI discovery shift</span>
+          <div><b>ChatGPT</b><b>Gemini</b><b>Perplexity</b><b>Claude</b><b>Search</b></div>
+        </div>
+      </section>
 
-        <div className="credibilityPanel">
-          <div className="exampleFinding">
-            <span className="credibilityEyebrow">THE SEEK SIGNAL DIFFERENCE</span>
-            <div className="exampleScore"><strong>1</strong><small>clear answer</small></div>
-            <div>
-              <b>Readiness ≠ recommendation</b>
-              <p>See the difference between a website that is technically understandable and a brand that AI systems actually surface.</p>
-            </div>
-          </div>
-          <div className="methodProof">
-            <span className="credibilityEyebrow">INTELLIGENCE BEFORE EXECUTION</span>
-            <p>Before you spend more on content, SEO or optimisation, SeekSignal gives you an evidence-led baseline: what your site communicates, how visible your brand is in AI discovery, which competitors appear instead, and where the biggest opportunity sits.</p>
-            <a href="#methodology">See how SeekSignal works →</a>
+      <section className="uspBand">
+        <div className="shell uspInner">
+          <span className="uspLabel">Why SeekSignal</span>
+          <h2>Most tools tell you what to optimise. <em>SeekSignal tells you whether you're actually being found.</em></h2>
+          <div className="uspColumns">
+            <div><strong>01</strong><b>Understand</b><span>See what your website tells machines about who you are and what you do.</span></div>
+            <div><strong>02</strong><b>Measure</b><span>Test whether AI systems actually surface your brand for relevant buyer questions.</span></div>
+            <div><strong>03</strong><b>Compare</b><span>See which competitors appear instead and where the recommendation gap sits.</span></div>
+            <div><strong>04</strong><b>Act</b><span>Turn the evidence into a short list of high-impact changes and re-test.</span></div>
           </div>
         </div>
+      </section>
+
+      <section className="howSection">
+        <div className="shell">
+          <div className="howHeader">
+            <span>HOW IT WORKS</span>
+            <h2>From <em>signal</em> to action.</h2>
+            <p>One clear workflow. No complicated SEO dashboard to decipher.</p>
+          </div>
+          <div className="howGrid">
+            <article className="howFeature">
+              <img src="/assets/homepage/home--how-it-works--buyer-ai-journey--01.png" alt="AI buyer journey showing recommendation signals." />
+              <div className="howOverlay" />
+              <div className="howCopy"><span>01 / Discover</span><h3>See the recommendation gap.</h3><p>Understand what AI can infer about your business before you start changing anything.</p></div>
+            </article>
+            <article><span>02</span><h3>Measure visibility.</h3><p>Test real buyer questions and see whether your brand appears in AI answers.</p></article>
+            <article><span>03</span><h3>See who wins instead.</h3><p>Compare your presence with the competitors being surfaced in the same buying journeys.</p></article>
+            <article><span>04</span><h3>Fix & re-test.</h3><p>Prioritise the changes with the clearest commercial upside, then measure again.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section className="intelligenceSection">
+        <div className="shell intelligenceGridNew">
+          <div className="intelligenceCopy">
+            <span>AI VISIBILITY MONITORING</span>
+            <h2>Know what buyers see <em>before they choose.</em></h2>
+            <p>AI discovery is becoming another route into the shortlist. SeekSignal turns that invisible layer into something you can measure and improve.</p>
+            <div className="intelligencePoints">
+              <div><b>01</b><strong>Recommendation share</strong><span>How often your brand appears in relevant AI answers.</span></div>
+              <div><b>02</b><strong>Competitor presence</strong><span>Which brands are winning the same conversations.</span></div>
+              <div><b>03</b><strong>Evidence-backed actions</strong><span>What to change and why it could improve discoverability.</span></div>
+            </div>
+          </div>
+          <div className="intelligenceVisual">
+            <img src="/assets/homepage/home--visibility-monitoring--ai-presence-timeline--01.png" alt="AI visibility timeline across multiple platforms." />
+          </div>
+        </div>
+      </section>
+
+      <section className="humanSection">
+        <div className="shell humanGrid">
+          <div className="humanVisual"><img src="/assets/homepage/home--methodology--human-ai-research--01.png" alt="Business professional researching with AI." /></div>
+          <div className="humanCopy">
+            <span>THE COMMERCIAL QUESTION</span>
+            <h2>Before you spend more trying to get found, <em>find out where you stand.</em></h2>
+            <p>SeekSignal is designed to sit before execution. Diagnose the visibility gap first, then decide whether the answer is better content, stronger authority, clearer entities, technical improvements — or something else.</p>
+            <a href="#scan">Run the free diagnostic →</a>
+          </div>
+        </div>
+      </section>
+
+      <section className="proofBand">
+        <div className="shell proofGrid">
+          <div><strong>01</strong><span>Website readiness</span><p>Observable signals that shape how clearly machines understand your business.</p></div>
+          <div><strong>02</strong><span>AI visibility</span><p>Controlled testing of whether relevant AI answers surface your brand.</p></div>
+          <div><strong>03</strong><span>Competitive context</span><p>Understand who is appearing instead and where the gap is coming from.</p></div>
+          <div><strong>04</strong><span>Prioritised action</span><p>A practical route from evidence to improvement and re-testing.</p></div>
+        </div>
+      </section>
 
         {error && <div className="error">{error}</div>}
 
@@ -211,6 +259,7 @@ export default function Home() {
             }}
           />
         )}
+
 
         {result && (
           <section className="resultExperience">
@@ -358,120 +407,6 @@ export default function Home() {
           </section>
         )}
 
-        {!result && !showGate && (
-          <div className="productStage productStageLegacy">
-            <div className="productGlow" />
-            <div className="productWindow">
-              <div className="windowBar">
-                <div className="traffic"><i/><i/><i/></div>
-                <span>acme.com / intelligence overview</span>
-                <div className="windowLive"><b/> Example workspace</div>
-              </div>
-
-              <div className="productApp">
-                <aside className="productSidebar">
-                  <div className="sideBrand"><span className="brandMark small">S</span>SeekSignal</div>
-                  <div className="projectPicker"><small>Project</small><strong>Acme</strong><span>⌄</span></div>
-                  <nav aria-label="Example workspace navigation">
-                    <span className="active">Overview</span>
-                    <span>AI visibility</span>
-                    <span>Website readiness</span>
-                    <span>Competitors</span>
-                    <span>Opportunities</span>
-                    <span>Reports</span>
-                  </nav>
-                  <div className="sideFooter"><span>Example monitoring</span><b>●</b></div>
-                </aside>
-
-                <div className="productMain">
-                  <div className="productHeader">
-                    <div>
-                      <span>Overview</span>
-                      <h3>Your visibility across AI discovery.</h3>
-                    </div>
-                    <span className="demoFilter">Last 30 days⌄</span>
-                  </div>
-
-                  <div className="heroMetrics">
-                    <article>
-                      <span>Visibility score</span>
-                      <strong>68</strong>
-                      <small>↑ 12 this month</small>
-                    </article>
-                    <article>
-                      <span>Recommendation share</span>
-                      <strong>24%</strong>
-                      <small>↑ 6.4 pts</small>
-                    </article>
-                    <article>
-                      <span>Tracked answers</span>
-                      <strong>184</strong>
-                      <small>Across 4 providers</small>
-                    </article>
-                  </div>
-
-                  <div className="intelligenceGrid">
-                    <section className="trendPanel">
-                      <div className="panelTitle">
-                        <div><span>Visibility trend</span><strong>+18.4%</strong></div>
-                        <small>May — Sep</small>
-                      </div>
-                      <div className="chart">
-                        <div className="gridLines"><i/><i/><i/><i/></div>
-                        <svg viewBox="0 0 620 210" preserveAspectRatio="none">
-                          <defs>
-                            <linearGradient id="fill" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="currentColor" stopOpacity=".18"/>
-                              <stop offset="100%" stopColor="currentColor" stopOpacity="0"/>
-                            </linearGradient>
-                          </defs>
-                          <path d="M0,180 C55,164 86,173 122,150 S184,157 222,121 S292,137 332,94 S404,108 447,67 S540,88 620,26 L620,210 L0,210Z" fill="url(#fill)"/>
-                          <path d="M0,180 C55,164 86,173 122,150 S184,157 222,121 S292,137 332,94 S404,108 447,67 S540,88 620,26" fill="none" stroke="currentColor" strokeWidth="3"/>
-                        </svg>
-                        <div className="axis"><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span></div>
-                      </div>
-                    </section>
-
-                    <section className="sharePanel">
-                      <div className="panelTitle"><div><span>Recommendation share</span><strong>24%</strong></div><small>vs tracked competitors</small></div>
-                      <div className="shareBody">
-                        <div className="donut"><span>24<small>%</small></span></div>
-                        <div className="legend">
-                          <div><i className="brandKey"/><span>Your brand</span><strong>24%</strong></div>
-                          <div><i/><span>Competitor A</span><strong>31%</strong></div>
-                          <div><i/><span>Competitor B</span><strong>18%</strong></div>
-                          <div><i/><span>Other</span><strong>27%</strong></div>
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-
-                  <div className="bottomGrid">
-                    <section className="enginePanel">
-                      <div className="panelTitle"><div><span>Engine coverage</span><strong>4 tracked</strong></div><small>Visibility score</small></div>
-                      <div className="engineRows">
-                        <div><span>OpenAI</span><b><i style={{width:"78%"}}/></b><strong>78</strong></div>
-                        <div><span>Gemini</span><b><i style={{width:"64%"}}/></b><strong>64</strong></div>
-                        <div><span>Perplexity</span><b><i style={{width:"58%"}}/></b><strong>58</strong></div>
-                        <div><span>Claude</span><b><i style={{width:"42%"}}/></b><strong>42</strong></div>
-                      </div>
-                    </section>
-
-                    <section className="actionsPanel">
-                      <div className="panelTitle"><div><span>Next best actions</span><strong>7 open</strong></div><small>Prioritised by impact</small></div>
-                      <div className="actionRows">
-                        <div><i/><strong>Add service schema</strong><em>High</em></div>
-                        <div><i/><strong>Strengthen entity signals</strong><em>High</em></div>
-                        <div><i className="medium"/><strong>Answer buyer questions</strong><em>Medium</em></div>
-                      </div>
-                    </section>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </section>
 
       <section id="methodology" className="methodologyStrip shell">
         <span>WHAT WE ACTUALLY MEASURE</span>
