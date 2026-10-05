@@ -122,7 +122,7 @@ export default function Home() {
       </header>
 
       <section className="hero shell heroCover">
-        <img className="heroCoverImage" src="/assets/homepage/SeekSignal%20AI%20Visibility%20Dashboard.png" alt="SeekSignal AI visibility platform dashboard." />
+        <img className="heroCoverImage" src="/assets/homepage/AI%20Visibility%20Workspace%20at%20Sunset.png" alt="SeekSignal AI visibility platform dashboard." />
         <form id="scan" className="heroHotspotForm" onSubmit={startAudit} aria-label="Run a free SeekSignal website audit">
           <label className="srOnly" htmlFor="hero-url">Website address</label>
           <input id="hero-url" value={url} onChange={(e)=>setUrl(e.target.value)} aria-label="Website address" required />
