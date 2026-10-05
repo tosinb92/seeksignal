@@ -1150,8 +1150,8 @@ linear-gradient(180deg,rgba(5,8,7,.12),rgba(5,8,7,.78))}
   object-position:center!important;
   display:block!important;
 }
-.heroCoverShade{display:none!important}
-.heroCoverContent,.heroPlatformStack{display:none!important}
+.heroCoverShade{display:block!important}
+.heroPlatformStack{display:none!important}
 .heroHotspotForm{
   position:absolute!important;
   left:5.3%!important;
