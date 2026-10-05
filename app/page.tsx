@@ -125,13 +125,13 @@ export default function Home() {
         <div className="heroBackdrop" />
         <div className="heroSplit">
           <div className="heroContent">
-            <div className="heroBadge"><span /> AI visibility diagnostic</div>
+            <div className="heroBadge"><span /> AI visibility intelligence</div>
             <h1>
-              What does AI
-              <em> see when it sees you?</em>
+              Know if AI can
+              <em> find, understand & recommend you.</em>
             </h1>
             <p className="heroCopy">
-              Your website is already sending signals to search engines and AI systems. SeekSignal exposes what they can understand, what they may miss, and the gaps that could keep your business out of the answer.
+              SeekSignal shows you how clearly AI can understand your business, whether your brand is actually being surfaced in AI recommendations, who appears instead, and what to fix next.
             </p>
 
             <form id="scan" className="scanBox" onSubmit={startAudit}>
@@ -153,33 +153,46 @@ export default function Home() {
               <span>No login or website access needed</span>
             </div>
 
-            <div className="signalPreview" aria-label="Signals included in the diagnostic">
-              <span>Entity clarity</span>
-              <span>Authority signals</span>
-              <span>Technical readiness</span>
-              <span>Machine-readable context</span>
+            <div className="signalPreview" aria-label="What SeekSignal helps you understand">
+              <span>Can AI understand you?</span>
+              <span>Are you being recommended?</span>
+              <span>Who wins instead?</span>
+              <span>What should you fix?</span>
             </div>
 
             <div className="scanWhisper">
               <span className="pulseDot" />
-              <span>Scanning entity clarity, authority, technical signals and machine-readable context.</span>
+              <span>Start with your website. Get the evidence before you spend more on SEO, content or AI optimisation.</span>
             </div>
           </div>
         </div>
 
+        <section className="uspBand">
+          <div className="uspInner">
+            <span className="uspLabel">Why SeekSignal is different</span>
+            <h2>Most tools tell you what to optimise. <em>SeekSignal tells you whether you're actually being found.</em></h2>
+            <div className="uspColumns">
+              <div><strong>01</strong><b>Readiness</b><span>Can machines clearly understand who you are, what you do and why you matter?</span></div>
+              <div><strong>02</strong><b>Visibility</b><span>When buyers ask AI for a business like yours, does your brand actually appear?</span></div>
+              <div><strong>03</strong><b>Competition</b><span>Which brands are being surfaced instead — and what signals are helping them win?</span></div>
+              <div><strong>04</strong><b>Action</b><span>Turn the evidence into a prioritised plan rather than another generic SEO checklist.</span></div>
+            </div>
+          </div>
+        </section>
+
         <div className="credibilityPanel">
           <div className="exampleFinding">
-            <span className="credibilityEyebrow">EXAMPLE DIAGNOSTIC OUTPUT</span>
-            <div className="exampleScore"><strong>47</strong><small>/100</small></div>
+            <span className="credibilityEyebrow">THE SEEK SIGNAL DIFFERENCE</span>
+            <div className="exampleScore"><strong>1</strong><small>clear answer</small></div>
             <div>
-              <b>3 priority gaps detected</b>
-              <p>See the evidence behind each finding, why it matters and what to change first.</p>
+              <b>Readiness ≠ recommendation</b>
+              <p>See the difference between a website that is technically understandable and a brand that AI systems actually surface.</p>
             </div>
           </div>
           <div className="methodProof">
-            <span className="credibilityEyebrow">EVIDENCE, NOT A BLACK BOX</span>
-            <p>SeekSignal checks observable signals on the website you submit. Findings show the evidence detected and separate website readiness from claims about whether an AI system currently recommends your business.</p>
-            <a href="#methodology">How the diagnostic works →</a>
+            <span className="credibilityEyebrow">INTELLIGENCE BEFORE EXECUTION</span>
+            <p>Before you spend more on content, SEO or optimisation, SeekSignal gives you an evidence-led baseline: what your site communicates, how visible your brand is in AI discovery, which competitors appear instead, and where the biggest opportunity sits.</p>
+            <a href="#methodology">See how SeekSignal works →</a>
           </div>
         </div>
 
@@ -241,7 +254,7 @@ export default function Home() {
             <section className="businessMeaning">
               <div className="resultSectionHead">
                 <span>What this means for your business</span>
-                <h2>Understand the commercial meaning before the technical detail.</h2>
+                <h2>Don't just audit the website. Understand the visibility gap.</h2>
               </div>
               <div className="meaningCards">
                 <article>
@@ -279,7 +292,7 @@ export default function Home() {
             <section className="priorityExperience">
               <div className="resultSectionHead">
                 <span>Your priority action plan</span>
-                <h2>Fix these first.</h2>
+                <h2>Know what is costing you visibility — and fix that first.</h2>
                 <p>These are ranked from the actual findings in this scan, with evidence, implementation guidance and a verification step.</p>
               </div>
               {result.opportunities.length ? (
@@ -472,7 +485,7 @@ export default function Home() {
       <section id="pricing" className="pricingSection shell">
         <div className="pricingIntro">
           <span>PRICING</span>
-          <h2>Start free. Upgrade when you need live AI visibility intelligence.</h2>
+          <h2>Find your visibility gap before you spend more trying to fix it.</h2>
           <p>The website-readiness diagnostic is free. SeekSignal Pro unlocks controlled AI visibility tests, saved intelligence, ongoing re-testing and competitor context.</p>
         </div>
         <div className="pricingGrid">
