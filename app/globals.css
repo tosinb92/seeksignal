@@ -1125,3 +1125,72 @@ linear-gradient(180deg,rgba(5,8,7,.12),rgba(5,8,7,.78))}
   .heroVisualPremium{min-height:300px}
   .heroVisualPremium img{width:100%}
 }
+
+/* Approved hero-cover asset: preserve its designed composition exactly. */
+.heroCover{
+  position:relative!important;
+  width:100%!important;
+  max-width:none!important;
+  min-height:0!important;
+  height:auto!important;
+  aspect-ratio:1974 / 797;
+  padding:0!important;
+  margin:0!important;
+  overflow:hidden!important;
+  display:block!important;
+  border-radius:0!important;
+}
+.heroCoverImage{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  display:block!important;
+}
+.heroCoverShade{display:none!important}
+.heroCoverContent,.heroPlatformStack{display:none!important}
+.heroHotspotForm{
+  position:absolute!important;
+  left:5.3%!important;
+  top:62.5%!important;
+  width:38.7%!important;
+  height:7.5%!important;
+  display:block!important;
+  z-index:5!important;
+  margin:0!important;
+  padding:0!important;
+}
+.heroHotspotForm input{
+  position:absolute!important;
+  left:0!important;
+  top:0!important;
+  width:65.5%!important;
+  height:100%!important;
+  border:0!important;
+  outline:0!important;
+  background:transparent!important;
+  color:transparent!important;
+  caret-color:transparent!important;
+  cursor:text!important;
+}
+.heroHotspotForm input::placeholder{color:transparent!important}
+.heroHotspotForm button{
+  position:absolute!important;
+  right:0!important;
+  top:0!important;
+  width:33.5%!important;
+  height:100%!important;
+  border:0!important;
+  background:transparent!important;
+  color:transparent!important;
+  cursor:pointer!important;
+  border-radius:12px!important;
+}
+.heroOverlayNav{display:none!important}
+@media(max-width:700px){
+  .heroCover{aspect-ratio:1974 / 797;min-height:0!important}
+  .heroHotspotForm{left:5.3%!important;top:62.5%!important;width:38.7%!important;height:7.5%!important}
+}
