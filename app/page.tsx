@@ -101,84 +101,25 @@ export default function Home() {
 
   return (
     <main className="site">
-      <header className="topbar shell">
-        <a className="brand" href="#">
-          <span className="brandMark">S</span>
-          <span>SeekSignal</span>
+      <header className="topbar shell heroOverlayNav">
+        <a className="brand" href="#" aria-label="SeekSignal home">
+          <span className="brandMark">S</span><span>SeekSignal</span>
         </a>
-
-        <nav className="mainNav">
-          <a href="#platform">Product</a>
-          <a href="#intelligence">Solutions</a>
-          <a href="#methodology">How it works</a>
-          <a href="#scan">Free audit</a>
-          <a href="#pricing">Pricing</a>
+        <nav className="mainNav" aria-label="Main navigation">
+          <a href="#platform">Product</a><a href="#intelligence">Solutions</a><a href="#methodology">How it works</a><a href="#scan">Free audit</a><a href="#pricing">Pricing</a>
         </nav>
-
-        <div className="navActions">
-          <a className="loginLink" href="/login">Sign in</a>
-          <a className="navCta" href="#scan">Get started <span>→</span></a>
-        </div>
+        <div className="navActions"><a className="loginLink" href="/login">Sign in</a><a className="navCta" href="#scan">Get started <span>→</span></a></div>
       </header>
 
-      <section className="hero shell">
-        <img className="heroCoverImage" src="/assets/homepage/home--hero--primary-visual--01.png" alt="" aria-hidden="true" />
-        <div className="heroCoverShade" />
-        <div className="heroCoverContent">
-          <div className="heroBadge"><span /> AI visibility intelligence</div>
-          <h1>Know if AI can <em>find, understand & recommend you.</em></h1>
-          <p className="heroCopy">
-            See exactly how visible your business is across AI discovery — and what to fix before you spend more on SEO, content or optimisation.
-          </p>
-
-          <form id="scan" className="scanBox" onSubmit={startAudit}>
-            <div className="scanInput">
-              <span className="scanIcon">↗</span>
-              <input value={url} onChange={(e)=>setUrl(e.target.value)} placeholder="Enter your website (e.g. yourbusiness.co.uk)" required />
-            </div>
-            <button>Analyse my website <span>→</span></button>
-          </form>
-
-          <div className="heroMeta">
-            <span>Free scan</span><i />
-            <span>No credit card required</span><i />
-            <span>Results in minutes</span>
-          </div>
-
-          <div className="heroQuestions">
-            <span>Can AI understand you?</span>
-            <span>Are you being recommended?</span>
-            <span>Who wins instead?</span>
-          </div>
-        </div>
-
-        <div className="heroPlatformStack" aria-hidden="true">
-          <div><b>◉</b><span>ChatGPT</span></div>
-          <div><b>G</b><span>Google</span></div>
-          <div><b>✦</b><span>Perplexity</span></div>
-          <div><b>✳</b><span>Claude</span></div>
-        </div>
-
-        
+      <section className="hero shell heroCover">
+        <img className="heroCoverImage" src="/assets/homepage/SeekSignal%20AI%20Visibility%20Dashboard.png" alt="" aria-hidden="true" />
+        <form id="scan" className="heroHotspotForm" onSubmit={startAudit} aria-label="Run a free SeekSignal website audit">
+          <label className="srOnly" htmlFor="hero-url">Website address</label>
+          <input id="hero-url" value={url} onChange={(e)=>setUrl(e.target.value)} aria-label="Website address" placeholder="" required />
+          <button type="submit" aria-label="Analyse my website"></button>
+        </form>
       </section>
 
-              {error && <div className="error">{error}</div>}
-              {showGate && !result && (
-          <LeadGate
-            website={url}
-            lead={lead}
-            loading={loading}
-            onChange={setLead}
-            onSubmit={unlockResults}
-            onBack={() => {
-              setShowGate(false);
-              setError("");
-            }}
-          />
-        )}
-
-      
-      
       <section id="methodology" className="methodologyStrip shell">
         <span>WHAT WE ACTUALLY MEASURE</span>
         <div>
