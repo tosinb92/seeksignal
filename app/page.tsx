@@ -122,12 +122,27 @@ export default function Home() {
       </header>
 
       <section className="hero shell heroCover">
-        <img className="heroCoverImage" src="/assets/homepage/AI%20Visibility%20Workspace%20at%20Sunset.png" alt="SeekSignal AI visibility platform dashboard." />
-        <form id="scan" className="heroHotspotForm" onSubmit={startAudit} aria-label="Run a free SeekSignal website audit">
-          <label className="srOnly" htmlFor="hero-url">Website address</label>
-          <input id="hero-url" value={url} onChange={(e)=>setUrl(e.target.value)} aria-label="Website address" required />
-          <button type="submit" aria-label="Analyse my website"></button>
-        </form>
+        <img className="heroCoverImage" src="/assets/homepage/AI%20Visibility%20Workspace%20at%20Sunset.png" alt="Premium SeekSignal workspace showing AI visibility intelligence on a laptop." />
+        <div className="heroCoverOverlay" />
+        <div className="heroCoverContent">
+          <div className="heroBadge"><span /> AI visibility intelligence</div>
+          <h1>Know if AI can <em>find, understand & recommend you.</em></h1>
+          <p className="heroCopy">
+            See exactly how visible your business is across AI discovery — and what to fix before you spend more on SEO, content or optimisation.
+          </p>
+          <form id="scan" className="heroScanForm" onSubmit={startAudit}>
+            <div className="heroScanInput">
+              <span aria-hidden="true">↗</span>
+              <input value={url} onChange={(e)=>setUrl(e.target.value)} placeholder="Enter your website (e.g. yourbusiness.co.uk)" aria-label="Website address" required />
+            </div>
+            <button type="submit">Analyse my website <span>→</span></button>
+          </form>
+          <div className="heroMeta">
+            <span>Free scan</span><i />
+            <span>No credit card required</span><i />
+            <span>Results in minutes</span>
+          </div>
+        </div>
       </section>
 
       <section className="trustBar">
