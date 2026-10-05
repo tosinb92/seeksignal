@@ -1194,3 +1194,83 @@ linear-gradient(180deg,rgba(5,8,7,.12),rgba(5,8,7,.78))}
   .heroCover{aspect-ratio:1974 / 797;min-height:0!important}
   .heroHotspotForm{left:5.3%!important;top:62.5%!important;width:38.7%!important;height:7.5%!important}
 }
+
+/* Final hero: approved image is the visual layer; copy and scan remain real UI. */
+.heroCover{
+  position:relative!important;
+  width:100%!important;
+  max-width:none!important;
+  min-height:720px!important;
+  height:auto!important;
+  padding:0!important;
+  margin:0!important;
+  overflow:hidden!important;
+  display:flex!important;
+  align-items:center!important;
+  border-radius:0!important;
+}
+.heroCoverImage{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  display:block!important;
+}
+.heroCoverOverlay{
+  position:absolute!important;
+  inset:0!important;
+  z-index:1!important;
+  background:linear-gradient(90deg,rgba(4,10,7,.92) 0%,rgba(4,10,7,.82) 30%,rgba(4,10,7,.25) 60%,rgba(4,10,7,.05) 100%)!important;
+}
+.heroCoverContent{
+  position:relative!important;
+  z-index:3!important;
+  width:min(680px,52%)!important;
+  margin-left:5.5%!important;
+  padding:120px 0 90px!important;
+  text-align:left!important;
+}
+.heroCoverContent .heroBadge{margin:0 0 22px!important}
+.heroCoverContent h1{
+  max-width:650px!important;
+  margin:0 0 20px!important;
+  font-size:clamp(54px,5.8vw,84px)!important;
+  line-height:.94!important;
+  letter-spacing:-4.5px!important;
+}
+.heroCoverContent h1 em{display:inline!important;margin:0!important}
+.heroCoverContent .heroCopy{max-width:610px!important;margin:0!important;color:#b8c2bb!important;font-size:14px!important;line-height:1.65!important}
+.heroScanForm{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  gap:8px!important;
+  width:min(610px,100%)!important;
+  margin-top:26px!important;
+  padding:6px!important;
+  border:1px solid rgba(255,255,255,.13)!important;
+  border-radius:14px!important;
+  background:rgba(6,12,9,.72)!important;
+  backdrop-filter:blur(12px)!important;
+}
+.heroScanInput{display:flex!important;align-items:center!important;min-width:0!important;gap:10px!important;padding:0 12px!important}
+.heroScanInput>span{color:#89958d!important;font-size:16px!important}
+.heroScanInput input{width:100%!important;height:46px!important;border:0!important;outline:0!important;background:transparent!important;color:#eef5ef!important;font-size:11px!important}
+.heroScanInput input::placeholder{color:#7c8880!important}
+.heroScanForm>button{
+  min-width:190px!important;height:46px!important;border:0!important;border-radius:10px!important;
+  background:#c4f873!important;color:#0b130d!important;font-size:10px!important;font-weight:850!important;cursor:pointer!important
+}
+.heroCoverContent .heroMeta{display:flex!important;align-items:center!important;gap:12px!important;margin-top:13px!important;color:#9aa59e!important;font-size:8px!important}
+.heroCoverContent .heroMeta i{width:3px!important;height:3px!important;border-radius:50%!important;background:#56615a!important}
+.heroCoverContent .heroMeta span{white-space:nowrap!important}
+@media(max-width:900px){
+ .heroCover{min-height:680px!important}.heroCoverContent{width:min(700px,90%)!important;margin:0 auto!important;padding:100px 0 70px!important}.heroCoverOverlay{background:linear-gradient(90deg,rgba(4,10,7,.94),rgba(4,10,7,.65) 70%,rgba(4,10,7,.35))}
+}
+@media(max-width:600px){
+ .heroCover{min-height:760px!important;align-items:flex-start!important}.heroCoverContent{width:calc(100% - 28px)!important;padding:92px 0 40px!important}
+ .heroCoverContent h1{font-size:50px!important;letter-spacing:-3px!important}.heroScanForm{grid-template-columns:1fr!important}.heroScanForm>button{width:100%!important}
+ .heroCoverContent .heroMeta{flex-wrap:wrap!important}.heroCoverImage{object-position:58% center!important}
+}
