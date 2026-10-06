@@ -14,19 +14,29 @@ export type AuditCheck = {
 };
 
 function isPrivate(ip: string) {
-  if (net.isIPv4(ip)) {
-    const p = ip.split(".").map(Number);
-    return p[0] === 10 ||
-      p[0] === 127 ||
-      (p[0] === 169 && p[1] === 254) ||
-      (p[0] === 172 && p[1] >= 16 && p[1] <= 31) ||
-      (p[0] === 192 && p[1] === 168);
+  const address = ip.toLowerCase();
+  if (net.isIPv4(address)) {
+    const [a, b] = address.split(".").map(Number);
+    return a === 0 || a === 10 || a === 127 ||
+      (a === 100 && b >= 64 && b <= 127) ||
+      (a === 169 && b === 254) ||
+      (a === 172 && b >= 16 && b <= 31) ||
+      (a === 192 && (b === 168 || b === 0)) ||
+      (a === 198 && (b === 18 || b === 19)) || a >= 224;
   }
-
-  return ip === "::1" ||
-    ip.startsWith("fc") ||
-    ip.startsWith("fd") ||
-    ip.startsWith("fe80");
+  if (!net.isIPv6(address)) return true;
+  if (address.startsWith("::ffff:")) {
+    const mapped = address.slice(7);
+    if (net.isIPv4(mapped)) return isPrivate(mapped);
+    const parts = mapped.split(":");
+    if (parts.length === 2) {
+      const high = parseInt(parts[0], 16), low = parseInt(parts[1], 16);
+      return isPrivate(`${high >> 8}.${high & 255}.${low >> 8}.${low & 255}`);
+    }
+    return true;
+  }
+  // Only global-unicast IPv6 is a public scan target.
+  return !/^[23][0-9a-f]{3}:/.test(address);
 }
 
 async function validatePublicUrl(url: URL) {
@@ -43,7 +53,7 @@ async function validatePublicUrl(url: URL) {
     throw new Error("Only standard web ports can be scanned.");
   }
 
-  const hostname = url.hostname.toLowerCase();
+  const hostname = url.hostname.toLowerCase().replace(/^\[|\]$/g, "");
   if (
     ["localhost", "0.0.0.0", "::1"].includes(hostname) ||
     hostname.endsWith(".local")
@@ -51,6 +61,10 @@ async function validatePublicUrl(url: URL) {
     throw new Error("That address cannot be scanned.");
   }
 
+  if (net.isIP(hostname)) {
+    if (isPrivate(hostname)) throw new Error("That address cannot be scanned.");
+    return;
+  }
   let lastError: unknown;
 
   for (let attempt = 0; attempt < 3; attempt++) {
@@ -146,6 +160,7 @@ async function fetchWebsiteAt(initial: URL) {
 }
 
 async function fetchViaBrowserProxy(target: URL) {
+  await validatePublicUrl(target);
   const endpoint =
     "https://api.microlink.io/?url=" +
     encodeURIComponent(target.toString()) +
@@ -178,6 +193,7 @@ export async function fetchPublicWebsite(raw: string) {
   const trimmed = raw.trim();
   const initial = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
   const original = new URL(initial);
+  await validatePublicUrl(original);
 
   const candidates = [original];
   const hostname = original.hostname.toLowerCase();
