@@ -10,6 +10,7 @@ import WorkspaceControls from "../../components/WorkspaceControls";
 import GenerateReportButton from "../../components/GenerateReportButton";
 import RunVisibilityTest from "../../components/RunVisibilityTest";
 import ProjectSwitcher from "../../components/ProjectSwitcher";
+import ContentEngine from "../../components/ContentEngine";
 
 export default async function WorkspacePage({ searchParams }: { searchParams: Promise<{ project?: string }> }) {
   const user = await getSessionUser();
@@ -483,6 +484,8 @@ export default async function WorkspacePage({ searchParams }: { searchParams: Pr
             </div>
           </details>
         ) : null}
+
+        {project ? <ContentEngine projectId={project.id} /> : null}
 
         <section id="reports" className={styles.panel} style={{marginTop:11,minHeight:0}}>
           <div className={styles.panelHead}>
