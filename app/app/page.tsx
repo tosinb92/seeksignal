@@ -77,7 +77,7 @@ export default async function WorkspacePage({ searchParams }: { searchParams: Pr
   const visibilityDelta = latestVisibility && previousVisibility
     ? Number(latestVisibility.visibility_score) - Number(previousVisibility.visibility_score)
     : null;
-  const gatewayEnabled = Boolean(process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN);
+  const gatewayEnabled = process.env.NODE_ENV === "production" || Boolean(process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN);
 
   const latestPromptSetResponse = project?.id
     ? await supabaseRest(
