@@ -122,26 +122,21 @@ export default function Home() {
       </header>
 
       <section className="hero shell heroCover">
-        <img className="heroCoverImage" src="/assets/homepage/AI%20Visibility%20Workspace%20at%20Sunset.png" alt="Premium SeekSignal workspace showing AI visibility intelligence on a laptop." />
+        <img className="heroCoverImage" src="/assets/homepage/AI%20Visibility%20Workspace%20at%20Sunset.png" alt="AI visibility workspace." />
         <div className="heroCoverOverlay" />
         <div className="heroCoverContent">
           <div className="heroBadge"><span /> AI visibility intelligence</div>
           <h1>Find out why AI <em>recommends your competitors instead.</em></h1>
-          <p className="heroCopy">
-            See where your business is visible, who is winning the same buyer conversations, and what you should fix next — before you spend more trying to get found.
-          </p>
+          <p className="heroCopy">See where your business is visible, who is winning the same buyer conversations, and what you should fix next — before you spend more trying to get found.</p>
           <form id="scan" className="heroScanForm" onSubmit={startAudit}>
             <div className="heroScanInput">
               <span aria-hidden="true">↗</span>
-              <input value={url} onChange={(e)=>setUrl(e.target.value)} placeholder="Enter your website (e.g. yourbusiness.co.uk)" aria-label="Website address" required />
+              <input type="url" value={url} onChange={(e)=>setUrl(e.target.value)} placeholder="Enter your website, e.g. yourbusiness.co.uk" aria-label="Website address" required />
             </div>
-            <button type="submit">Analyse my website <span>→</span></button>
+            <button type="submit" disabled={loading}>Analyse my website <span>→</span></button>
           </form>
-          <div className="heroMeta">
-            <span>Free scan</span><i />
-            <span>No credit card required</span><i />
-            <span>Results in minutes</span>
-          </div>
+          <div className="heroMeta"><span>Free scan</span><i /><span>No credit card required</span><i /><span>Results in minutes</span></div>
+          {error ? <div className="heroError" role="alert">{error}</div> : null}
         </div>
       </section>
 
