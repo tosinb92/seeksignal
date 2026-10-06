@@ -222,7 +222,8 @@ export default function Home() {
         {error && <div className="error">{error}</div>}
 
         {showGate && !result && (
-          <LeadGate
+          <div id="scan-details">
+            <LeadGate
             website={url}
             lead={lead}
             loading={loading}
@@ -233,6 +234,7 @@ export default function Home() {
               setError("");
             }}
           />
+          </div>
         )}
 
 
