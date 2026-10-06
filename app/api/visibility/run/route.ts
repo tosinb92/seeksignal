@@ -4,6 +4,7 @@ import { createHash, randomUUID } from "node:crypto";
 import { getSessionUser } from "../../../../lib/auth/session";
 import { supabaseRest } from "../../../../lib/supabase/rest";
 import { getBillingState } from "../../../../lib/billing/stripe";
+import { getVercelOidcToken } from "@vercel/oidc";
 
 type Engine = {
   name: string;
@@ -105,7 +106,12 @@ export async function POST(request: Request) {
     );
   }
 
-  const gatewayToken = process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN;
+  let gatewayToken = process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN || "";
+  if (!gatewayToken && process.env.VERCEL === "1") {
+    try { gatewayToken = (await getVercelOidcToken()) || ""; } catch (error) {
+      console.error("Could not obtain Vercel OIDC token for AI Gateway", error);
+    }
+  }
   if (!gatewayToken) {
     return NextResponse.json(
       { error: "AI monitoring is not enabled for this deployment yet." },
