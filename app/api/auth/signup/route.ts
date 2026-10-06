@@ -15,8 +15,10 @@ export async function POST(request: Request) {
     );
   }
 
-  const origin = new URL(request.url).origin;
-  const redirectTo = `${origin}/login?confirmed=1`;
+  // Always return confirmation emails to the public production app.
+  // Using request.url here can generate localhost links during local testing.
+  const productionOrigin = process.env.NEXT_PUBLIC_SITE_URL || "https://seeksignal.vercel.app";
+  const redirectTo = `${productionOrigin.replace(/\/$/, "")}/auth/confirmed`;
 
   const response = await supabaseRest(
     `/auth/v1/signup?redirect_to=${encodeURIComponent(redirectTo)}`,
