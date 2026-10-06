@@ -126,9 +126,9 @@ export default function Home() {
         <div className="heroCoverOverlay" />
         <div className="heroCoverContent">
           <div className="heroBadge"><span /> AI visibility intelligence</div>
-          <h1>Know if AI can <em>find, understand & recommend you.</em></h1>
+          <h1>Find out why AI <em>recommends your competitors instead.</em></h1>
           <p className="heroCopy">
-            See exactly how visible your business is across AI discovery — and what to fix before you spend more on SEO, content or optimisation.
+            See where your business is visible, who is winning the same buyer conversations, and what you should fix next — before you spend more trying to get found.
           </p>
           <form id="scan" className="heroScanForm" onSubmit={startAudit}>
             <div className="heroScanInput">
@@ -155,12 +155,12 @@ export default function Home() {
       <section className="uspBand">
         <div className="shell uspInner">
           <span className="uspLabel">Why SeekSignal</span>
-          <h2>Most tools tell you what to optimise. <em>SeekSignal tells you whether you're actually being found.</em></h2>
+          <h2>Most tools tell you what to optimise. <em>SeekSignal shows whether those changes are actually making you visible.</em></h2>
           <div className="uspColumns">
-            <div><strong>01</strong><b>Understand</b><span>See what your website tells machines about who you are and what you do.</span></div>
-            <div><strong>02</strong><b>Measure</b><span>Test whether AI systems actually surface your brand for relevant buyer questions.</span></div>
-            <div><strong>03</strong><b>Compare</b><span>See which competitors appear instead and where the recommendation gap sits.</span></div>
-            <div><strong>04</strong><b>Act</b><span>Turn the evidence into a short list of high-impact changes and re-test.</span></div>
+            <div><strong>01</strong><b>Understand</b><span>See how clearly AI can understand your business and the signals your website is sending.</span></div>
+            <div><strong>02</strong><b>Measure</b><span>Test real buyer questions and measure whether your brand is actually being surfaced.</span></div>
+            <div><strong>03</strong><b>Compare</b><span>See which competitors appear instead, how often they win, and where the gap sits.</span></div>
+            <div><strong>04</strong><b>Act</b><span>Turn the evidence into prioritised actions, make the changes, and re-test the result.</span></div>
           </div>
         </div>
       </section>
@@ -189,12 +189,12 @@ export default function Home() {
         <div className="shell intelligenceGridNew">
           <div className="intelligenceCopy">
             <span>AI VISIBILITY MONITORING</span>
-            <h2>Know what buyers see <em>before they choose.</em></h2>
-            <p>AI discovery is becoming another route into the shortlist. SeekSignal turns that invisible layer into something you can measure and improve.</p>
+            <h2>Know what buyers see <em>before they choose you.</em></h2>
+            <p>AI discovery is another route into the shortlist. SeekSignal turns that invisible layer into something you can measure, understand and improve.</p>
             <div className="intelligencePoints">
-              <div><b>01</b><strong>Recommendation share</strong><span>How often your brand appears in relevant AI answers.</span></div>
-              <div><b>02</b><strong>Competitor presence</strong><span>Which brands are winning the same conversations.</span></div>
-              <div><b>03</b><strong>Evidence-backed actions</strong><span>What to change and why it could improve discoverability.</span></div>
+              <div><b>01</b><strong>Recommendation share</strong><span>How often your brand appears for relevant buyer questions.</span></div>
+              <div><b>02</b><strong>Competitor presence</strong><span>Which competitors are winning the same conversations.</span></div>
+              <div><b>03</b><strong>Evidence-backed actions</strong><span>What to change, why it matters, and how to verify the improvement.</span></div>
             </div>
           </div>
           <div className="intelligenceVisual">
@@ -208,8 +208,8 @@ export default function Home() {
           <div className="humanVisual"><img src="/assets/homepage/home--methodology--human-ai-research--01.png" alt="Business professional researching with AI." /></div>
           <div className="humanCopy">
             <span>THE COMMERCIAL QUESTION</span>
-            <h2>Before you spend more trying to get found, <em>find out where you stand.</em></h2>
-            <p>SeekSignal is designed to sit before execution. Diagnose the visibility gap first, then decide whether the answer is better content, stronger authority, clearer entities, technical improvements — or something else.</p>
+            <h2>Before you spend more trying to get found, <em>find out what is holding you back.</em></h2>
+            <p>SeekSignal sits before execution. Diagnose the visibility gap first, then decide what deserves your budget — content, authority, entity clarity, technical improvements or something else.</p>
             <a href="#scan">Run the free diagnostic →</a>
           </div>
         </div>
@@ -400,14 +400,14 @@ export default function Home() {
       <section id="pricing" className="pricingSection shell">
         <div className="pricingIntro">
           <span>PRICING</span>
-          <h2>Find your visibility gap before you spend more trying to fix it.</h2>
-          <p>The website-readiness diagnostic is free. SeekSignal Pro unlocks controlled AI visibility tests, saved intelligence, ongoing re-testing and competitor context.</p>
+          <h2>Find your visibility gap. Then prove you're improving it.</h2>
+          <p>Start with a free diagnostic. Pro turns the snapshot into an ongoing visibility loop: track buyer questions, compare competitors, prioritise fixes, re-test changes and monitor the result.</p>
         </div>
         <div className="pricingGrid">
           <article className="pricingCard">
             <div>
               <span className="pricingLabel">FREE</span>
-              <h3>Website diagnostic</h3>
+              <h3>Free visibility snapshot</h3>
               <div className="price"><strong>£0</strong><small>no card required</small></div>
               <p>Understand the signals your website currently gives search and AI retrieval systems.</p>
             </div>
@@ -422,16 +422,16 @@ export default function Home() {
           <article className="pricingCard pricingPro">
             <div>
               <span className="pricingLabel">SEEKSIGNAL PRO</span>
-              <h3>Ongoing AI visibility intelligence</h3>
+              <h3>AI visibility control centre</h3>
               <div className="price"><strong>£49</strong><small>/ month</small></div>
-              <p>Move beyond website readiness and test whether leading AI models actually surface your business.</p>
+              <p>Track whether AI actually surfaces your business — and whether your visibility improves after you make changes.</p>
             </div>
             <ul>
-              <li>Everything in the free diagnostic</li>
-              <li>Live AI visibility testing</li>
+              <li>Everything in the free snapshot</li>
+              <li>Buyer-question visibility testing</li>
               <li>OpenAI, Claude, Gemini & Perplexity coverage</li>
-              <li>Competitor tracking and saved reports</li>
-              <li>Re-scans and ongoing monitoring</li>
+              <li>Competitor visibility and saved reports</li>
+              <li>Re-tests and ongoing monitoring</li>
             </ul>
             <a href="/signup">Start with a free diagnostic →</a>
             <small className="pricingFine">Cancel through Stripe billing. AI tests are subject to usage limits.</small>
@@ -441,13 +441,13 @@ export default function Home() {
 
       <section className="minimalProof shell">
         <span>THE QUESTION IS SIMPLE</span>
-        <h2>If a buyer asked AI for a business like yours today, would your website give it enough evidence to understand why you belong in the answer?</h2>
+        <h2>If a buyer asked AI for a business like yours today, <em>would you know whether you'd be in the answer?</em></h2>
         <a href="#scan">Find out now →</a>
       </section>
 
       <footer className="footer shell">
         <div className="brand"><span className="brandMark">S</span><span>SeekSignal</span></div>
-        <span>AI discovery intelligence.</span>
+        <span>Find. Fix. Prove your AI visibility.</span>
         <div><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/login">Sign in</a><a href="/signup">Create account</a></div>
       </footer>
     </main>
