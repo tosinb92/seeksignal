@@ -70,6 +70,10 @@ export default function Home() {
 
     void trackEvent("audit_started", { metadata: { website: url.trim() } });
     setShowGate(true);
+    // Bring the existing lead form into view immediately after the hero CTA.
+    window.setTimeout(() => {
+      document.getElementById("scan-details")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
   }
 
   async function unlockResults(e: FormEvent) {
