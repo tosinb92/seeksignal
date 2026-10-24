@@ -13,6 +13,48 @@ import ProjectSwitcher from "../../components/ProjectSwitcher";
 import ContentEngine from "../../components/ContentEngine";
 import FindingWorkflowControl from "../../components/FindingWorkflowControl";
 
+type TrendPoint = { value: number; date: string };
+
+function TrendChart({ title, points, unit = "", change }: { title: string; points: TrendPoint[]; unit?: string; change?: string | null }) {
+  const valid = points.filter((point) => Number.isFinite(point.value));
+  if (!valid.length) return null;
+  const values = valid.map((point) => point.value);
+  const minimum = Math.min(...values);
+  const maximum = Math.max(...values);
+  const spread = maximum - minimum || 1;
+  const chartPoints = valid.map((point, index) => ({
+    ...point,
+    x: valid.length === 1 ? 164 : 24 + (index / (valid.length - 1)) * 268,
+    y: 106 - ((point.value - minimum) / spread) * 76,
+  }));
+  const line = chartPoints.map((point) => `${point.x},${point.y}`).join(" ");
+  const area = `${chartPoints[0].x},116 ${line} ${chartPoints[chartPoints.length - 1].x},116`;
+  const gradientId = title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  const dateLabel = (value: string) => new Date(value).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+
+  return (
+    <article className={styles.trendCard}>
+      <header className={styles.trendHead}>
+        <div><span className={styles.eyebrow}>{title}</span><strong>{valid[valid.length - 1].value}{unit}</strong></div>
+        <span className={styles.trendChange}>{change || (valid.length > 1 ? "History" : "Baseline")}</span>
+      </header>
+      <div className={styles.chartFrame}>
+        <div className={styles.chartScale} aria-hidden="true"><span>{maximum}{unit}</span><span>{minimum}{unit}</span></div>
+        <svg className={styles.trendSvg} viewBox="0 0 320 126" role="img" aria-label={`${title} over ${valid.length} recorded measurements`}>
+          <defs><linearGradient id={gradientId} x1="0" x2="0" y1="0" y2="1"><stop offset="0%" /><stop offset="100%" /></linearGradient></defs>
+          <line x1="24" y1="30" x2="300" y2="30" className={styles.chartGridline} />
+          <line x1="24" y1="68" x2="300" y2="68" className={styles.chartGridline} />
+          <line x1="24" y1="106" x2="300" y2="106" className={styles.chartGridline} />
+          {valid.length > 1 ? <polygon points={area} className={styles.chartArea} style={{ fill: `url(#${gradientId})` }} /> : null}
+          {valid.length > 1 ? <polyline points={line} className={styles.chartLine} /> : null}
+          {chartPoints.map((point, index) => <circle key={`${point.date}-${index}`} cx={point.x} cy={point.y} r={index === chartPoints.length - 1 ? 4 : 2.5} className={styles.chartPoint}><title>{dateLabel(point.date)}: {point.value}{unit}</title></circle>)}
+        </svg>
+      </div>
+      <footer className={styles.chartDates}><span>{dateLabel(valid[0].date)}</span><span>{valid.length > 1 ? dateLabel(valid[valid.length - 1].date) : "Run again to compare"}</span></footer>
+    </article>
+  );
+}
+
 export default async function WorkspacePage({ searchParams }: { searchParams: Promise<{ project?: string; organization?: string }> }) {
   const user = await getSessionUser();
   if (!user?.id) redirect("/login");
@@ -91,8 +133,10 @@ export default async function WorkspacePage({ searchParams }: { searchParams: Pr
   const previousScan = scans?.[1] || null;
   const latestVisibility = visibilitySnapshots?.[0] || null;
   const previousVisibility = visibilitySnapshots?.[1] || null;
-  const readinessDelta = latestScan && previousScan ? Number(latestScan.score) - Number(previousScan.score) : null;
-  const visibilityDelta = latestVisibility && previousVisibility
+  const readinessHistory = scans.filter((scan: any) => scan.score != null);
+  const visibilityHistory = visibilitySnapshots.filter((snapshot: any) => snapshot.visibility_score != null);
+  const readinessDelta = latestScan?.score != null && previousScan?.score != null ? Number(latestScan.score) - Number(previousScan.score) : null;
+  const visibilityDelta = latestVisibility?.visibility_score != null && previousVisibility?.visibility_score != null
     ? Number(latestVisibility.visibility_score) - Number(previousVisibility.visibility_score)
     : null;
   const gatewayEnabled = process.env.NODE_ENV === "production" || Boolean(process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN);
@@ -332,6 +376,25 @@ export default async function WorkspacePage({ searchParams }: { searchParams: Pr
             <RunProjectScanButton projectId={project?.id || ""} className={styles.primaryLarge} label="Run baseline scan →" />
           </section>
         )}
+
+        {(readinessHistory.length > 0 || visibilityHistory.length > 0) ? (
+          <section className={styles.trendSection} aria-label="Performance trends">
+            <div className={styles.trendSectionHead}><div><span className={styles.eyebrow}>Measured over time</span><h2>Progress</h2></div><span>Only recorded results are plotted</span></div>
+            <div className={styles.trendGrid}>
+              <TrendChart
+                title="Website readiness"
+                points={[...readinessHistory].slice(0, 10).reverse().map((scan: any) => ({ value: Number(scan.score), date: scan.created_at }))}
+                change={readinessDelta == null ? null : `${readinessDelta > 0 ? "+" : ""}${readinessDelta} since previous scan`}
+              />
+              <TrendChart
+                title="AI visibility"
+                unit="%"
+                points={[...visibilityHistory].slice(0, 10).reverse().map((snapshot: any) => ({ value: Number(snapshot.visibility_score), date: snapshot.captured_at }))}
+                change={visibilityDelta == null ? null : `${visibilityDelta > 0 ? "+" : ""}${visibilityDelta} pts since previous test`}
+              />
+            </div>
+          </section>
+        ) : null}
 
         {project ? <RunVisibilityTest projectId={project.id} gatewayEnabled={gatewayEnabled} /> : null}
 

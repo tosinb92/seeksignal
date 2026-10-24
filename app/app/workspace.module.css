@@ -119,3 +119,27 @@
 :global(.websitePreviewFallback){height:280px}
 @media(max-width:1120px){.priorityGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.priorityGrid{grid-template-columns:1fr}.websitePreviewCard{min-height:250px}.websitePreviewCard>img{height:200px}:global(.websitePreviewFallback){height:200px}.sectionHeading h2{font-size:22px}}
+/* Real customer history, drawn in SVG to avoid chart dependencies. */
+.trendSection{margin-top:17px;padding:22px;border:1px solid #e2e9e3;border-radius:16px;background:#fff;box-shadow:0 7px 22px #153a2206}
+.trendSectionHead{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:15px}
+.trendSectionHead h2{margin:5px 0 0;color:#203829;font-size:23px;letter-spacing:-.7px}
+.trendSectionHead>span{color:#839087;font-size:10px}
+.trendGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.trendCard{padding:17px 18px 13px;border:1px solid #e6ece7;border-radius:13px;background:#fbfcfb}
+.trendHead{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.trendHead>div{display:grid;gap:5px}
+.trendHead .eyebrow{color:#738477;font-size:9px}
+.trendHead strong{color:#21462f;font-size:26px;line-height:1;letter-spacing:-.8px}
+.trendChange{padding:6px 8px;border-radius:999px;background:#eff7eb;color:#4b7e55;font-size:9px;font-weight:750}
+.chartFrame{display:grid;grid-template-columns:35px 1fr;align-items:stretch;margin-top:10px}
+.chartScale{display:flex;flex-direction:column;justify-content:space-between;padding:6px 0 8px;color:#8a968d;font-size:8px}
+.trendSvg{display:block;width:100%;height:120px;overflow:visible}
+.chartGridline{stroke:#e7eee8;stroke-width:1}
+.chartArea{fill-opacity:.18}
+.trendSvg stop:first-child{stop-color:#91c976;stop-opacity:.65}
+.trendSvg stop:last-child{stop-color:#91c976;stop-opacity:.02}
+.chartLine{fill:none;stroke:#43855a;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.chartPoint{fill:#fff;stroke:#43855a;stroke-width:2}
+.chartPoint:last-child{fill:#43855a;stroke:#fff;stroke-width:2}
+.chartDates{display:flex;justify-content:space-between;gap:10px;margin:0 3px 0 35px;color:#8a968d;font-size:9px}
+@media(max-width:700px){.trendGrid{grid-template-columns:1fr}.trendSection{padding:17px}.trendSectionHead{align-items:flex-start;flex-direction:column}.trendSectionHead h2{font-size:21px}}
