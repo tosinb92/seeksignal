@@ -75,6 +75,20 @@
 .details strong{font-size:10px}
 
 .prioritySection{margin-top:14px;padding:30px}
+.opportunitySection{margin-top:14px;padding:30px;border:1px solid rgba(255,255,255,.075);border-radius:22px;background:linear-gradient(180deg,#101514,#0c1010);box-shadow:0 28px 80px rgba(0,0,0,.16)}
+.opportunityCount{padding:7px 10px;border-radius:999px;background:rgba(196,248,115,.08);color:#c4f873;font-size:8px;white-space:nowrap}
+.opportunityGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:24px}
+.opportunityGrid article{padding:21px;border:1px solid rgba(255,255,255,.075);border-radius:17px;background:linear-gradient(180deg,#121716,#0d1110)}
+.opportunityTags{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.opportunityTags span,.opportunityTags b{padding:6px 8px;border-radius:999px;background:rgba(255,255,255,.045);color:#a1ada4;font-size:7px;font-weight:700}
+.opportunityTags b{color:#c4f873}
+.opportunityGrid h3{margin:18px 0 9px;font-size:19px;line-height:1.2;letter-spacing:-.5px}
+.opportunityGrid article>p{margin:0;color:#818d84;font-size:9px;line-height:1.6}
+.opportunityGrid dl{display:grid;gap:0;margin:17px 0 0;border-top:1px solid rgba(255,255,255,.06)}
+.opportunityGrid dl div{display:flex;justify-content:space-between;gap:8px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.045)}
+.opportunityGrid dt{color:#66716a;font-size:8px}.opportunityGrid dd{margin:0;color:#aab4ac;font-size:8px;text-align:right}
+.opportunityAction{display:grid;gap:5px;margin-top:13px;padding:11px;border-radius:10px;background:rgba(196,248,115,.035)}
+.opportunityAction strong{color:#c4f873;font-size:8px}.opportunityAction span{color:#97a39a;font-size:8px;line-height:1.5}
 .priorityGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:24px}
 .priorityCard{padding:23px;border:1px solid rgba(255,255,255,.075);border-radius:18px;background:linear-gradient(180deg,#121716,#0d1110)}
 .priorityTop{display:flex;justify-content:space-between;gap:12px;align-items:center}
@@ -121,7 +135,7 @@
 
 @media(max-width:1100px){
   .resultHero{grid-template-columns:1fr}
-  .meaningGrid,.priorityGrid{grid-template-columns:1fr}
+  .meaningGrid,.priorityGrid,.opportunityGrid{grid-template-columns:1fr}
 }
 @media(max-width:900px){
   .app{grid-template-columns:1fr}
@@ -131,7 +145,7 @@
   .headerActions{display:none}
   .metrics{grid-template-columns:1fr 1fr}
   .grid{grid-template-columns:1fr}
-  .scoreCard,.resultStory,.meaningPanel,.prioritySection,.technicalEvidence,.emptyHero{border-radius:17px}
+  .scoreCard,.resultStory,.meaningPanel,.prioritySection,.opportunitySection,.technicalEvidence,.emptyHero{border-radius:17px}
   .resultStory{padding:28px 24px}
   .resultStory h2{font-size:38px}
 }
@@ -142,7 +156,7 @@
   .scoreCard{padding:24px}
   .scoreValue{font-size:72px}
   .resultStory h2,.emptyHero h2{font-size:34px;letter-spacing:-1.5px}
-  .meaningPanel,.prioritySection{padding:22px}
+  .meaningPanel,.prioritySection,.opportunitySection{padding:22px}
   .sectionHeading{align-items:flex-start}
   .priorityCard{padding:19px}
   .technicalEvidence>summary{padding:20px}

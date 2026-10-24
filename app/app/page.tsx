@@ -126,6 +126,9 @@ export default async function WorkspacePage({ searchParams }: { searchParams: Pr
   const priorityActions = Array.isArray(latestScan?.raw_result?.opportunities)
     ? latestScan.raw_result.opportunities.slice(0, 3)
     : [];
+  const buyerIntentOpportunities = Array.isArray(latestScan?.raw_result?.buyerIntentRadar)
+    ? latestScan.raw_result.buyerIntentRadar
+    : [];
   const biggestOpportunity = priorityActions[0] || null;
   const readinessLabel =
     readinessScore == null
@@ -168,6 +171,7 @@ export default async function WorkspacePage({ searchParams }: { searchParams: Pr
         <nav>
           <a className={styles.active} href="#overview">Overview</a>
           <a href="#ai-visibility">AI Visibility</a>
+          <a href="#opportunities">Opportunities</a>
           <a href="#readiness">Website Readiness</a>
           <a href="#competitors">Competitors</a>
           <a href="#reports">Reports</a>
@@ -470,6 +474,39 @@ export default async function WorkspacePage({ searchParams }: { searchParams: Pr
               <p>Move on to controlled AI visibility testing, competitor benchmarking and deeper content/authority analysis.</p>
             </div>
           ) : null}
+        </section>
+
+        <section className={styles.opportunitySection} id="opportunities">
+          <div className={styles.sectionHeading}>
+            <div>
+              <span className={styles.eyebrow}>Buyer Intent Radar · search hypotheses</span>
+              <h2>Commercial searches to validate.</h2>
+              <p>These suggestions come from your business details and website topic. They are starting points to confirm in Search Console or keyword research.</p>
+            </div>
+            <span className={styles.opportunityCount}>{buyerIntentOpportunities.length} suggestions</span>
+          </div>
+          {buyerIntentOpportunities.length ? (
+            <div className={styles.opportunityGrid}>
+              {buyerIntentOpportunities.map((item: any) => (
+                <article key={item.query}>
+                  <div className={styles.opportunityTags}><span>{item.intent}</span><b>{item.evidenceClass} · {item.confidence} confidence</b></div>
+                  <h3>{item.query}</h3>
+                  <p>{item.supportingEvidence}</p>
+                  <dl>
+                    <div><dt>Search volume</dt><dd>Not measured</dd></div>
+                    <div><dt>Competition</dt><dd>Not measured</dd></div>
+                    <div><dt>Data source</dt><dd>{item.dataSource}</dd></div>
+                  </dl>
+                  <div className={styles.opportunityAction}><strong>Next step</strong><span>{item.recommendedAction}</span></div>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className={styles.allClear}>
+              <strong>{latestScan ? "No search hypotheses were generated." : "Run your first website scan."}</strong>
+              <p>{latestScan ? "Add your business category and service area in project settings, then re-scan to get more relevant ideas." : "SeekSignal will suggest commercial searches based on the website and business details."}</p>
+            </div>
+          )}
         </section>
 
         {latestScan ? (
