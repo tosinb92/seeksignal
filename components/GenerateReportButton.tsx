@@ -36,12 +36,12 @@ export default function GenerateReportButton({ projectId, disabled = false }: { 
     <div style={{textAlign:"right"}}>
       <button onClick={generate} disabled={disabled || loading} style={{
         height:40,padding:"0 15px",border:0,borderRadius:9,
-        background: disabled ? "#2a2f2b" : "#c4f873",
-        color: disabled ? "#777" : "#10150d",fontSize:9,fontWeight:800,cursor:disabled?"not-allowed":"pointer"
+        background: disabled ? "#eef2ee" : "#173f2d",
+        color: disabled ? "#748177" : "#fff",fontSize:11,fontWeight:800,cursor:disabled?"not-allowed":"pointer"
       }}>
         {loading ? "Generating…" : "Generate report"}
       </button>
-      {message ? <small style={{display:"block",marginTop:6,color:"#8c968f"}}>{message}</small> : null}
+      {message ? <small role="status" style={{display:"block",marginTop:6,color:"#526c59",fontSize:10}}>{message}</small> : null}
     </div>
   );
 }

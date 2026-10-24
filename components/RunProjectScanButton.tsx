@@ -46,15 +46,15 @@ export default function RunProjectScanButton({ projectId, className, label = "Ru
           padding:16,
           border:"1px solid rgba(196,248,115,.14)",
           borderRadius:14,
-          background:"linear-gradient(180deg,#111613,#0c100e)",
-          boxShadow:"0 18px 50px rgba(0,0,0,.22)",
+          background:"linear-gradient(180deg,#ffffff,#f7faf7)",
+          boxShadow:"0 18px 50px rgba(20,57,32,.12)",
           textAlign:"left"
         }}>
-          <strong style={{display:"block",fontSize:12,color:"#f2f6f1"}}>Analysing the live website</strong>
-          <p style={{margin:"6px 0 12px",fontSize:10,lineHeight:1.5,color:"#8f9992"}}>
+          <strong style={{display:"block",fontSize:13,color:"#23432e"}}>Analysing the live website</strong>
+          <p style={{margin:"6px 0 12px",fontSize:11,lineHeight:1.5,color:"#718075"}}>
             SeekSignal is reading the page and checking the same observable signals used in your readiness score.
           </p>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"7px 12px",fontSize:9,color:"#aeb7b0"}}>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"7px 12px",fontSize:10,color:"#53685a"}}>
             <span>✓ Page title & heading</span>
             <span>✓ Structured data</span>
             <span>✓ Indexability</span>
@@ -62,7 +62,7 @@ export default function RunProjectScanButton({ projectId, className, label = "Ru
             <span>✓ Trust signals</span>
             <span>✓ Commercial clarity</span>
           </div>
-          <small style={{display:"block",marginTop:12,color:"#657069"}}>
+          <small style={{display:"block",marginTop:12,color:"#7c897f",fontSize:10}}>
             This scan measures website readiness. It does not claim an AI platform currently recommends the business.
           </small>
         </div>

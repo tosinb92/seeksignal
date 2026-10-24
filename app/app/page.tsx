@@ -18,14 +18,10 @@ type TrendPoint = { value: number; date: string };
 function TrendChart({ title, points, unit = "", change }: { title: string; points: TrendPoint[]; unit?: string; change?: string | null }) {
   const valid = points.filter((point) => Number.isFinite(point.value));
   if (!valid.length) return null;
-  const values = valid.map((point) => point.value);
-  const minimum = Math.min(...values);
-  const maximum = Math.max(...values);
-  const spread = maximum - minimum || 1;
   const chartPoints = valid.map((point, index) => ({
     ...point,
     x: valid.length === 1 ? 164 : 24 + (index / (valid.length - 1)) * 268,
-    y: 106 - ((point.value - minimum) / spread) * 76,
+    y: 106 - (Math.max(0, Math.min(100, point.value)) / 100) * 76,
   }));
   const line = chartPoints.map((point) => `${point.x},${point.y}`).join(" ");
   const area = `${chartPoints[0].x},116 ${line} ${chartPoints[chartPoints.length - 1].x},116`;
@@ -35,11 +31,11 @@ function TrendChart({ title, points, unit = "", change }: { title: string; point
   return (
     <article className={styles.trendCard}>
       <header className={styles.trendHead}>
-        <div><span className={styles.eyebrow}>{title}</span><strong>{valid[valid.length - 1].value}{unit}</strong></div>
+        <div><span className={styles.eyebrow}>{title}</span><strong>{valid[valid.length - 1].value}{unit || "/100"}</strong></div>
         <span className={styles.trendChange}>{change || (valid.length > 1 ? "History" : "Baseline")}</span>
       </header>
       <div className={styles.chartFrame}>
-        <div className={styles.chartScale} aria-hidden="true"><span>{maximum}{unit}</span><span>{minimum}{unit}</span></div>
+        <div className={styles.chartScale} aria-hidden="true"><span>100{unit}</span><span>0{unit}</span></div>
         <svg className={styles.trendSvg} viewBox="0 0 320 126" role="img" aria-label={`${title} over ${valid.length} recorded measurements`}>
           <defs><linearGradient id={gradientId} x1="0" x2="0" y1="0" y2="1"><stop offset="0%" /><stop offset="100%" /></linearGradient></defs>
           <line x1="24" y1="30" x2="300" y2="30" className={styles.chartGridline} />
@@ -47,7 +43,7 @@ function TrendChart({ title, points, unit = "", change }: { title: string; point
           <line x1="24" y1="106" x2="300" y2="106" className={styles.chartGridline} />
           {valid.length > 1 ? <polygon points={area} className={styles.chartArea} style={{ fill: `url(#${gradientId})` }} /> : null}
           {valid.length > 1 ? <polyline points={line} className={styles.chartLine} /> : null}
-          {chartPoints.map((point, index) => <circle key={`${point.date}-${index}`} cx={point.x} cy={point.y} r={index === chartPoints.length - 1 ? 4 : 2.5} className={styles.chartPoint}><title>{dateLabel(point.date)}: {point.value}{unit}</title></circle>)}
+          {chartPoints.map((point, index) => <circle key={`${point.date}-${index}`} cx={point.x} cy={point.y} r={index === chartPoints.length - 1 ? 4 : 2.5} className={styles.chartPoint}><title>{dateLabel(point.date)}: {point.value}{unit || "/100"}</title></circle>)}
         </svg>
       </div>
       <footer className={styles.chartDates}><span>{dateLabel(valid[0].date)}</span><span>{valid.length > 1 ? dateLabel(valid[valid.length - 1].date) : "Run again to compare"}</span></footer>
@@ -233,7 +229,7 @@ export default async function WorkspacePage({ searchParams }: { searchParams: Pr
           {isGrowthHqAdmin === true ? <Link href="/app/growth">Growth HQ</Link> : null}
         </nav>
         <div className={styles.sideFooter}>
-          <span style={{padding:"0 12px",color:"#59625c",fontSize:8}}>Provider-model tests are metered and run only with explicit confirmation.</span>
+          <span style={{padding:"0 12px",color:"#a9bcaf",fontSize:10,lineHeight:1.5}}>AI tests run only after you confirm usage.</span>
         </div>
       </aside>
 
@@ -345,7 +341,7 @@ export default async function WorkspacePage({ searchParams }: { searchParams: Pr
             <section className={styles.meaningPanel}>
               <div className={styles.sectionHeading}>
                 <div>
-                  <span className={styles.eyebrow}>What this means for your business</span>
+                  <span className={styles.eyebrow}>At a glance</span>
                   <h2>Key signals</h2>
                 </div>
               </div>
@@ -420,11 +416,11 @@ export default async function WorkspacePage({ searchParams }: { searchParams: Pr
                       <div key={test.id} style={{padding:"14px 0",borderTop:"1px solid rgba(255,255,255,.055)"}}>
                         <div style={{display:"flex",justifyContent:"space-between",gap:12}}>
                           <strong style={{fontSize:10}}>{test.engine}</strong>
-                          <span style={{fontSize:9,color:test.status==="complete"?(response?.brand_mentioned?"#c4f873":"#89928c"):"#ffaaaa"}}>
+                          <span style={{fontSize:10,color:test.status==="complete"?(response?.brand_mentioned?"#39764c":"#69776d"):"#a94343"}}>
                             {test.status==="failed" ? "Failed" : response?.brand_mentioned ? "Brand mentioned" : "Not mentioned"}
                           </span>
                         </div>
-                        <p style={{margin:"6px 0 0",color:"#68726b",fontSize:9,lineHeight:1.55}}>{response?.response_excerpt || "No response was saved for this test."}</p>
+                        <p style={{margin:"6px 0 0",color:"#68786d",fontSize:11,lineHeight:1.55}}>{response?.response_excerpt || "No response was saved for this test."}</p>
                       </div>
                     );
                   })}

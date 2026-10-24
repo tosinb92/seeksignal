@@ -110,6 +110,7 @@ async function validatePublicUrl(url: URL) {
         return;
       }
     } catch (error) {
+      if (error instanceof Error && error.message === "That address cannot be scanned.") throw error;
       lastError = error;
     }
 
@@ -126,6 +127,39 @@ async function validatePublicUrl(url: URL) {
   }
 
   throw new Error("We couldn't verify that website right now. Please try again in a moment.");
+}
+
+function websiteUrlCandidates(raw: string) {
+  const trimmed = raw.trim();
+  const initial = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+  const original = new URL(initial);
+  const candidates = [original];
+  const hostname = original.hostname.toLowerCase();
+  if (net.isIP(hostname.replace(/^\[|\]$/g, "")) || ["localhost", "0.0.0.0", "::1"].includes(hostname) || hostname.endsWith(".local")) {
+    return candidates;
+  }
+  const alternate = new URL(original.toString());
+  alternate.hostname = hostname.startsWith("www.") ? hostname.slice(4) : `www.${hostname}`;
+  if (alternate.hostname !== hostname) candidates.push(alternate);
+  return candidates;
+}
+
+function isUnsafeUrlError(error: unknown) {
+  return error instanceof Error && /beginning with http|embedded login credentials|standard web ports|That address cannot be scanned/i.test(error.message);
+}
+
+export async function resolvePublicWebsiteUrl(raw: string) {
+  let lastError: unknown;
+  for (const candidate of websiteUrlCandidates(raw)) {
+    try {
+      await validatePublicUrl(candidate);
+      return candidate;
+    } catch (error) {
+      lastError = error;
+      if (error instanceof Error && error.message === "That address cannot be scanned.") throw error;
+    }
+  }
+  throw lastError instanceof Error ? lastError : new Error("We couldn't verify that website right now.");
 }
 
 async function readLimitedText(response: Response, maxBytes = 1_000_000) {
@@ -222,23 +256,7 @@ async function fetchViaBrowserProxy(target: URL) {
 }
 
 export async function fetchPublicWebsite(raw: string) {
-  const trimmed = raw.trim();
-  const initial = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
-  const original = new URL(initial);
-  await validatePublicUrl(original);
-
-  const candidates = [original];
-  const hostname = original.hostname.toLowerCase();
-
-  if (hostname.startsWith("www.")) {
-    const apex = new URL(original.toString());
-    apex.hostname = hostname.slice(4);
-    candidates.push(apex);
-  } else {
-    const www = new URL(original.toString());
-    www.hostname = `www.${hostname}`;
-    candidates.push(www);
-  }
+  const candidates = websiteUrlCandidates(raw);
 
   let lastError: unknown;
 
@@ -249,6 +267,7 @@ export async function fetchPublicWebsite(raw: string) {
       return await fetchViaBrowserProxy(candidate);
     } catch (error) {
       lastError = error;
+      if (isUnsafeUrlError(error)) throw error;
     }
   }
 
@@ -259,6 +278,7 @@ export async function fetchPublicWebsite(raw: string) {
       return await fetchWebsiteAt(candidate);
     } catch (error) {
       lastError = error;
+      if (isUnsafeUrlError(error)) throw error;
       const message = error instanceof Error ? error.message : "";
       if (
         !/couldn't reach that domain|couldn't verify that website|ENOTFOUND|EAI_AGAIN|ENODATA|ECONN|ETIMEDOUT|fetch failed/i.test(message)
