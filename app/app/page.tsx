@@ -144,10 +144,10 @@ export default async function WorkspacePage({ searchParams }: { searchParams: Pr
     readinessScore == null
       ? "No baseline yet"
       : readinessScore >= 80
-        ? "Strong foundation. Important opportunities remain."
+        ? "Strong technical readiness"
         : readinessScore >= 55
-          ? "Good foundation. Several signals need attention."
-          : "Important gaps are limiting how clearly machines can understand this site.";
+          ? "Good foundation, with gaps"
+          : "Several readiness gaps found";
 
   const activationStep =
     !latestScan ? 1 :
@@ -155,16 +155,16 @@ export default async function WorkspacePage({ searchParams }: { searchParams: Pr
     competitors.length === 0 ? 3 : 4;
 
   const activationTitle =
-    activationStep === 1 ? "First, let’s understand your website." :
-    activationStep === 2 ? "Now find out whether AI actually recommends you." :
-    activationStep === 3 ? "Now compare yourself with the brands buyers may see instead." :
-    "You have enough signal to start improving visibility.";
+    activationStep === 1 ? "Start with a website scan" :
+    activationStep === 2 ? "Check if AI mentions you" :
+    activationStep === 3 ? "Add your real competitors" :
+    "Fix your top opportunity";
 
   const activationCopy =
-    activationStep === 1 ? "We’ll scan the website you just added and turn the findings into a short, prioritised action plan." :
-    activationStep === 2 ? "Website readiness is only the foundation. This test checks real provider-model responses so you can see whether your brand is being surfaced." :
-    activationStep === 3 ? "Competitors make the results commercially useful. Add the brands you genuinely compete with so SeekSignal can show where the recommendation gap is." :
-    "Your workspace now has readiness, AI visibility and competitor context. Focus on the highest-impact actions and re-test after changes.";
+    activationStep === 1 ? "Get a baseline and a short list of fixes." :
+    activationStep === 2 ? "Run a controlled test on supported AI models." :
+    activationStep === 3 ? "Compare the businesses customers consider." :
+    "Apply a change, then measure what moved.";
 
   return (
     <main className={styles.app}>
@@ -215,9 +215,8 @@ export default async function WorkspacePage({ searchParams }: { searchParams: Pr
 
         <section className={styles.customerJourney}>
           <div className={styles.journeyIntro}>
-            <span className={styles.eyebrow}>Your SeekSignal journey</span>
-            <h2>Answer three questions, in the right order.</h2>
-            <p>Don’t think of this as a dashboard. SeekSignal is here to answer: <strong>Are you visible?</strong> <strong>Who is winning instead?</strong> and <strong>What should you change next?</strong></p>
+            <span className={styles.eyebrow}>Your growth plan</span>
+            <h2>From visibility to action.</h2>
           </div>
 
           <div className={styles.journeySteps}>
@@ -245,7 +244,7 @@ export default async function WorkspacePage({ searchParams }: { searchParams: Pr
 
           <div className={styles.nextBestAction}>
             <div>
-              <span className={styles.eyebrow}>Your next best action</span>
+                <span className={styles.eyebrow}>Next action</span>
               <h3>{activationTitle}</h3>
               <p>{activationCopy}</p>
             </div>
@@ -287,9 +286,9 @@ export default async function WorkspacePage({ searchParams }: { searchParams: Pr
                 </div>
 
                 <div className={styles.resultStory}>
-                  <span className={styles.eyebrow}>Executive answer</span>
+                  <span className={styles.eyebrow}>Website readiness</span>
                   <h2>{readinessLabel}</h2>
-                  <p>{latestScan.summary}</p>
+                  <details className={styles.moreInfo}><summary>Read scan summary</summary><p>{latestScan.summary}</p></details>
                   <div className={styles.signalSummary}>
                     <span><b>{strongSignals.length}</b> strong signals</span>
                     <span><b>{openIssues.length}</b> opportunities</span>
@@ -303,24 +302,24 @@ export default async function WorkspacePage({ searchParams }: { searchParams: Pr
               <div className={styles.sectionHeading}>
                 <div>
                   <span className={styles.eyebrow}>What this means for your business</span>
-                  <h2>Understand the commercial meaning before the technical detail.</h2>
+                  <h2>Key signals</h2>
                 </div>
               </div>
               <div className={styles.meaningGrid}>
                 <article>
-                  <span>01</span>
+                  <span>READINESS GAPS</span>
                   <strong>{openIssues.length ? `${openIssues.length} readiness issues need attention` : "Your core readiness signals are strong"}</strong>
-                  <p>{openIssues.length ? "These are observable website signals that may make the business harder for search and AI retrieval systems to interpret clearly." : "No major readiness warnings were found in the latest scan. The next step is controlled AI visibility testing."}</p>
+                  <p>{openIssues.length ? "Observed on your website. See the action plan below." : "No major warnings in the latest scan."}</p>
                 </article>
                 <article>
-                  <span>02</span>
+                  <span>TOP OPPORTUNITY</span>
                   <strong>{biggestOpportunity ? biggestOpportunity.title : "No critical readiness issue detected"}</strong>
-                  <p>{biggestOpportunity?.problem || "Move from readiness into live provider-model testing and competitor benchmarking."}</p>
+                  <p>{biggestOpportunity?.action || "Run an AI visibility test to continue."}</p>
                 </article>
                 <article>
-                  <span>03</span>
-                  <strong>{latestVisibility ? `${latestVisibility.visibility_score}% observed model-level visibility` : "AI recommendation visibility has not been tested yet"}</strong>
-                  <p>{latestVisibility ? `Latest controlled run recorded ${latestVisibility.mention_count} brand mentions and ${latestVisibility.citation_count} citations.` : "A readiness score tells you whether the site provides clear signals. Run a separate provider-model test to measure whether AI systems actually surface the brand."}</p>
+                  <span>AI VISIBILITY</span>
+                  <strong>{latestVisibility ? `${latestVisibility.visibility_score}% observed` : "Not tested yet"}</strong>
+                  <p>{latestVisibility ? `${latestVisibility.mention_count} mentions · ${latestVisibility.citation_count} citations` : "Run a controlled test to set a baseline."}</p>
                 </article>
               </div>
             </section>
@@ -349,8 +348,8 @@ export default async function WorkspacePage({ searchParams }: { searchParams: Pr
             </div>
 
             {latestPromptTests.length ? (
-              <div style={{marginTop:22}}>
-                <span className={styles.kicker}>Saved model evidence</span>
+              <details className={styles.moreInfo} style={{marginTop:20}}>
+                <summary>View {latestPromptTests.length} model responses</summary>
                 <div style={{display:"grid",marginTop:9}}>
                   {latestPromptTests.map((test: any) => {
                     const response: any = aiResponseByTest.get(test.id);
@@ -367,7 +366,7 @@ export default async function WorkspacePage({ searchParams }: { searchParams: Pr
                     );
                   })}
                 </div>
-              </div>
+              </details>
             ) : null}
           </section>
         ) : null}
@@ -376,8 +375,8 @@ export default async function WorkspacePage({ searchParams }: { searchParams: Pr
           <section className={styles.panel} style={{marginTop:11,minHeight:0}}>
             <div className={styles.panelHead}>
               <div>
-                <span>Before vs after</span>
-                <h2>Measure whether your changes are actually improving anything.</h2>
+                <span>Progress over time</span>
+                <h2>Before &amp; after</h2>
               </div>
             </div>
             <div className={styles.metrics} style={{marginTop:14}}>
@@ -402,9 +401,7 @@ export default async function WorkspacePage({ searchParams }: { searchParams: Pr
                 <small>{previousVisibility ? `Previously ${previousVisibility.citation_count}` : "Latest controlled model run"}</small>
               </article>
             </div>
-            <p style={{marginTop:14,color:"#707a73",fontSize:10,lineHeight:1.6}}>
-              Improvement here is evidence of movement, not proof that any single change caused it. Use the same prompts and comparable site conditions when re-testing.
-            </p>
+            <details className={styles.moreInfo} style={{marginTop:14}}><summary>How to read this comparison</summary><p>These figures show movement over time. They do not prove that a single change caused it. Use the same prompts and comparable site conditions when re-testing.</p></details>
           </section>
         ) : null}
 
@@ -413,7 +410,7 @@ export default async function WorkspacePage({ searchParams }: { searchParams: Pr
             <div>
               <span className={styles.eyebrow}>Your priority action plan</span>
               <h2>{latestScan ? "Fix these first." : "Run a baseline scan to create your action plan."}</h2>
-              <p>{latestScan ? "Prioritised from the actual findings in your latest scan. Open each item for implementation guidance and verification steps." : "SeekSignal will rank genuine findings by impact after the first scan."}</p>
+              <p>{latestScan ? "Start with the highest priority. Open a task for its evidence." : "Run a scan to create your action list."}</p>
             </div>
             {latestScan ? <RunProjectScanButton projectId={project?.id || ""} className={styles.secondary} label="Re-scan website" /> : null}
           </div>
@@ -431,30 +428,19 @@ export default async function WorkspacePage({ searchParams }: { searchParams: Pr
                   </div>
                   <h3>{item.title}</h3>
 
-                  {item.evidence ? (
-                    <div className={styles.actionRow}>
-                      <span>What we observed</span>
-                      <p>{item.evidence}</p>
-                    </div>
-                  ) : null}
-
-                  {item.problem ? (
-                    <div className={styles.actionRow}>
-                      <span>Why this matters</span>
-                      <p>{item.problem}</p>
-                    </div>
-                  ) : null}
-
                   <div className={styles.actionRowStrong}>
-                    <span>What to do</span>
+                    <span>Recommended action</span>
                     <p>{item.action}</p>
                   </div>
 
-                  {item.expectedImpact ? (
-                    <div className={styles.actionRow}>
-                      <span>Expected benefit</span>
-                      <p>{item.expectedImpact}</p>
-                    </div>
+                  {item.evidence || item.problem || item.expectedImpact || item.verify ? (
+                    <details className={styles.moreInfo}>
+                      <summary>See evidence &amp; impact</summary>
+                      {item.evidence ? <div className={styles.actionRow}><span>Observed</span><p>{item.evidence}</p></div> : null}
+                      {item.problem ? <div className={styles.actionRow}><span>Why it matters</span><p>{item.problem}</p></div> : null}
+                      {item.expectedImpact ? <div className={styles.actionRow}><span>Expected benefit</span><p>{item.expectedImpact}</p></div> : null}
+                      {item.verify ? <div className={styles.verifyRow}><span>How to verify</span><p>{item.verify}</p></div> : null}
+                    </details>
                   ) : null}
 
                   {item.implementation?.length ? (
@@ -466,12 +452,6 @@ export default async function WorkspacePage({ searchParams }: { searchParams: Pr
                     </details>
                   ) : null}
 
-                  {item.verify ? (
-                    <div className={styles.verifyRow}>
-                      <span>Verify</span>
-                      <p>{item.verify}</p>
-                    </div>
-                  ) : null}
                   {(() => {
                     const savedFinding = savedFindings.find((finding: any) => finding.title === item.title);
                     return <FindingWorkflowControl findingId={savedFinding?.id} initialStatus={savedFinding?.workflow_status || "not_started"} />;
@@ -491,8 +471,8 @@ export default async function WorkspacePage({ searchParams }: { searchParams: Pr
           <div className={styles.sectionHeading}>
             <div>
               <span className={styles.eyebrow}>Buyer Intent Radar · search hypotheses</span>
-              <h2>Commercial searches to validate.</h2>
-              <p>These suggestions come from your business details and website topic. They are starting points to confirm in Search Console or keyword research.</p>
+              <h2>Searches your buyers may use</h2>
+              <p>Suggested searches. Demand still needs to be verified.</p>
             </div>
             <span className={styles.opportunityCount}>{buyerIntentOpportunities.length} suggestions</span>
           </div>
@@ -502,13 +482,16 @@ export default async function WorkspacePage({ searchParams }: { searchParams: Pr
                 <article key={item.query}>
                   <div className={styles.opportunityTags}><span>{item.intent}</span><b>{item.evidenceClass} · {item.confidence} confidence</b></div>
                   <h3>{item.query}</h3>
-                  <p>{item.supportingEvidence}</p>
-                  <dl>
-                    <div><dt>Search volume</dt><dd>Not measured</dd></div>
-                    <div><dt>Competition</dt><dd>Not measured</dd></div>
-                    <div><dt>Data source</dt><dd>{item.dataSource}</dd></div>
-                  </dl>
                   <div className={styles.opportunityAction}><strong>Next step</strong><span>{item.recommendedAction}</span></div>
+                  <details className={styles.moreInfo}>
+                    <summary>Evidence &amp; data</summary>
+                    <p>{item.supportingEvidence}</p>
+                    <dl>
+                      <div><dt>Search volume</dt><dd>Not measured</dd></div>
+                      <div><dt>Competition</dt><dd>Not measured</dd></div>
+                      <div><dt>Data source</dt><dd>{item.dataSource}</dd></div>
+                    </dl>
+                  </details>
                 </article>
               ))}
             </div>

@@ -90,3 +90,32 @@
 :global(.websitePreviewFallback p){max-width:390px;margin:8px 0 14px;color:#748277;font-size:12px;line-height:1.6}
 :global(.websitePreviewFallback a){display:inline-flex;align-items:center;gap:7px;padding:9px 12px;border:1px solid #d5e4d6;border-radius:8px;background:#fff;color:#32774e;font-size:11px;font-weight:800;text-decoration:none}
 @media(max-width:600px){:global(.websitePreviewFallback){height:200px;padding:20px}:global(.websitePreviewFallbackIcon){width:36px;height:36px}:global(.websitePreviewFallbackLabel){margin-top:11px}:global(.websitePreviewFallback p){font-size:11px}}
+/* Compact, progressive disclosure keeps the dashboard scannable. */
+.moreInfo{margin-top:10px;padding-top:10px;border-top:1px solid #e8eee9}
+.moreInfo>summary{width:max-content;max-width:100%;cursor:pointer;color:#3d7954;font-size:11px;font-weight:800;list-style:none}
+.moreInfo>summary::-webkit-details-marker{display:none}
+.moreInfo>summary:after{content:"＋";margin-left:8px;color:#80a98a}
+.moreInfo[open]>summary:after{content:"−"}
+.moreInfo>p{margin:10px 0 0;color:#748177;font-size:11px;line-height:1.6}
+.meaningGrid article>span{display:inline-block;padding:5px 7px;border-radius:999px;background:#eff7eb;color:#4a815a;font-size:9px;letter-spacing:.4px}
+.meaningGrid strong{margin-top:12px;font-size:16px}
+.meaningGrid p{font-size:11px}
+.sectionHeading h2{font-size:26px}
+.priorityGrid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.priorityCard{background:#fff}
+.priorityCard h3{font-size:19px}
+.actionRowStrong{min-height:85px}
+.actionRowStrong p{font-size:12px}
+.implementation{margin-top:10px}
+.implementation summary{font-size:11px}
+.opportunityGrid article{background:#fff}
+.opportunityGrid article>p,.opportunityGrid dt,.opportunityGrid dd{font-size:11px}
+.opportunityGrid dl{margin-top:10px}
+.websitePreviewCard{min-height:330px;background:#eef4ef}
+.websitePreviewCard>img{height:280px}
+.websitePreviewCaption{background:#ffffffed;border-color:#e4ebe5}
+.websitePreviewCaption span{font-size:9px}
+.websitePreviewCaption strong{font-size:10px}
+:global(.websitePreviewFallback){height:280px}
+@media(max-width:1120px){.priorityGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.priorityGrid{grid-template-columns:1fr}.websitePreviewCard{min-height:250px}.websitePreviewCard>img{height:200px}:global(.websitePreviewFallback){height:200px}.sectionHeading h2{font-size:22px}}
