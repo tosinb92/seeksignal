@@ -496,7 +496,7 @@ export default function Home() {
       <footer className="footer shell">
         <div className="brand"><span className="brandMark">S</span><span>SeekSignal</span></div>
         <span>Find. Fix. Prove your AI visibility.</span>
-        <div><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/login">Sign in</a><a href="/signup">Create account</a></div>
+        <div><a href="/experiment">The SeekSignal Experiment</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/login">Sign in</a><a href="/signup">Create account</a></div>
       </footer>
     </main>
   );

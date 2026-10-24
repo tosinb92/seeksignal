@@ -13,7 +13,7 @@ import ProjectSwitcher from "../../components/ProjectSwitcher";
 import ContentEngine from "../../components/ContentEngine";
 import FindingWorkflowControl from "../../components/FindingWorkflowControl";
 
-export default async function WorkspacePage({ searchParams }: { searchParams: Promise<{ project?: string }> }) {
+export default async function WorkspacePage({ searchParams }: { searchParams: Promise<{ project?: string; organization?: string }> }) {
   const user = await getSessionUser();
   if (!user?.id) redirect("/login");
 
@@ -30,7 +30,11 @@ export default async function WorkspacePage({ searchParams }: { searchParams: Pr
 
   if (!memberships?.length) redirect("/onboarding");
 
-  const orgId = memberships[0].organization_id;
+  const params = await searchParams;
+  const selectedMembership = params.organization
+    ? memberships.find((membership: any) => membership.organization_id === params.organization)
+    : null;
+  const orgId = selectedMembership?.organization_id || memberships[0].organization_id;
   const [orgResponse, projectResponse] = await Promise.all([
     supabaseRest("/rest/v1/organizations?select=id,name,slug&id=eq." + encodeURIComponent(orgId), { method: "GET" }, accessToken),
     supabaseRest("/rest/v1/projects?select=id,name,domain,market,category,status&organization_id=eq." + encodeURIComponent(orgId), { method: "GET" }, accessToken)
@@ -39,7 +43,6 @@ export default async function WorkspacePage({ searchParams }: { searchParams: Pr
   const organizations = orgResponse.ok ? await orgResponse.json() : [];
   const projects = projectResponse.ok ? await projectResponse.json() : [];
   const organization = organizations?.[0];
-  const params = await searchParams;
   const project = projects?.find((item: any) => item.id === params.project) || projects?.[0];
 
   const [scanResponse, competitorResponse, reportResponse, visibilityResponse, findingResponse] = project?.id

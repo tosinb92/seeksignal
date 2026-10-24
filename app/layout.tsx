@@ -3,7 +3,7 @@ import "./globals.css";
 import PageViewTracker from "../components/PageViewTracker";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://seeksignal.vercel.app"),
+  metadataBase: new URL("https://seek-signal.com"),
   title: {
     default: "SeekSignal — AI visibility intelligence",
     template: "%s | SeekSignal"

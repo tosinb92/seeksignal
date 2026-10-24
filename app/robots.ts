@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/app/", "/api/"]
     },
-    sitemap: "https://seeksignal.vercel.app/sitemap.xml"
+    sitemap: "https://seek-signal.com/sitemap.xml"
   };
 }
