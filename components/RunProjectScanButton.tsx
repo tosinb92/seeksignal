@@ -24,6 +24,7 @@ export default function RunProjectScanButton({ projectId, className, label = "Ru
 
       if (!response.ok) throw new Error(data.error || "Could not run scan.");
       void trackEvent("project_scan_completed", { projectId, metadata: { score: data.score } });
+      if (data.blueprintSynced === false) setError("The scan was saved, but your Growth Blueprint could not be refreshed. Please run the scan again.");
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not run scan.");

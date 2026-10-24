@@ -89,6 +89,11 @@
 .actionRowStrong>span{color:#c4f873}
 .verifyRow{margin-top:9px}
 .verifyRow>span{color:#9d85ef}
+.priorityCard :global(.findingWorkflow){display:grid;gap:7px;margin-top:14px;padding-top:13px;border-top:1px solid rgba(255,255,255,.06)}
+.priorityCard :global(.findingWorkflow label){display:flex;align-items:center;justify-content:space-between;gap:12px}
+.priorityCard :global(.findingWorkflow label span){color:#6f7972;font-size:8px;text-transform:uppercase;letter-spacing:.75px;font-weight:800}
+.priorityCard :global(.findingWorkflow select){max-width:190px;padding:8px 10px;border:1px solid rgba(196,248,115,.18);border-radius:9px;background:#0b100d;color:#dbe4dc;font:inherit;font-size:9px}
+.priorityCard :global(.findingWorkflow small){color:#768179;font-size:8px;line-height:1.5}
 .implementation{margin-top:10px;padding:11px 12px;border:1px solid rgba(255,255,255,.07);border-radius:11px;background:#0b0f0e}
 .implementation summary{cursor:pointer;color:#d9e0da;font-size:9px;font-weight:800}
 .implementation ol{margin:11px 0 0 18px;padding:0;color:#89948c;font-size:10px;line-height:1.6}

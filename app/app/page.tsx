@@ -11,6 +11,7 @@ import GenerateReportButton from "../../components/GenerateReportButton";
 import RunVisibilityTest from "../../components/RunVisibilityTest";
 import ProjectSwitcher from "../../components/ProjectSwitcher";
 import ContentEngine from "../../components/ContentEngine";
+import FindingWorkflowControl from "../../components/FindingWorkflowControl";
 
 export default async function WorkspacePage({ searchParams }: { searchParams: Promise<{ project?: string }> }) {
   const user = await getSessionUser();
@@ -41,7 +42,7 @@ export default async function WorkspacePage({ searchParams }: { searchParams: Pr
   const params = await searchParams;
   const project = projects?.find((item: any) => item.id === params.project) || projects?.[0];
 
-  const [scanResponse, competitorResponse, reportResponse, visibilityResponse] = project?.id
+  const [scanResponse, competitorResponse, reportResponse, visibilityResponse, findingResponse] = project?.id
     ? await Promise.all([
         supabaseRest(
           "/rest/v1/scans?select=id,score,summary,created_at,raw_result&project_id=eq." + encodeURIComponent(project.id) + "&order=created_at.desc&limit=20",
@@ -62,14 +63,20 @@ export default async function WorkspacePage({ searchParams }: { searchParams: Pr
           "/rest/v1/visibility_snapshots?select=id,visibility_score,recommendation_share,mention_count,citation_count,engine_breakdown,captured_at&project_id=eq." + encodeURIComponent(project.id) + "&order=captured_at.desc&limit=10",
           { method: "GET" },
           accessToken
+        ),
+        supabaseRest(
+          "/rest/v1/findings?select=id,title,workflow_status&project_id=eq." + encodeURIComponent(project.id) + "&order=last_detected_at.desc&limit=100",
+          { method: "GET" },
+          accessToken
         )
       ])
-    : [null, null, null, null];
+    : [null, null, null, null, null];
 
   const scans = scanResponse?.ok ? await scanResponse.json() : [];
   const competitors = competitorResponse?.ok ? await competitorResponse.json() : [];
   const reports = reportResponse?.ok ? await reportResponse.json() : [];
   const visibilitySnapshots = visibilityResponse?.ok ? await visibilityResponse.json() : [];
+  const savedFindings = findingResponse?.ok ? await findingResponse.json() : [];
   const latestScan = scans?.[0] || null;
   const previousScan = scans?.[1] || null;
   const latestVisibility = visibilitySnapshots?.[0] || null;
@@ -450,6 +457,10 @@ export default async function WorkspacePage({ searchParams }: { searchParams: Pr
                       <p>{item.verify}</p>
                     </div>
                   ) : null}
+                  {(() => {
+                    const savedFinding = savedFindings.find((finding: any) => finding.title === item.title);
+                    return <FindingWorkflowControl findingId={savedFinding?.id} initialStatus={savedFinding?.workflow_status || "not_started"} />;
+                  })()}
                 </article>
               ))}
             </div>

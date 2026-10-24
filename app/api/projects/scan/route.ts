@@ -37,11 +37,12 @@ export async function POST(request: Request) {
       market: project.market || ""
     });
 
+    const scanId = randomUUID();
     const insert = await supabaseRest("/rest/v1/scans", {
       method: "POST",
       headers: { Prefer: "return=representation" },
       body: JSON.stringify({
-        id: randomUUID(),
+        id: scanId,
         project_id: projectId,
         lead_id: null,
         scan_type: "website_readiness",
@@ -57,7 +58,54 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Scan completed but could not be saved." }, { status: 500 });
     }
 
-    return NextResponse.json({ ok: true, ...audit });
+    const findings = audit.opportunities.slice(0, 3);
+    const syncResults = await Promise.all(findings.map(async (finding: any) => {
+      const titleFilter = encodeURIComponent(`"${finding.title.replace(/\\/g, "\\\\").replace(/"/g, "\\\"")}"`);
+      const lookup = await supabaseRest(
+        "/rest/v1/findings?select=id&project_id=eq." + encodeURIComponent(projectId) + "&title=eq." + titleFilter + "&limit=1",
+        { method: "GET" },
+        accessToken
+      );
+      if (!lookup.ok) return false;
+      const existing = await lookup.json();
+      const payload = {
+        project_id: projectId,
+        scan_id: scanId,
+        finding_type: "website_readiness",
+        category: "website_readiness",
+        severity: finding.impact || "medium",
+        title: finding.title,
+        description: finding.problem || finding.evidence || null,
+        evidence: {
+          class: finding.evidenceClass || "VERIFIED",
+          confidence: finding.confidence || "medium",
+          source_url: finding.sourceUrl || fetched.url.toString(),
+          collected_at: finding.collectedAt || new Date().toISOString(),
+          observation: finding.evidence || null,
+          priority: finding.priority || null
+        },
+        recommendation: finding.action,
+        last_detected_at: new Date().toISOString()
+      };
+      const saved = existing?.[0]?.id
+        ? await supabaseRest("/rest/v1/findings?id=eq." + encodeURIComponent(existing[0].id), {
+            method: "PATCH",
+            headers: { Prefer: "return=minimal" },
+            body: JSON.stringify(payload)
+          }, accessToken)
+        : await supabaseRest("/rest/v1/findings", {
+            method: "POST",
+            headers: { Prefer: "return=minimal" },
+            body: JSON.stringify(payload)
+          }, accessToken);
+      return saved.ok;
+    }));
+
+    if (syncResults.some((ok) => !ok)) {
+      console.error("Growth Blueprint sync incomplete", { projectId, scanId });
+    }
+
+    return NextResponse.json({ ok: true, blueprintSynced: syncResults.every(Boolean), ...audit });
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Could not complete the scan." },
