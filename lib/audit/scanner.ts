@@ -17,6 +17,20 @@ export type AuditCheck = {
   confidence: "high" | "medium";
 };
 
+export type BuyerIntentOpportunity = {
+  query: string;
+  intent: string;
+  serviceOrProduct: string;
+  geography: string | null;
+  competition: "not measured";
+  searchVolume: null;
+  dataSource: string;
+  evidenceClass: "SUGGESTED";
+  confidence: "medium" | "low";
+  supportingEvidence: string;
+  recommendedAction: string;
+};
+
 function actionPriority(priority: number, effort: string) {
   const impact = priority >= 85 ? 40 : priority >= 65 ? 30 : 20;
   const ease = effort === "Low" ? 20 : effort === "Medium" ? 12 : 5;
@@ -273,7 +287,11 @@ function firstMatch(html: string, pattern: RegExp) {
   return match?.[1] ? cleanText(match[1]).slice(0, 220) : "";
 }
 
-export function analyseWebsite(html: string, hostname: string) {
+export function analyseWebsite(
+  html: string,
+  hostname: string,
+  context: { businessName?: string; category?: string; market?: string } = {}
+) {
   const collectedAt = new Date().toISOString();
   const sourceUrl = `https://${hostname}`;
   const titleText = firstMatch(html, /<title[^>]*>([\s\S]*?)<\/title>/i);
@@ -305,6 +323,35 @@ export function analyseWebsite(html: string, hostname: string) {
   // Framework bundles, navigation and policies do not establish buyer answers or proof.
   const contentHtml = html.replace(/<(script|style|nav|header|footer)\b[^>]*>[\s\S]*?<\/\1>/gi, " ");
   const visibleText = cleanText(contentHtml);
+  const suppliedCategory = (context.category || "").trim().replace(/\s+/g, " ").slice(0, 100);
+  const pageTopic = (h1Text || titleText.split(/[|–—:]/)[0] || "").trim().replace(/^(welcome to|home\s*[-|:]?\s*)/i, "").slice(0, 100);
+  const serviceOrProduct = suppliedCategory || pageTopic;
+  const market = (context.market || "").trim().replace(/\s+/g, " ").slice(0, 80);
+  const intentEvidence = suppliedCategory
+    ? `Business category supplied for this project: “${suppliedCategory}”.`
+    : pageTopic
+      ? `Topic inferred from the observed homepage heading/title: “${pageTopic}”.`
+      : "No service category or clear homepage topic was available.";
+  const queryCandidates = serviceOrProduct ? [
+    { query: `${serviceOrProduct} pricing`, intent: "Pricing research" },
+    { query: `get a quote for ${serviceOrProduct}${market ? ` in ${market}` : ""}`, intent: "Request a quote" },
+    { query: `compare ${serviceOrProduct} providers${market ? ` in ${market}` : ""}`, intent: "Supplier comparison" },
+    { query: `best ${serviceOrProduct} providers${market ? ` in ${market}` : ""}`, intent: "Supplier selection" },
+    ...(market ? [{ query: `${serviceOrProduct} in ${market}`, intent: "Local supplier search" }] : [])
+  ] : [];
+  const buyerIntentRadar: BuyerIntentOpportunity[] = queryCandidates.map((item) => ({
+    query: item.query,
+    intent: item.intent,
+    serviceOrProduct,
+    geography: market || null,
+    competition: "not measured",
+    searchVolume: null,
+    dataSource: suppliedCategory ? "Customer-provided business category and market" : "Observed homepage heading/title and supplied market",
+    evidenceClass: "SUGGESTED",
+    confidence: suppliedCategory ? "medium" : "low",
+    supportingEvidence: intentEvidence,
+    recommendedAction: "Validate this search idea against Search Console query data or customer research before prioritising it. SeekSignal has no measured search volume for this query."
+  }));
   const headings = [...contentHtml.matchAll(/<h[2-6]\b[^>]*>([\s\S]*?)<\/h[2-6]>/gi)].map(m => cleanText(m[1]));
   const hasQuestionHeading = headings.some(text => /\?|^(how|what|who|why|when|where|can|do|is|are)\b/i.test(text));
   const hasAnswerParagraph = [...contentHtml.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/gi)].some(m => cleanText(m[1]).length >= 60);
@@ -624,6 +671,7 @@ export function analyseWebsite(html: string, hostname: string) {
 
   return {
     url: hostname,
+    buyerIntentRadar,
     score,
     checks,
     categories,

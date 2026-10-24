@@ -47,6 +47,19 @@ type Result = {
     effort?: string;
   }[];
   expectedOutcome?: string;
+  buyerIntentRadar?: {
+    query: string;
+    intent: string;
+    serviceOrProduct: string;
+    geography: string | null;
+    competition: "not measured";
+    searchVolume: null;
+    dataSource: string;
+    evidenceClass: "SUGGESTED";
+    confidence: "medium" | "low";
+    supportingEvidence: string;
+    recommendedAction: string;
+  }[];
   commercialDiagnosis?: { headline: string; detail: string; consequence: string };
   quickWins?: {
     title: string;
@@ -363,6 +376,28 @@ export default function Home() {
                 </div>
               ) : <p className="allGood">No fundamental readiness warnings were found.</p>}
             </section>
+
+            {result.buyerIntentRadar?.length ? (
+              <section className="buyerIntentSection">
+                <div className="resultSectionHead">
+                  <span>Buyer Intent Radar · query hypotheses</span>
+                  <h2>Commercial searches to validate</h2>
+                  <p>These suggestions use your business category or homepage topic. Search volume and competition have not been measured.</p>
+                </div>
+                <div className="buyerIntentGrid">
+                  {result.buyerIntentRadar.map((item) => (
+                    <article key={item.query}>
+                      <span>{item.intent}</span>
+                      <h3>{item.query}</h3>
+                      <div className="buyerIntentMeta"><b>{item.evidenceClass}</b><i>{item.confidence} confidence</i></div>
+                      <p>{item.supportingEvidence}</p>
+                      <small>Search volume: not available · Competition: not measured · Source: {item.dataSource}</small>
+                      <details><summary>What to do next</summary><p>{item.recommendedAction}</p></details>
+                    </article>
+                  ))}
+                </div>
+              </section>
+            ) : null}
 
             <OpportunityValueCalculator />
 

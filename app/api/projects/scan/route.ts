@@ -18,7 +18,7 @@ export async function POST(request: Request) {
   if (!projectId) return NextResponse.json({ error: "Project missing." }, { status: 400 });
 
   const projectResponse = await supabaseRest(
-    "/rest/v1/projects?select=id,domain&limit=1&id=eq." + encodeURIComponent(projectId),
+    "/rest/v1/projects?select=id,name,domain,market,category&limit=1&id=eq." + encodeURIComponent(projectId),
     { method: "GET" },
     accessToken
   );
@@ -31,7 +31,11 @@ export async function POST(request: Request) {
 
   try {
     const fetched = await fetchPublicWebsite(project.domain);
-    const audit = analyseWebsite(fetched.html, fetched.url.hostname);
+    const audit = analyseWebsite(fetched.html, fetched.url.hostname, {
+      businessName: project.name,
+      category: project.category || "",
+      market: project.market || ""
+    });
 
     const insert = await supabaseRest("/rest/v1/scans", {
       method: "POST",

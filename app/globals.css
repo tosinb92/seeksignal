@@ -1112,7 +1112,17 @@ linear-gradient(180deg,rgba(5,8,7,.12),rgba(5,8,7,.78))}
 .opportunityScenarioResult strong{display:block;margin-top:7px;color:#c4f873;font-size:20px}
 .evidenceProvenance{border-left:2px solid rgba(91,209,173,.4);padding-left:10px}
 .evidenceProvenance>span{color:#71d6b4}
+.buyerIntentSection{max-width:1150px;margin:38px auto 0;padding:30px;border:1px solid rgba(255,255,255,.075);border-radius:18px;background:#0c100f}
+.buyerIntentGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:22px}
+.buyerIntentGrid article{padding:18px;border:1px solid rgba(255,255,255,.07);border-radius:12px;background:rgba(255,255,255,.018)}
+.buyerIntentGrid article>span{color:#c4f873;font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.9px}
+.buyerIntentGrid h3{margin:10px 0;color:#eef4ef;font-size:16px;letter-spacing:-.4px}
+.buyerIntentMeta{display:flex;gap:9px;align-items:center}.buyerIntentMeta b{color:#c3ef87;font-size:8px}.buyerIntentMeta i{color:#768178;font-size:8px;font-style:normal}
+.buyerIntentGrid p{margin:9px 0;color:#88948b;font-size:9px;line-height:1.6}
+.buyerIntentGrid small{display:block;color:#606b63;font-size:8px;line-height:1.6}
+.buyerIntentGrid details{margin-top:12px;color:#aab5ad;font-size:9px}.buyerIntentGrid summary{cursor:pointer;color:#c4f873;font-weight:750}
 @media(max-width:760px){.opportunityValue{padding:20px}.opportunityValueGrid{grid-template-columns:1fr 1fr}.opportunityScenarioResult{grid-template-columns:1fr}}
+@media(max-width:760px){.buyerIntentSection{padding:20px}.buyerIntentGrid{grid-template-columns:1fr}}
 
 /* Use the approved cinematic hero asset */
 .heroVisualPremium{

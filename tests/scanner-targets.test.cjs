@@ -29,3 +29,10 @@ test('audit findings identify observed evidence separately from suggested action
  assert.match(result.opportunities[0].priority.methodology,/does not include search demand, rankings or revenue/i);
  assert.equal(Object.hasOwn(result,'searchVolume'),false);
 });
+test('buyer intent radar returns hypotheses with no fabricated demand metrics',()=>{
+ const s=scanner();const result=s.api.analyseWebsite('<html><head><title>Fire Safety</title></head><body><h1>Fire risk assessment</h1></body></html>','example.com',{category:'Fire risk assessment',market:'Ipswich'});
+ assert.ok(result.buyerIntentRadar.length>=4);
+ assert.ok(result.buyerIntentRadar.every(item=>item.evidenceClass==='SUGGESTED'&&item.searchVolume===null&&item.competition==='not measured'));
+ assert.ok(result.buyerIntentRadar.some(item=>item.query.includes('Ipswich')));
+ assert.ok(result.buyerIntentRadar.every(item=>/Search Console/.test(item.recommendedAction)));
+});
