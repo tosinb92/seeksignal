@@ -7,7 +7,7 @@ function scanner(){
  const calls=[];const exports={};
  const source=fs.readFileSync('lib/audit/scanner.ts','utf8');
  const js=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,esModuleInterop:true}}).outputText;
- const context={exports,require:n=>n==='node:dns/promises'?{lookup:async h=>{if(h==='www.apex-only.example'){const e=new Error('not found');e.code='ENOTFOUND';throw e;}return[{address:h==='internal.example'?'10.0.0.1':'93.184.216.34'}];}}:require(n),URL,Response,AbortSignal,TextDecoder,setTimeout:fn=>{fn();return 0},fetch:async(url)=>{calls.push(url);return new Response(JSON.stringify({data:{html:'<html>'+ 'public content '.repeat(20)+'</html>'}}),{status:200});}};
+ const context={exports,require:n=>n==='node:dns/promises'?{lookup:async h=>{if(h==='www.apex-only.example'){const e=new Error('not found');e.code='ENOTFOUND';throw e;}return[{address:h==='internal.example'?'10.0.0.1':'93.184.216.34'}];}}:require(n),URL,Response,AbortSignal,TextDecoder,setTimeout:fn=>{fn();return 0},fetch:async(url)=>{calls.push(url);const target=new URL(url).searchParams.get('url')||'';const html=target.includes('www.browser-error.example')?'<html><title>This site can’t be reached</title>'+('DNS_PROBE_FINISHED_NXDOMAIN '.repeat(12))+'</html>':'<html>'+ 'public content '.repeat(20)+'</html>';return new Response(JSON.stringify({data:{html}}),{status:200});}};
  vm.runInNewContext(js,context);return {api:exports,calls};
 }
 test('private and credential-bearing inputs are rejected before proxy or direct fetch',async()=>{
@@ -26,7 +26,7 @@ test('website previews fall back from a missing www host to the reachable apex d
  assert.equal(fetched.url.hostname,'apex-only.example');assert.equal(s.calls.length,1);
  assert.match(new URL(s.calls[0]).searchParams.get('url'),/^https:\/\/apex-only\.example/);
 });
-test('audit findings identify observed evidence separately from suggested actions',()=>{
+test('website previews prefer the apex host if both names resolve',async()=>{\n const s=scanner();const result=await s.api.resolvePublicWebsiteUrl('https://www.apex-preferred.example/path',true);\n assert.equal(result.hostname,'apex-preferred.example');assert.equal(result.pathname,'/path');\n});\ntest('website scans reject browser DNS error pages and retry the apex host',async()=>{\n const s=scanner();const result=await s.api.fetchPublicWebsite('https://www.browser-error.example');\n assert.equal(result.url.hostname,'browser-error.example');assert.equal(s.calls.length,2);\n});\ntest('audit findings identify observed evidence separately from suggested actions',()=>{
  const s=scanner();const result=s.api.analyseWebsite('<html><head></head><body><h1>Example service</h1></body></html>','example.com');
  assert.equal(result.url,'example.com');
  assert.ok(result.checks.length>0);

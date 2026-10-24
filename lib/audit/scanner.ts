@@ -148,9 +148,11 @@ function isUnsafeUrlError(error: unknown) {
   return error instanceof Error && /beginning with http|embedded login credentials|standard web ports|That address cannot be scanned/i.test(error.message);
 }
 
-export async function resolvePublicWebsiteUrl(raw: string) {
+export async function resolvePublicWebsiteUrl(raw: string, preferApex = false) {
   let lastError: unknown;
-  for (const candidate of websiteUrlCandidates(raw)) {
+  const candidates = websiteUrlCandidates(raw);
+  if (preferApex) candidates.sort((a, b) => Number(a.hostname.startsWith("www.")) - Number(b.hostname.startsWith("www.")));
+  for (const candidate of candidates) {
     try {
       await validatePublicUrl(candidate);
       return candidate;
@@ -247,6 +249,9 @@ async function fetchViaBrowserProxy(target: URL) {
 
   if (typeof html !== "string" || html.trim().length < 100) {
     throw new Error("Browser proxy returned no usable HTML.");
+  }
+  if (/This site can.t be reached|ERR_NAME_NOT_RESOLVED|DNS_PROBE_FINISHED_NXDOMAIN|server IP address could not be found/i.test(html)) {
+    throw new Error("The browser could not resolve this website host.");
   }
 
   return {

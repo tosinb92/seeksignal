@@ -5,7 +5,7 @@ export async function GET(request: NextRequest) {
   const value = request.nextUrl.searchParams.get("url");
   if (!value) return NextResponse.json({ error: "Missing website." }, { status: 400 });
   try {
-    const url = await resolvePublicWebsiteUrl(value);
+    const url = await resolvePublicWebsiteUrl(value, true);
     url.hash = "";
     const endpoint = new URL("https://api.microlink.io/");
     endpoint.searchParams.set("url", url.toString());
