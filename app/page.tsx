@@ -1,79 +1,13 @@
 "use client";
-import WebsiteScreenshot from "../components/WebsiteScreenshot";
-
 import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
 import LeadGate from "../components/LeadGate";
 import { trackEvent } from "../lib/analytics/client";
-import OpportunityValueCalculator from "../components/OpportunityValueCalculator";
-
-type Result = {
-  leadId: string;
-  score: number;
-  url: string;
-  summary: string;
-  methodology: string;
-  checks: { label: string; status: "good" | "warn"; detail: string; evidence?: string }[];
-  categories: { name: string; score: number }[];
-  opportunities: {
-    rank?: number;
-    title: string;
-    problem?: string;
-    evidence?: string;
-    action: string;
-    benefit?: string;
-    implementation?: string[];
-    expectedImpact?: string;
-    verify?: string;
-    impact: string;
-    effort?: string;
-    evidenceClass?: "VERIFIED";
-    recommendationClass?: "SUGGESTED";
-    sourceUrl?: string;
-    collectedAt?: string;
-    confidence?: "high" | "medium";
-    priority?: { score: number; factors: { name: string; points: number; class: string }[]; methodology: string };
-  }[];
-  actionPlan?: {
-    rank?: number;
-    title: string;
-    problem?: string;
-    evidence?: string;
-    action: string;
-    benefit?: string;
-    implementation?: string[];
-    expectedImpact?: string;
-    verify?: string;
-    impact: string;
-    effort?: string;
-  }[];
-  expectedOutcome?: string;
-  buyerIntentRadar?: {
-    query: string;
-    intent: string;
-    serviceOrProduct: string;
-    geography: string | null;
-    competition: "not measured";
-    searchVolume: null;
-    dataSource: string;
-    evidenceClass: "SUGGESTED";
-    confidence: "medium" | "low";
-    supportingEvidence: string;
-    recommendedAction: string;
-  }[];
-  commercialDiagnosis?: { headline: string; detail: string; consequence: string };
-  quickWins?: {
-    title: string;
-    impact: string;
-    effort?: string;
-    action: string;
-    expectedImpact?: string;
-  }[];
-};
 
 export default function Home() {
+  const router = useRouter();
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<Result | null>(null);
   const [error, setError] = useState("");
   const [showGate, setShowGate] = useState(false);
   const [lead, setLead] = useState({ name: "", email: "", business: "" });
@@ -81,7 +15,6 @@ export default function Home() {
   function startAudit(e: FormEvent) {
     e.preventDefault();
     setError("");
-    setResult(null);
 
     if (!url.trim()) {
       setError("Enter your website first.");
@@ -111,9 +44,11 @@ export default function Home() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Audit failed");
 
-      setResult(data);
+      const report = { ...data, collectedAt: new Date().toISOString() };
+      window.sessionStorage.setItem(`seeksignal:scan:${data.leadId}`, JSON.stringify(report));
       setShowGate(false);
       void trackEvent("audit_completed", { leadId: data.leadId, metadata: { score: data.score, website: data.url } });
+      router.push(`/results/${encodeURIComponent(data.leadId)}`);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Audit failed";
       setError(message);
@@ -245,7 +180,7 @@ export default function Home() {
 
         {error && <div className="error">{error}</div>}
 
-        {showGate && !result && (
+        {showGate && (
           <div id="scan-details">
             <LeadGate
             website={url}
@@ -262,178 +197,6 @@ export default function Home() {
         )}
 
 
-        {result && (
-          <section className="resultExperience">
-            <div className="resultHeroNew">
-              <div className="siteSnapshot">
-                <div className="snapshotBar">
-                  <span><i /> Website analysed</span>
-                  <strong>{result.url}</strong>
-                </div>
-                <WebsiteScreenshot url={result.url} />
-                <div className="snapshotCaption">
-                  <span>Actual website</span>
-                  <strong>{result.url}</strong>
-                </div>
-              </div>
-
-              <div className="resultScorePanel">
-                <span className="resultKicker">Your website readiness score</span>
-                <div className="resultScoreValue">{result.score}<small>/100</small></div>
-                <div className="resultScoreTrack"><i style={{width:`${result.score}%`}} /></div>
-                <h2>
-                  {result.score >= 80
-                    ? "Strong foundation. Important opportunities remain."
-                    : result.score >= 55
-                      ? "Good foundation. Several signals need attention."
-                      : "Important gaps are limiting how clearly machines can understand this site."}
-                </h2>
-                <p>{result.summary}</p>
-                <div className="resultFacts">
-                  <span><b>{result.checks.filter((item) => item.status === "good").length}</b> strong signals</span>
-                  <span><b>{result.checks.filter((item) => item.status === "warn").length}</b> opportunities</span>
-                  <span><b>{result.opportunities.length}</b> prioritised fixes</span>
-                </div>
-                <div className="scoreMeaning">
-                  <strong>What this score means</strong>
-                  <span>{result.methodology}</span>
-                </div>
-              </div>
-            </div>
-
-            <section className="businessMeaning">
-              <div className="resultSectionHead">
-                <span>What this means for your business</span>
-                <h2>Don't just audit the website. Understand the visibility gap.</h2>
-              </div>
-              <div className="meaningCards">
-                <article>
-                  <span>01</span>
-                  <strong>{result.checks.filter((item) => item.status === "warn").length} readiness issues need attention</strong>
-                  <p>These are observable website signals that may make the business harder for search and AI retrieval systems to interpret clearly.</p>
-                </article>
-                <article>
-                  <span>02</span>
-                  <strong>{result.opportunities[0]?.title || "No critical readiness issue detected"}</strong>
-                  <p>{result.opportunities[0]?.problem || "Your core readiness signals are strong. The next step is controlled AI visibility testing."}</p>
-                </article>
-                <article>
-                  <span>03</span>
-                  <strong>Readiness is not recommendation visibility</strong>
-                  <p>This audit measures how clearly your website presents machine-readable business signals. It does not claim ChatGPT, Gemini or another AI currently recommends you.</p>
-                </article>
-              </div>
-            </section>
-
-            {result.commercialDiagnosis ? (
-              <section className="commercialDiagnosis">
-                <div className="resultSectionHead">
-                  <span>Commercial diagnosis</span>
-                  <h2>{result.commercialDiagnosis.headline}</h2>
-                </div>
-                <div className="diagnosisGrid">
-                  <article><span>What is happening</span><p>{result.commercialDiagnosis.detail}</p></article>
-                  <article><span>Why it costs visibility</span><p>{result.commercialDiagnosis.consequence}</p></article>
-                  <article><span>What to do next</span><p>{result.opportunities.length ? "Complete the priority fixes below, publish them, then re-scan. Compare real model visibility after improving the website evidence." : "Test three real buyer questions against AI models, record whether your business and competitors appear, and inspect the cited sources. Repeat the same questions after any improvements."}</p></article>
-                </div>
-              </section>
-            ) : null}
-
-            <section className="priorityExperience">
-              <div className="resultSectionHead">
-                <span>Your priority action plan</span>
-                <h2>Know what is costing you visibility — and fix that first.</h2>
-                <p>These are ranked from the actual findings in this scan, with evidence, implementation guidance and a verification step.</p>
-              </div>
-              {result.opportunities.length ? (
-                <div className="priorityResultGrid">
-                  {result.opportunities.slice(0,3).map((item,index)=>(
-                    <article className="priorityResultCard" key={item.title}>
-                      <div className="priorityResultTop">
-                        <span className="priorityResultNumber">{String(index+1).padStart(2,"0")}</span>
-                        <div>
-                          <span>{item.impact} impact</span>
-                          {item.effort ? <span>{item.effort} effort</span> : null}
-                          {item.priority ? <span>Action priority {item.priority.score}/100</span> : null}
-                        </div>
-                      </div>
-                      <h3>{item.title}</h3>
-                      {item.evidence ? <div className="resultDetail"><span>What we observed</span><p>{item.evidence}</p></div> : null}
-                      {item.evidenceClass ? <div className="resultDetail evidenceProvenance"><span>{item.evidenceClass} evidence · {item.confidence} confidence</span><p>Source: {item.sourceUrl}{item.collectedAt ? ` · Collected ${new Date(item.collectedAt).toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short", timeZone: "UTC" })} UTC` : ""}</p></div> : null}
-                      {item.problem ? <div className="resultDetail"><span>Why this matters</span><p>{item.problem}</p></div> : null}
-                      <div className="resultDetail resultDetailAction"><span>What to do</span><p>{item.action}</p></div>
-                      {item.expectedImpact ? <div className="resultDetail"><span>Expected business impact</span><p>{item.expectedImpact}</p></div> : null}
-                      {item.implementation?.length ? (
-                        <details className="implementationDetails">
-                          <summary>Show implementation instructions</summary>
-                          <ol>{item.implementation.map((step,stepIndex)=><li key={stepIndex}>{step}</li>)}</ol>
-                        </details>
-                      ) : null}
-                      {item.verify ? <div className="resultVerify"><span>Verify fix</span><p>{item.verify}</p></div> : null}
-                      {item.priority ? <details className="implementationDetails"><summary>How this action priority was scored</summary><p className="priorityMethodology">{item.priority.methodology}</p><ul>{item.priority.factors.map((factor) => <li key={factor.name}>{factor.name}: +{factor.points} ({factor.class})</li>)}</ul></details> : null}
-                    </article>
-                  ))}
-                </div>
-              ) : <p className="allGood">No fundamental readiness warnings were found.</p>}
-            </section>
-
-            {result.buyerIntentRadar?.length ? (
-              <section className="buyerIntentSection">
-                <div className="resultSectionHead">
-                  <span>Buyer Intent Radar · query hypotheses</span>
-                  <h2>Commercial searches to validate</h2>
-                  <p>These suggestions use your business category or homepage topic. Search volume and competition have not been measured.</p>
-                </div>
-                <div className="buyerIntentGrid">
-                  {result.buyerIntentRadar.map((item) => (
-                    <article key={item.query}>
-                      <span>{item.intent}</span>
-                      <h3>{item.query}</h3>
-                      <div className="buyerIntentMeta"><b>{item.evidenceClass}</b><i>{item.confidence} confidence</i></div>
-                      <p>{item.supportingEvidence}</p>
-                      <small>Search volume: not available · Competition: not measured · Source: {item.dataSource}</small>
-                      <details><summary>What to do next</summary><p>{item.recommendedAction}</p></details>
-                    </article>
-                  ))}
-                </div>
-              </section>
-            ) : null}
-
-            <OpportunityValueCalculator />
-
-            <details className="technicalResults">
-              <summary>
-                <div>
-                  <span>Technical evidence</span>
-                  <strong>See every signal checked in this scan</strong>
-                </div>
-                <b>{result.checks.length} checks</b>
-              </summary>
-              <div className="technicalResultList">
-                {result.checks.map((check)=>(
-                  <div className="technicalResultItem" key={check.label}>
-                    <i className={check.status === "good" ? "techGood" : "techWarn"} />
-                    <div>
-                      <strong>{check.label}</strong>
-                      {check.evidence ? <p>{check.evidence}</p> : null}
-                      <small>{check.detail}</small>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </details>
-
-            {result.expectedOutcome ? (
-              <div className="nextStepBand">
-                <div>
-                  <span>What happens next</span>
-                  <strong>{result.expectedOutcome}</strong>
-                </div>
-                <a onClick={() => void trackEvent("signup_clicked", { leadId: result.leadId })} href={`/signup?lead=${encodeURIComponent(result.leadId)}`}>Save report, re-scan & track improvement →</a>
-              </div>
-            ) : null}
-          </section>
-        )}
 
 
       <section id="methodology" className="methodologyStrip shell">
