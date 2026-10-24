@@ -36,3 +36,8 @@ test('buyer intent radar returns hypotheses with no fabricated demand metrics',(
  assert.ok(result.buyerIntentRadar.some(item=>item.query.includes('Ipswich')));
  assert.ok(result.buyerIntentRadar.every(item=>/Search Console/.test(item.recommendedAction)));
 });
+test('slogan headings fall back to the page topic after removing the supplied brand',()=>{
+ const s=scanner();const result=s.api.analyseWebsite('<html><head><title>SeekSignal — AI visibility intelligence</title></head><body><h1>Your competitors are getting recommended. Find out why.</h1></body></html>','seeksignal.example',{businessName:'SeekSignal'});
+ assert.equal(result.buyerIntentRadar[0].serviceOrProduct,'AI visibility intelligence');
+ assert.doesNotMatch(result.buyerIntentRadar[0].query,/competitors are getting recommended/i);
+});

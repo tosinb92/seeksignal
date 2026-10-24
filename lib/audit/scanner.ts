@@ -324,7 +324,16 @@ export function analyseWebsite(
   const contentHtml = html.replace(/<(script|style|nav|header|footer)\b[^>]*>[\s\S]*?<\/\1>/gi, " ");
   const visibleText = cleanText(contentHtml);
   const suppliedCategory = (context.category || "").trim().replace(/\s+/g, " ").slice(0, 100);
-  const pageTopic = (h1Text || titleText.split(/[|–—:]/)[0] || "").trim().replace(/^(welcome to|home\s*[-|:]?\s*)/i, "").slice(0, 100);
+  const safeTitleParts = titleText.split(/[|–—:]/).map((part) => part.trim()).filter(Boolean);
+  const escapedBusinessName = (context.businessName || "").trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const titleTopic = safeTitleParts.slice().reverse()
+    .map((part) => escapedBusinessName ? part.replace(new RegExp(escapedBusinessName, "ig"), "").trim() : part)
+    .find((part) => part.length >= 3) || "";
+  const headlineLooksLikeSlogan = /^(your\b|we\b|find out\b|discover\b|transform\b|grow\b|boost\b|unlock\b|see how\b|why\b|where\b|who\b|how\b)/i.test(h1Text);
+  const pageTopic = (headlineLooksLikeSlogan ? titleTopic : h1Text || titleTopic)
+    .replace(/^(welcome to|home\s*[-|:]?\s*)/i, "")
+    .replace(new RegExp(`^${escapedBusinessName}\\s*[-|:–—]?\\s*`, "i"), "")
+    .slice(0, 100);
   const serviceOrProduct = suppliedCategory || pageTopic;
   const market = (context.market || "").trim().replace(/\s+/g, " ").slice(0, 80);
   const intentEvidence = suppliedCategory

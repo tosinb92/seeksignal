@@ -21,7 +21,9 @@ export async function POST(req: NextRequest) {
     }
 
     const fetched = await fetchPublicWebsite(body.url);
-    const audit = analyseWebsite(fetched.html, fetched.url.hostname);
+    const audit = analyseWebsite(fetched.html, fetched.url.hostname, {
+      businessName: body.business.trim()
+    });
 
     const leadId = randomUUID();
 
