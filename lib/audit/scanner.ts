@@ -11,7 +11,25 @@ export type AuditCheck = {
   implementation: string[];
   expectedImpact: string;
   verify: string;
+  evidenceClass: "VERIFIED";
+  sourceUrl: string;
+  collectedAt: string;
+  confidence: "high" | "medium";
 };
+
+function actionPriority(priority: number, effort: string) {
+  const impact = priority >= 85 ? 40 : priority >= 65 ? 30 : 20;
+  const ease = effort === "Low" ? 20 : effort === "Medium" ? 12 : 5;
+  return {
+    score: 40 + impact + ease,
+    factors: [
+      { name: "Observed homepage gap", points: 40, class: "VERIFIED" as const },
+      { name: "Expected usefulness", points: impact, class: "SUGGESTED" as const },
+      { name: "Implementation effort", points: ease, class: "ESTIMATED" as const }
+    ],
+    methodology: "Relative action priority based on an observed homepage gap, a suggested impact tier and estimated effort. It does not include search demand, rankings or revenue."
+  };
+}
 
 function isPrivate(ip: string) {
   const address = ip.toLowerCase();
@@ -256,6 +274,8 @@ function firstMatch(html: string, pattern: RegExp) {
 }
 
 export function analyseWebsite(html: string, hostname: string) {
+  const collectedAt = new Date().toISOString();
+  const sourceUrl = `https://${hostname}`;
   const titleText = firstMatch(html, /<title[^>]*>([\s\S]*?)<\/title>/i);
   const h1Text = firstMatch(html, /<h1\b[^>]*>([\s\S]*?)<\/h1>/i);
   const descriptionMatch =
@@ -516,7 +536,11 @@ export function analyseWebsite(html: string, hostname: string) {
     benefit: item.benefit,
     implementation: item.implementation,
     expectedImpact: item.expectedImpact,
-    verify: item.verify
+    verify: item.verify,
+    evidenceClass: "VERIFIED",
+    sourceUrl,
+    collectedAt,
+    confidence: "high"
   }));
 
   const categories = [
@@ -561,7 +585,13 @@ export function analyseWebsite(html: string, hostname: string) {
       expectedImpact: item.expectedImpact,
       verify: item.verify,
       impact: item.priority >= 85 ? "High" : item.priority >= 65 ? "Medium" : "Foundational",
-      effort: item.effort
+      effort: item.effort,
+      evidenceClass: "VERIFIED" as const,
+      recommendationClass: "SUGGESTED" as const,
+      sourceUrl,
+      collectedAt,
+      confidence: "medium" as const,
+      priority: actionPriority(item.priority, item.effort)
     }));
 
   const summary =

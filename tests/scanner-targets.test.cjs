@@ -19,3 +19,13 @@ test('public site remains eligible for the browser proxy',async()=>{
  const s=scanner();const result=await s.api.fetchPublicWebsite('https://example.com');
  assert.match(result.html,/public content/);assert.equal(s.calls.length,1);assert.match(s.calls[0],/^https:\/\/api.microlink.io/);
 });
+test('audit findings identify observed evidence separately from suggested actions',()=>{
+ const s=scanner();const result=s.api.analyseWebsite('<html><head></head><body><h1>Example service</h1></body></html>','example.com');
+ assert.equal(result.url,'example.com');
+ assert.ok(result.checks.length>0);
+ assert.ok(result.checks.every(check=>check.evidenceClass==='VERIFIED'&&check.sourceUrl==='https://example.com'&&check.collectedAt));
+ assert.ok(result.opportunities.length>0);
+ assert.ok(result.opportunities.every(item=>item.recommendationClass==='SUGGESTED'&&item.priority.score<=100&&item.priority.score>=0));
+ assert.match(result.opportunities[0].priority.methodology,/does not include search demand, rankings or revenue/i);
+ assert.equal(Object.hasOwn(result,'searchVolume'),false);
+});

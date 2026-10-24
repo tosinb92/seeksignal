@@ -1099,6 +1099,21 @@ linear-gradient(180deg,rgba(5,8,7,.12),rgba(5,8,7,.78))}
 @media(max-width:950px){.heroGrid,.intelligenceGridNew,.humanGrid{grid-template-columns:1fr}.heroContent{text-align:center;margin:auto}.heroBadge{margin:auto}.heroCopy{margin:auto}.heroVisualPremium{min-height:450px}.heroVisualPremium img{width:100%}.howGrid{grid-template-columns:1fr 1fr}.howFeature{grid-column:1/-1}.proofGrid{grid-template-columns:1fr 1fr}.uspColumns{grid-template-columns:1fr 1fr}.trustInner{display:block;text-align:center}.trustInner>div{justify-content:center;margin-top:18px}}
 @media(max-width:600px){.hero{min-height:auto;padding:70px 0 55px}.hero h1{font-size:54px;letter-spacing:-3.5px}.hero h1 em{letter-spacing:-3.5px}.heroVisualPremium{min-height:300px}.heroCallout{display:none}.heroQuestions{justify-content:center}.uspBand,.howSection,.intelligenceSection,.humanSection,.pricingSection{padding:78px 0}.uspColumns,.proofGrid,.howGrid{grid-template-columns:1fr}.howFeature{grid-column:auto}.proofGrid>div{border-right:0;border-bottom:1px solid #e2e7e3}.proofGrid>div:last-child{border-bottom:0}.intelligencePoints>div{grid-template-columns:30px 1fr}.intelligencePoints span{grid-column:2}.pricingGrid{grid-template-columns:1fr}.minimalProof{padding:85px 0}}
 
+.opportunityValue{max-width:1150px;margin:34px auto 0;padding:30px;border:1px solid rgba(196,248,115,.14);border-radius:18px;background:linear-gradient(135deg,rgba(196,248,115,.045),rgba(255,255,255,.012))}
+.opportunityValueIntro>span{color:#c4f873;font-size:8px;font-weight:850;letter-spacing:1.2px}
+.opportunityValueIntro h2{margin:10px 0;color:#edf4ee;font-size:clamp(22px,3vw,34px);letter-spacing:-1.3px}
+.opportunityValueIntro p,.priorityMethodology{max-width:760px;color:#89948c;font-size:10px;line-height:1.6}
+.opportunityValueGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:22px}
+.opportunityValueGrid label{display:grid;gap:8px;color:#aeb8b0;font-size:9px}
+.opportunityValueGrid input{width:100%;height:42px;padding:0 11px;border:1px solid rgba(255,255,255,.1);border-radius:8px;background:#0c100e;color:#eff4ef;font:inherit;font-size:12px}
+.opportunityScenarioResult{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+.opportunityScenarioResult div{padding:15px;border-radius:10px;background:rgba(0,0,0,.2)}
+.opportunityScenarioResult span{display:block;color:#7d8980;font-size:8px}
+.opportunityScenarioResult strong{display:block;margin-top:7px;color:#c4f873;font-size:20px}
+.evidenceProvenance{border-left:2px solid rgba(91,209,173,.4);padding-left:10px}
+.evidenceProvenance>span{color:#71d6b4}
+@media(max-width:760px){.opportunityValue{padding:20px}.opportunityValueGrid{grid-template-columns:1fr 1fr}.opportunityScenarioResult{grid-template-columns:1fr}}
+
 /* Use the approved cinematic hero asset */
 .heroVisualPremium{
   display:flex!important;

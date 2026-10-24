@@ -4,6 +4,7 @@ import WebsiteScreenshot from "../components/WebsiteScreenshot";
 import { FormEvent, useState } from "react";
 import LeadGate from "../components/LeadGate";
 import { trackEvent } from "../lib/analytics/client";
+import OpportunityValueCalculator from "../components/OpportunityValueCalculator";
 
 type Result = {
   leadId: string;
@@ -25,6 +26,12 @@ type Result = {
     verify?: string;
     impact: string;
     effort?: string;
+    evidenceClass?: "VERIFIED";
+    recommendationClass?: "SUGGESTED";
+    sourceUrl?: string;
+    collectedAt?: string;
+    confidence?: "high" | "medium";
+    priority?: { score: number; factors: { name: string; points: number; class: string }[]; methodology: string };
   }[];
   actionPlan?: {
     rank?: number;
@@ -125,13 +132,13 @@ export default function Home() {
         </div>
       </header>
 
-      <section className="hero shell heroCover">
+      <section className="hero shell heroCover" id="platform">
         <img className="heroCoverImage" src="/assets/homepage/AI%20Visibility%20Workspace%20at%20Sunset.png" alt="AI visibility workspace." />
         <div className="heroCoverOverlay" />
         <div className="heroCoverContent">
           <div className="heroBadge"><span /> AI visibility intelligence</div>
-          <h1>Find out why AI <em>recommends your competitors instead.</em></h1>
-          <p className="heroCopy">See where your business is visible, who is winning the same buyer conversations, and what you should fix next — before you spend more trying to get found.</p>
+          <h1>Your competitors are getting recommended. <em>Find out why.</em></h1>
+          <p className="heroCopy">Discover where your business is missing out across Google and AI search. See what competitors are doing better, get evidence-backed recommendations, and turn opportunities into measurable growth.</p>
           <form id="scan" className="heroScanForm" onSubmit={startAudit}>
             <div className="heroScanInput">
               <span aria-hidden="true">↗</span>
@@ -184,7 +191,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="intelligenceSection">
+      <section className="intelligenceSection" id="intelligence">
         <div className="shell intelligenceGridNew">
           <div className="intelligenceCopy">
             <span>AI VISIBILITY MONITORING</span>
@@ -258,7 +265,7 @@ export default function Home() {
               </div>
 
               <div className="resultScorePanel">
-                <span className="resultKicker">Your AI readiness score</span>
+                <span className="resultKicker">Your website readiness score</span>
                 <div className="resultScoreValue">{result.score}<small>/100</small></div>
                 <div className="resultScoreTrack"><i style={{width:`${result.score}%`}} /></div>
                 <h2>
@@ -334,10 +341,12 @@ export default function Home() {
                         <div>
                           <span>{item.impact} impact</span>
                           {item.effort ? <span>{item.effort} effort</span> : null}
+                          {item.priority ? <span>Action priority {item.priority.score}/100</span> : null}
                         </div>
                       </div>
                       <h3>{item.title}</h3>
                       {item.evidence ? <div className="resultDetail"><span>What we observed</span><p>{item.evidence}</p></div> : null}
+                      {item.evidenceClass ? <div className="resultDetail evidenceProvenance"><span>{item.evidenceClass} evidence · {item.confidence} confidence</span><p>Source: {item.sourceUrl}{item.collectedAt ? ` · Collected ${new Date(item.collectedAt).toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short", timeZone: "UTC" })} UTC` : ""}</p></div> : null}
                       {item.problem ? <div className="resultDetail"><span>Why this matters</span><p>{item.problem}</p></div> : null}
                       <div className="resultDetail resultDetailAction"><span>What to do</span><p>{item.action}</p></div>
                       {item.expectedImpact ? <div className="resultDetail"><span>Expected business impact</span><p>{item.expectedImpact}</p></div> : null}
@@ -348,11 +357,14 @@ export default function Home() {
                         </details>
                       ) : null}
                       {item.verify ? <div className="resultVerify"><span>Verify fix</span><p>{item.verify}</p></div> : null}
+                      {item.priority ? <details className="implementationDetails"><summary>How this action priority was scored</summary><p className="priorityMethodology">{item.priority.methodology}</p><ul>{item.priority.factors.map((factor) => <li key={factor.name}>{factor.name}: +{factor.points} ({factor.class})</li>)}</ul></details> : null}
                     </article>
                   ))}
                 </div>
               ) : <p className="allGood">No fundamental readiness warnings were found.</p>}
             </section>
+
+            <OpportunityValueCalculator />
 
             <details className="technicalResults">
               <summary>
